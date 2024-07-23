@@ -1,3 +1,4 @@
-export function App(): JSX.Element {
-  return <h1>Sou o Kalueka</h1>
+import React from 'react'
+export const App: React.FC = () => {
+  return <h1>Meus Elementos</h1>
 }
