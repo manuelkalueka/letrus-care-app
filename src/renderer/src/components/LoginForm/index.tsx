@@ -6,6 +6,7 @@ import * as yup from 'yup'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { loginService } from '@renderer/services/user'
+import { useNavigate } from 'react-router-dom'
 
 const schema = yup
   .object({
@@ -17,7 +18,7 @@ type FormData = yup.InferType<typeof schema>
 
 export const LoginForm: React.FC = () => {
   const MySwal = withReactContent(Swal)
-
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -25,16 +26,11 @@ export const LoginForm: React.FC = () => {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormData): Promise<void> => {
     try {
       const response = await loginService(data)
       if (response?.status === 200) {
-        MySwal.fire({
-          title: 'Sucesso!',
-          text: 'Seja Bem Vindo',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        })
+        navigate('/home')
       } else {
         MySwal.fire({
           title: 'Erro',

@@ -6,10 +6,24 @@ import * as yup from 'yup'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { signupService } from '@renderer/services/user'
+import { useNavigate } from 'react-router-dom'
+
+// Função de validação personalizada para garantir que o nome de usuário não começa com caracteres especiais
+const noSpecialCharAtStart = (value: string): boolean => {
+  if (!value) return false
+  const specialCharRegex = /^[^a-zA-Z0-9]/
+  return !specialCharRegex.test(value)
+}
 
 const schema = yup
   .object({
-    username: yup.string().required('Preecha seu username'),
+    username: yup
+      .string()
+      .required('Preecha o username')
+      .matches(/^\S*$/, 'Não pode ter espaços')
+      .test('Username não pode começar com caracteres especial', noSpecialCharAtStart)
+      .min(3, 'Username deve conter mais de 3 caracteres')
+      .max(30, 'Username não pode ultrapassar 30 caracteres'),
     password: yup
       .string()
       .min(6, 'Insira uma senha com 6 caracteres no mínimo')
@@ -23,8 +37,8 @@ const schema = yup
 type FormData = yup.InferType<typeof schema>
 
 export const SignupForm: React.FC = () => {
+  const navigate = useNavigate()
   const MySwal = withReactContent(Swal)
-
   const {
     register,
     handleSubmit,
@@ -32,16 +46,11 @@ export const SignupForm: React.FC = () => {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormData): Promise<void> => {
     try {
       const status = await signupService(data)
-
       if (status === 201) {
-        MySwal.fire({
-          title: 'Sucesso!',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        })
+        navigate('/login')
       } else {
         MySwal.fire({
           title: 'Erro ao cadastrar usuário',
@@ -71,7 +80,7 @@ export const SignupForm: React.FC = () => {
         id="username"
         autoComplete="username webauthn"
         type="text"
-        className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.username?.message}</span>
 
@@ -82,9 +91,9 @@ export const SignupForm: React.FC = () => {
         {...register('password')}
         placeholder="Sua senha"
         id="password"
-        autoComplete="password webauthn"
+        autoComplete="new-password webauthn"
         type="password"
-        className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.password?.message}</span>
       <label className="text-gray-200" htmlFor="password">
@@ -94,9 +103,9 @@ export const SignupForm: React.FC = () => {
         {...register('confPassword')}
         placeholder="Confirme sua senha"
         id="password"
-        autoComplete="password webauthn"
+        autoComplete="current-password webauthn"
         type="password"
-        className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.confPassword?.message}</span>
       <span className="text-zinc-400 mb-5">
