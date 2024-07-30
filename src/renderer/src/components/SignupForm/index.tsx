@@ -5,17 +5,24 @@ import * as yup from 'yup'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { loginService } from '@renderer/services/user'
+import { signupService } from '@renderer/services/user'
 
 const schema = yup
   .object({
     username: yup.string().required('Preecha seu username'),
-    password: yup.string().required('Preecha sua senha')
+    password: yup
+      .string()
+      .min(6, 'Insira uma senha com 6 caracteres no mínimo')
+      .required('Preecha sua senha'),
+    confPassword: yup
+      .string()
+      .oneOf([yup.ref('password')], 'Senhas devem iguais')
+      .required('Confirme sua senha')
   })
   .required()
 type FormData = yup.InferType<typeof schema>
 
-export const LoginForm: React.FC = () => {
+export const SignupForm: React.FC = () => {
   const MySwal = withReactContent(Swal)
 
   const {
@@ -27,26 +34,26 @@ export const LoginForm: React.FC = () => {
   })
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await loginService(data)
-      if (response?.status === 200) {
+      const status = await signupService(data)
+
+      if (status === 201) {
         MySwal.fire({
           title: 'Sucesso!',
-          text: 'Seja Bem Vindo',
           icon: 'success',
           confirmButtonText: 'OK'
         })
       } else {
         MySwal.fire({
-          title: 'Erro',
-          text: 'Verifique os dados de acesso',
+          title: 'Erro ao cadastrar usuário',
+          text: 'Verifique os dados.',
           icon: 'error',
           confirmButtonText: 'OK'
         })
       }
     } catch (error) {
       MySwal.fire({
-        title: 'Erro',
-        text: 'Erro ao entrar na conta.',
+        title: 'Erro interno',
+        text: 'Erro ao cadastrar usuário.',
         icon: 'error',
         confirmButtonText: 'OK'
       })
@@ -67,6 +74,7 @@ export const LoginForm: React.FC = () => {
         className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.username?.message}</span>
+
       <label className="text-gray-200" htmlFor="password">
         Senha
       </label>
@@ -79,14 +87,34 @@ export const LoginForm: React.FC = () => {
         className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.password?.message}</span>
-      <a href="/forget-password" target="_self" className="text-orange-600 mb-5 w-[53%]">
-        Esqueci minha senha
-      </a>
+      <label className="text-gray-200" htmlFor="password">
+        Confirmar Senha
+      </label>
+      <input
+        {...register('confPassword')}
+        placeholder="Confirme sua senha"
+        id="password"
+        autoComplete="password webauthn"
+        type="password"
+        className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+      />
+      <span className="text-red-500">{errors.confPassword?.message}</span>
+      <span className="text-zinc-400 mb-5">
+        Ao se cadastrar, você aceita nossos{' '}
+        <a href="#" className="text-orange-600">
+          termos de uso
+        </a>{' '}
+        e a nossa{' '}
+        <a href="#" className="text-orange-600">
+          política de privacidade
+        </a>
+        .
+      </span>
       <button
         type="submit"
         className="bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
       >
-        Entrar
+        Cadastar
       </button>
     </form>
   )

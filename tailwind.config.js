@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -13,6 +14,9 @@ export default {
       colors: {
         primary: '#4F46E5',
         secondary: '#D97706'
+      },
+      backgroundImage: {
+        pattern: 'url(@renderer/assets/bg-child.png)'
       }
     }
   },

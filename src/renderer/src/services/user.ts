@@ -1,22 +1,21 @@
 import apiMananger from './api'
 
 interface Auth {
-  name?: string
   username: string
   password: string
-  email?: string
+  role?: string
 }
 
 export const signupService = async (data: Auth) => {
-  const { name, username, password, email } = data
+  const { username, password, role } = data
   try {
-    const response = await apiMananger.post('/users/register', {
-      name,
+    const { status } = await apiMananger.post('/users/new', {
       username,
       password,
-      email
+      role
     })
-    return response
+
+    return status
   } catch (error) {
     console.log(error)
   }
