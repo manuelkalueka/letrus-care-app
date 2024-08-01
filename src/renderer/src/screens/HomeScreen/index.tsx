@@ -11,8 +11,7 @@ export const HomeScreen: React.FC = () => {
         {/* Sidebar */}
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
-          {/* Conteúdo principal vai aqui */}
-          <p>Conteúdo Principal</p>
+          <p>Conteúdo Principal meu</p>
         </div>
       </div>
     </div>

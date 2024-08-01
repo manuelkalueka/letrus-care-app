@@ -9,7 +9,7 @@ export const LoginScreen: React.FC = () => {
       <div className="h-full w-[70%] bg-orange-700 bg-pattern bg-no-repeat bg-center bg-cover"></div>
       <div className="h-full flex justify-center flex-1">
         <section className="my-[15%] px-[15%] max-w-full w-full max-h-full text-zinc-100">
-          <LogoLectrus />
+          <LogoLectrus sizeFont="text-3xl" sizeImage={40} />
           <h2 className="font-bold text-gray-200 text-2xl mt-16 mb-12 max-md:mt-12 max-md:mb-8">
             Acesse sua conta
           </h2>

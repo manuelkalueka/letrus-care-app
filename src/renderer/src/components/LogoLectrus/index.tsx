@@ -1,11 +1,15 @@
 import React from 'react'
 import Logo from '../../assets/logo-vector.png'
 
-export const LogoLectrus: React.FC = () => {
+interface LogoProps {
+  sizeImage: number
+  sizeFont: string
+}
+export const LogoLectrus: React.FC<LogoProps> = ({ sizeFont, sizeImage }) => {
   return (
     <h1 className="flex items-center mb-5">
-      <img src={Logo} alt="Logo da Letrus Care" width={40} />
-      <span className="text-3xl">LETRUS CARE</span>
+      <img src={Logo} alt="Logo da Letrus Care" width={sizeImage} />
+      <span className={sizeFont}>LETRUS CARE</span>
     </h1>
   )
 }
