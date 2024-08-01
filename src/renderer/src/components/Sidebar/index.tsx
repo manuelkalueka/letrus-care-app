@@ -2,39 +2,49 @@ import { BellDot, BookOpenCheck, CircleHelp, HandCoins, Home, NotebookPen } from
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Sidebar: React.FC = () => {
+export const Sidebar: React.FC = () => {
   return (
-    <div className="bg-zinc-400 flex justify-between flex-col h-svh">
-      <ul>
-        <li className="flex items-center">
-          <Home />
-          <Link to={'#'}>Home</Link>
+    <div className="bg-transparent flex flex-col justify-between h-full gap-3 p-3 pt-6 border-r border-gray-700 w-[216px]">
+      <ul className="flex flex-col gap-4">
+        <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-gray-800 hover:bg-gray-800">
+          <Link to={'#'} className="flex items-center gap-3 w-full">
+            <Home />
+            Home
+          </Link>
         </li>
-        <li className="flex items-center">
-          <NotebookPen />
-          <Link to={'#'}>Inscrição</Link>
+        <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-gray-800 hover:bg-gray-800">
+          <Link to={'#'} className="flex items-center gap-3 w-full">
+            <NotebookPen />
+            Inscrição
+          </Link>
         </li>
-        <li className="flex items-center">
-          <HandCoins />
-          <Link to={'#'}>Pagamentos</Link>
+        <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-gray-800 hover:bg-gray-800">
+          <Link to={'#'} className="flex items-center gap-3 w-full">
+            <HandCoins />
+            Pagamentos
+          </Link>
         </li>
-        <li className="flex items-center">
-          <BookOpenCheck />
-          <Link to={'#'}>Aulas e Presenças</Link>
+        <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-gray-800 hover:bg-gray-800">
+          <Link to={'#'} className="flex items-center gap-3 w-full">
+            <BookOpenCheck />
+            Aulas e Presenças
+          </Link>
         </li>
       </ul>
-      <ul>
-        <li className="flex items-center">
-          <BellDot />
-          <Link to={'#'}>Notificações</Link>
+      <ul className="flex flex-col gap-4">
+        <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-gray-800 hover:bg-gray-800">
+          <Link to={'#'} className="flex items-center gap-3 w-full">
+            <BellDot />
+            Notificações
+          </Link>
         </li>
-        <li className="flex items-center">
-          <CircleHelp />
-          <Link to={'#'}>Ajuda</Link>
+        <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-gray-800 hover:bg-gray-800">
+          <Link to={'#'} className="flex items-center gap-3 w-full">
+            <CircleHelp />
+            Ajuda
+          </Link>
         </li>
       </ul>
     </div>
   )
 }
-
-export default Sidebar

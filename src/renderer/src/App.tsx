@@ -1,29 +1,10 @@
 import React from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { LoginScreen } from './screens/LoginScreen'
-import { ErrorScreen } from './screens/ErrorScreen'
-import { SignupScreen } from './screens/SignupScreen'
-import { HomeScreen } from './screens/HomeScreen'
+import { RouterProvider } from 'react-router-dom'
+import { appRouter } from './routes/app'
+import { authRouter } from './routes/auth-router'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <LoginScreen />,
-    errorElement: <ErrorScreen />
-  },
-  {
-    path: '/login',
-    element: <LoginScreen />
-  },
-  {
-    path: '/signup',
-    element: <SignupScreen />
-  },
-  {
-    path: '/home',
-    element: <HomeScreen />
-  }
-])
+const isSigned = true
+const router = isSigned ? appRouter : authRouter
 export const App: React.FC = () => {
   return <RouterProvider router={router} />
 }

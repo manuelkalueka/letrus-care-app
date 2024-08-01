@@ -1,6 +1,6 @@
 import apiMananger from './api'
 
-interface Auth {
+export interface IAuth {
   username: string
   password: string
   role?: string
