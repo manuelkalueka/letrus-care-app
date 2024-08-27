@@ -23,16 +23,17 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@hookform/resolvers": "^3.9.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.13",
     "axios": "^1.7.2",
     "lucide-react": "^0.407.0",
+    "react-hook-form": "^7.51.5",
     "react-router-dom": "^6.24.1",
     "sweetalert2": "^11.6.13",
     "sweetalert2-react-content": "^5.0.7",
-    "yup": "^1.4.0",
-    "react-hook-form": "^7.51.5"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
