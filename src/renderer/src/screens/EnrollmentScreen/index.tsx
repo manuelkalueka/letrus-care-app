@@ -3,7 +3,7 @@ import { Sidebar } from '@renderer/components/Sidebar'
 import { Header } from '@renderer/components/Header'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import yup from 'yup'
+import * as yup from 'yup'
 const schema = yup
   .object({
     username: yup.string().required('Preecha seu username'),
