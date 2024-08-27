@@ -6,8 +6,13 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 const schema = yup
   .object({
-    username: yup.string().required('Preecha seu username'),
-    password: yup.string().required('Preecha sua senha')
+    name: yup.string().required('Preecha o name'),
+    birthDate: yup.date().required('Preecha data de nascimento'),
+    gender: yup.string().required(),
+    parents: yup.object(),
+    address: yup.string(),
+    phoneNumber: yup.string(),
+    email: yup.string()
   })
   .required()
 type FormData = yup.InferType<typeof schema>
@@ -36,30 +41,31 @@ export const EnrollmentScreen: React.FC = () => {
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
           <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">
-            <label className="text-gray-200" htmlFor="username">
-              Username
-            </label>
             <input
-              {...register('username')}
-              placeholder="Seu nome de usuário"
-              id="username"
-              autoComplete="username webauthn"
+              {...register('name')}
+              placeholder="Nome do Aluno"
+              id="name"
+              autoComplete="name webauthn"
               type="text"
               className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
             />
-            <span className="text-red-500">{errors.username?.message}</span>
-            <label className="text-gray-200" htmlFor="password">
-              Senha
-            </label>
+            <span className="text-red-500">{errors.name?.message}</span>
             <input
-              {...register('password')}
-              placeholder="Sua senha"
-              id="password"
-              autoComplete="password webauthn"
-              type="password"
+              {...register('birthDate')}
+              placeholder="Nasceu em"
+              id="birthDate"
+              autoComplete="birthDate webauthn"
+              type="date"
               className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
             />
-            <span className="text-red-500">{errors.password?.message}</span>
+            <span className="text-red-500">{errors.gender?.message}</span>
+            <select
+              {...register('gender')}
+              className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+            >
+              <option value="masculino">Masculino</option>
+              <option value="feminino">Femenino</option>
+            </select>
             <button
               type="submit"
               className="bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
