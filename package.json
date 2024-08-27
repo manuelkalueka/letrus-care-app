@@ -2,6 +2,7 @@
   "name": "letrus-care-app",
   "version": "1.0.0",
   "description": "Letrus Care é um App de gestão de alunos projetado para centros de alfabetização. Este projeto visa facilitar o gerenciamento de inscrições, controle de pagamentos, gestão de notas e pautas, e controle de presença dos estudantes.",
+  "license": "MIT",
   "main": "./out/main/index.js",
   "author": "Pedro Manuel kalueka <pedrokalueca@gmail.com>",
   "homepage": "https://electron-vite.org",
