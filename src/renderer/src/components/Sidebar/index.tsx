@@ -21,7 +21,7 @@ export const Sidebar: React.FC = () => {
             changeItemActive(e)
           }}
         >
-          <Link to={'/home'} className="flex items-center gap-3 w-full">
+          <Link to={'/home'} className="flex items-center gap-3 w-full h-full">
             <Home className="hover:text-orange-600" />
             Home
           </Link>
@@ -29,7 +29,7 @@ export const Sidebar: React.FC = () => {
         <li
           className={`flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm ${isActive && 'bg-gray-800 '} hover:bg-zinc-700`}
         >
-          <Link to={'/enrollment'} className="flex items-center gap-3 w-full">
+          <Link to={'/enrollment'} className="flex items-center gap-3 w-full h-full">
             <NotebookPen />
             Inscrição
           </Link>
@@ -37,7 +37,7 @@ export const Sidebar: React.FC = () => {
         <li
           className={`flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm ${isActive && 'bg-gray-800 '} hover:bg-zinc-700`}
         >
-          <Link to={'#'} className="flex items-center gap-3 w-full">
+          <Link to={'#'} className="flex items-center gap-3 w-full h-full">
             <HandCoins />
             Pagamentos
           </Link>
@@ -45,7 +45,7 @@ export const Sidebar: React.FC = () => {
         <li
           className={`flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm ${isActive && 'bg-gray-800 '} hover:bg-zinc-700`}
         >
-          <Link to={'#'} className="flex items-center gap-3 w-full">
+          <Link to={'#'} className="flex items-center gap-3 w-full h-full">
             <BookOpenCheck />
             Aulas e Presenças
           </Link>
@@ -55,7 +55,7 @@ export const Sidebar: React.FC = () => {
         <li
           className={`flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm ${isActive && 'bg-gray-800 '} hover:bg-zinc-700`}
         >
-          <Link to={'#'} className="flex items-center gap-3 w-full">
+          <Link to={'#'} className="flex items-center gap-3 w-full h-full">
             <BellDot />
             Notificações
           </Link>
@@ -63,7 +63,7 @@ export const Sidebar: React.FC = () => {
         <li
           className={`flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm ${isActive && 'bg-gray-800 '} hover:bg-zinc-700`}
         >
-          <Link to={'#'} className="flex items-center gap-3 w-full">
+          <Link to={'#'} className="flex items-center gap-3 w-full h-full">
             <CircleHelp />
             Ajuda
           </Link>
