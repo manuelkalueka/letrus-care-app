@@ -3,18 +3,39 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { createEnrollment } from '@renderer/services/enrollment-service'
+import Swal from 'sweetalert2'
 
 const schema = yup
   .object({
-    name: yup.string().required('Preecha o name'),
+    fullName: yup
+      .string()
+      .required('Preecha o Nome Completo')
+      .test('fullName', 'Insira um nome completo válido', (value) => {
+        // Verifica se o valor contém pelo menos um espaço em branco
+        return /\s/.test(value)
+      }),
+    surname: yup.string(),
     birthDate: yup.date().required('Preecha data de nascimento'),
-    gender: yup.string().required('Seleciona um género'),
-    father: yup.string().required('Preecha o nome do Pai'),
-    mother: yup.string().required('Preecha o nome do Mãe'),
+    gender: yup.string().oneOf(['masculino', 'feminino']).required('Seleciona um género'),
+    father: yup
+      .string()
+      .required('Preecha o nome do Pai')
+      .test('father', 'Insira um nome completo válido', (value) => {
+        // Verifica se o valor contém pelo menos um espaço em branco
+        return /\s/.test(value)
+      }),
+    mother: yup
+      .string()
+      .required('Preecha o nome do Mãe')
+      .test('mother', 'Insira um nome completo válido', (value) => {
+        // Verifica se o valor contém pelo menos um espaço em branco
+        return /\s/.test(value)
+      }),
     address: yup.string().required('Preecha o Endereço'),
     phoneNumber: yup.string().required('Preecha o Telefone'),
-    email: yup.string(),
-    enrollmentDate: yup.string().required('Marca a data de inscrição'),
+    email: yup.string().email('Email Inválido'),
+    enrollmentDate: yup.date().required('Marca a data de inscrição'),
     grade: yup.string().required('Seleciona um nível'),
     courses: yup.string().required('Seleciona um curso disponível')
   })
@@ -25,15 +46,67 @@ export const Panel: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      console.log(data)
+      const {
+        father,
+        mother,
+        address,
+        birthDate,
+        enrollmentDate,
+        gender,
+        grade,
+        fullName,
+        surname,
+        phoneNumber,
+        email
+      } = data
+      const parents = { father, mother }
+      const name = { fullName, surname }
+      await createEnrollment({
+        parents,
+        address,
+        birthDate,
+        enrollmentDate,
+        gender,
+        grade,
+        phoneNumber,
+        email,
+        name
+      })
+      Swal.fire({
+        position: 'bottom-end',
+        icon: 'success',
+        title: 'Inscrição Salva, baixa o comprovativo!!',
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          popup: 'h-44 p-2', // Define a largura e o padding do card
+          title: 'text-sm', // Tamanho do texto do título
+          icon: 'text-xs' // Reduz o tamanho do ícone
+        },
+        timerProgressBar: true // Ativa a barra de progresso
+      })
+      reset()
     } catch (error) {
-      console.log('erro')
+      Swal.fire({
+        position: 'bottom-end',
+        icon: 'error',
+        title: 'Verifique os dados',
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          popup: 'h-44 p-2', // Define a largura e o padding do card
+          title: 'text-sm', // Tamanho do texto do título
+          icon: 'text-xs' // Reduz o tamanho do ícone
+        },
+        timerProgressBar: true // Ativa a barra de progresso
+      })
     }
   }
 
@@ -65,19 +138,20 @@ export const Panel: React.FC = () => {
     return (
       <>
         <input
-          {...register('name')}
-          placeholder="Nome do Aluno"
-          autoComplete="name webauthn"
+          {...register('fullName')}
+          placeholder="Nome Completo do Aluno"
+          autoComplete="fullName webauthn"
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
-        {errors.name && <span className="text-red-500">{errors.name?.message}</span>}
+        {errors.fullName && <span className="text-red-500">{errors.fullName?.message}</span>}
         <input
           {...register('birthDate')}
           placeholder="Nasceu em"
           autoComplete="bday-day"
           type="date"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+          required
         />
         {errors.birthDate && <span className="text-red-500">{errors.birthDate?.message}</span>}
         <select
@@ -122,7 +196,6 @@ export const Panel: React.FC = () => {
           {...register('courses')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
-          <option selected>Seleciona um curso</option>
           <option value="curso-1">Curso 1</option>
           <option value="curso-2">Curso 2</option>
         </select>
@@ -132,6 +205,7 @@ export const Panel: React.FC = () => {
           placeholder="Data de inscrição"
           type="date"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+          required
         />
         {errors.enrollmentDate && (
           <span className="text-red-500">{errors.enrollmentDate?.message}</span>
@@ -140,7 +214,6 @@ export const Panel: React.FC = () => {
           {...register('grade')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
-          <option selected>Seleciona um nível</option>
           <option value="class-1">Classe 1</option>
           <option value="class-2">Classe 2</option>
         </select>

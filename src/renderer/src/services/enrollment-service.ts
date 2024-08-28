@@ -1,8 +1,8 @@
 import apiMananger from './api'
 
 interface IEnrollment {
-  studentId: string
-  courseId: string
+  studentId?: string
+  courseId?: string
   enrollmentDate: Date
   grade: string | string
   name: { fullName: string; surname?: string }
@@ -12,37 +12,39 @@ interface IEnrollment {
   address: string
   phoneNumber: string
   email?: string
-  centerId: string
+  centerId?: string
 }
-export const createEnrollment = async (data: IEnrollment) => {
-  const {
-    courseId,
-    enrollmentDate,
-    grade,
-    name,
-    birthDate,
-    gender,
-    parents,
-    address,
-    phoneNumber,
-    email,
-    centerId
-  } = data
+
+export const createEnrollment = async (data: IEnrollment): Promise<void> => {
+  const { enrollmentDate, name, birthDate, gender, parents, address, phoneNumber, email } = data
+
+  const centerId = '66cf4452cd7b270579633e7a' // ID fixo para centro e curso
+  const courseId = '66cf4452cd7b270579633e7a' // ID fixo para curso
+  const grade = '66cf4452cd7b270579633e7a' // ID fixo para grade
+
   try {
-    const student = await apiMananger.post('/student/new', {
+    // Cria o estudante
+    const { data: studentData } = await apiMananger.post('/students/new', {
       name,
       birthDate,
       gender,
       address,
       phoneNumber,
       email,
-      parents
+      parents,
+      centerId
     })
 
-    const { status } = await apiMananger.post('/enrollment/new', {})
-
-    return status
+    // Usa o ID do estudante recém-criado para criar a inscrição
+    await apiMananger.post('/enrollments/new', {
+      courseId,
+      enrollmentDate,
+      grade,
+      centerId,
+      studentId: studentData?._id
+    })
   } catch (error) {
-    console.log(error)
+    console.log('Erro ao criar inscrição:', error)
+    throw error
   }
 }
