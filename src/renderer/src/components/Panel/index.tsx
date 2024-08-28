@@ -8,15 +8,15 @@ const schema = yup
   .object({
     name: yup.string().required('Preecha o name'),
     birthDate: yup.date().required('Preecha data de nascimento'),
-    gender: yup.string().required(),
-    father: yup.string(),
-    mother: yup.string(),
-    address: yup.string(),
-    phoneNumber: yup.string(),
+    gender: yup.string().required('Seleciona um género'),
+    father: yup.string().required('Preecha o nome do Pai'),
+    mother: yup.string().required('Preecha o nome do Mãe'),
+    address: yup.string().required('Preecha o Endereço'),
+    phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string(),
-    enrollmentDate: yup.string(),
-    grade: yup.string(),
-    courses: yup.string()
+    enrollmentDate: yup.string().required('Marca a data de inscrição'),
+    grade: yup.string().required('Seleciona um nível'),
+    courses: yup.string().required('Seleciona um curso disponível')
   })
   .required()
 type FormData = yup.InferType<typeof schema>
@@ -49,6 +49,7 @@ export const Panel: React.FC = () => {
           type="tel"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
+        {errors.phoneNumber && <span className="text-red-500">{errors.phoneNumber?.message}</span>}
         <input
           {...register('email')}
           placeholder="E-mail"
@@ -56,6 +57,7 @@ export const Panel: React.FC = () => {
           type="email"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
+        {errors.email && <span className="text-red-500">{errors.email?.message}</span>}
       </>
     )
   }
@@ -69,7 +71,7 @@ export const Panel: React.FC = () => {
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
-        <span className="text-red-500">{errors.name?.message}</span>
+        {errors.name && <span className="text-red-500">{errors.name?.message}</span>}
         <input
           {...register('birthDate')}
           placeholder="Nasceu em"
@@ -77,7 +79,7 @@ export const Panel: React.FC = () => {
           type="date"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
-        <span className="text-red-500">{errors.gender?.message}</span>
+        {errors.birthDate && <span className="text-red-500">{errors.birthDate?.message}</span>}
         <select
           {...register('gender')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
@@ -85,6 +87,7 @@ export const Panel: React.FC = () => {
           <option value="masculino">Masculino</option>
           <option value="feminino">Feminino</option>
         </select>
+        {errors.gender && <span className="text-red-500">{errors.gender?.message}</span>}
         <input
           {...register('father')}
           placeholder="Nome do Pai"
@@ -92,6 +95,7 @@ export const Panel: React.FC = () => {
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
+        {errors.father && <span className="text-red-500">{errors.father?.message}</span>}
         <input
           {...register('mother')}
           placeholder="Nome da Mãe"
@@ -99,6 +103,7 @@ export const Panel: React.FC = () => {
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
+        {errors.mother && <span className="text-red-500">{errors.mother?.message}</span>}
         <input
           {...register('address')}
           placeholder="Endereço Completo onde moram com o Aluno"
@@ -106,6 +111,7 @@ export const Panel: React.FC = () => {
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
+        {errors.address && <span className="text-red-500">{errors.address?.message}</span>}
       </>
     )
   }
@@ -117,23 +123,28 @@ export const Panel: React.FC = () => {
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
           <option selected>Seleciona um curso</option>
-          <option value="masculino">Curso 1</option>
-          <option value="feminino">Curso 2</option>
+          <option value="curso-1">Curso 1</option>
+          <option value="curso-2">Curso 2</option>
         </select>
+        {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
         <input
           {...register('enrollmentDate')}
           placeholder="Data de inscrição"
           type="date"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
+        {errors.enrollmentDate && (
+          <span className="text-red-500">{errors.enrollmentDate?.message}</span>
+        )}
         <select
           {...register('grade')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
           <option selected>Seleciona um nível</option>
-          <option value="masculino">Classe 1</option>
-          <option value="feminino">Classe 2</option>
+          <option value="class-1">Classe 1</option>
+          <option value="class-2">Classe 2</option>
         </select>
+        {errors.grade && <span className="text-red-500">{errors.grade?.message}</span>}
         <button
           type="submit"
           className="bg-orange-700 w-1/6 h-12 p-3 mt-6 text-white shadow-shape rounded-md self-end hover:brightness-110"
