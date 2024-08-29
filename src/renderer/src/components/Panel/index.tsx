@@ -82,9 +82,9 @@ export const Panel: React.FC = () => {
       Swal.fire({
         position: 'bottom-end',
         icon: 'success',
-        title: 'Inscrição Salva, baixa o comprovativo!!',
+        title: 'Inscrição Salva, baixe o comprovativo!!',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
         customClass: {
           popup: 'h-44 p-2', // Define a largura e o padding do card
           title: 'text-sm', // Tamanho do texto do título
@@ -99,7 +99,7 @@ export const Panel: React.FC = () => {
         icon: 'error',
         title: 'Verifique os dados',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
         customClass: {
           popup: 'h-44 p-2', // Define a largura e o padding do card
           title: 'text-sm', // Tamanho do texto do título
