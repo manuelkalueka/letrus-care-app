@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import Swal from 'sweetalert2'
+import { createCenter } from '@renderer/services/center-service'
+import { useNavigate } from 'react-router-dom'
 
 const schema = yup
   .object({
@@ -12,37 +14,35 @@ const schema = yup
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
     nif: yup.string().required('Número de contribuinte Obrigatório'),
-    code: yup.string().required('Preecha o código do centro, será usado nos documentos')
+    documentCode: yup.string().required('Preecha o código do centro, será usado nos documentos')
   })
   .required()
 type FormData = yup.InferType<typeof schema>
 
 export const CreateCenterScreen: React.FC = () => {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    reset
+    formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      // await createEnrollment({
-      //   parents,
-      //   address,
-      //   address,
-      //   enrollmentDate,
-      //   gender,
-      //   grade,
-      //   phoneNumber,
-      //   email,
-      //   name
-      // })
+      const { address, documentCode, email, name, nif, phoneNumber } = data
+      await createCenter({
+        address,
+        documentCode,
+        email,
+        name,
+        nif,
+        phoneNumber
+      })
       Swal.fire({
         position: 'bottom-end',
         icon: 'success',
-        title: 'Inscrição Salva, baixe o comprovativo!!',
+        title: 'Centro Cadastrado com Sucesso!',
         showConfirmButton: false,
         timer: 2000,
         customClass: {
@@ -52,7 +52,7 @@ export const CreateCenterScreen: React.FC = () => {
         },
         timerProgressBar: true // Ativa a barra de progresso
       })
-      reset()
+      navigate('/home')
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',
@@ -99,7 +99,7 @@ export const CreateCenterScreen: React.FC = () => {
                 </label>
                 <input
                   id="center-code"
-                  {...register('code')}
+                  {...register('documentCode')}
                   placeholder="Ex.: ABC"
                   type="text"
                   className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"

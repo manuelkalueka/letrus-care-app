@@ -5,25 +5,24 @@ interface ICenter {
   address: string
   nif: string
   phoneNumber: string
-  email: string
-  createdAt: Date
+  email?: string
   documentCode: string
-  createdBy: string
+  createdBy?: string
 }
 
-export const createCenter = async (data: ICenter): Promise<void> => {
-  const { address, createdAt, createdBy, documentCode, email, name, nif, phoneNumber } = data
+export const createCenter = async (data: ICenter) => {
+  const { address, documentCode, email, name, nif, phoneNumber } = data
   try {
-    await apiMananger.post('/centers/new', {
+    const response = await apiMananger.post('/centers/new', {
       address,
-      createdAt,
-      createdBy,
+      createdBy: '66a7bcdb7baa3186dd5eddd2',
       documentCode,
       email,
       name,
       nif,
       phoneNumber
     })
+    return response
   } catch (error) {
     console.log('Erro ao criar centro:', error)
     throw error
