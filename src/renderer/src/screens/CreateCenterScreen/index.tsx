@@ -100,7 +100,7 @@ export const CreateCenterScreen: React.FC = () => {
                 <input
                   id="center-code"
                   {...register('code')}
-                  placeholder="Ex.: Centro ABC"
+                  placeholder="Ex.: ABC"
                   type="text"
                   className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
                 />
