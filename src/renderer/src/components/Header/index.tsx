@@ -1,7 +1,18 @@
 import React from 'react'
 import { LogoLectrus } from '../LogoLectrus'
 import { Menu, Search, UserRound, School } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { logoutService } from '@renderer/services/user'
 export const Header: React.FC = () => {
+  const navigate = useNavigate()
+
+  function handleLogout(): void {
+    if (confirm('Terminar Sessão?')) {
+      logoutService()
+      navigate('/login')
+    }
+    return
+  }
   return (
     <div className="flex items-center justify-between fixed top-0 left-0 right-0 h-[62px] lg:h-[70px] bg-gray-850 border border-transparent border-b-zinc-700 lg:pr-8 bg-gray-850 border-b z-50 px-4 bg-zinc-900">
       <section className="flex items-center justify-between gap-4">
@@ -23,7 +34,11 @@ export const Header: React.FC = () => {
           <School />
         </button>
         <button>
-          <UserRound />
+          <UserRound
+            onClick={() => {
+              handleLogout()
+            }}
+          />
         </button>
       </section>
     </div>

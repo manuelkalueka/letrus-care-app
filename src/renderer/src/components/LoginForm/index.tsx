@@ -30,7 +30,7 @@ export const LoginForm: React.FC = () => {
     try {
       const response = await loginService(data)
       if (response?.status === 200) {
-        navigate('/home')
+        navigate('/centers/new')
       } else {
         MySwal.fire({
           title: 'Erro',

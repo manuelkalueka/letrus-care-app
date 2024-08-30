@@ -16,7 +16,8 @@ export default {
         secondary: '#D97706'
       },
       backgroundImage: {
-        pattern: 'url(@renderer/assets/bg-child.png)'
+        pattern: 'url(@renderer/assets/bg-child.png)',
+        center_bg: 'url(@renderer/assets/center-bg.jpg)'
       }
     }
   },
