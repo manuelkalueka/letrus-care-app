@@ -14,7 +14,7 @@ export const ErrorScreen: React.FC = () => {
         <i>{error?.statusText || error?.message}</i>
       </p>
       <p>
-        <a href="/login">tap to Return Home Page</a>
+        <a href="/">tap to Return Home Page</a>
       </p>
     </div>
   )

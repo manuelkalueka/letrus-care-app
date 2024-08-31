@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import Swal from 'sweetalert2'
-import { createCenter } from '@renderer/services/center-service'
 import { useNavigate } from 'react-router-dom'
+import { useCenter } from '@renderer/contexts/center-context'
 
 const schema = yup
   .object({
@@ -21,6 +21,7 @@ type FormData = yup.InferType<typeof schema>
 
 export const CreateCenterScreen: React.FC = () => {
   const navigate = useNavigate()
+  const { createCenter } = useCenter()
   const {
     register,
     handleSubmit,

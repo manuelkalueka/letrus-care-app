@@ -1,6 +1,7 @@
+import { useAuth } from '@renderer/contexts/auth-context'
 import apiMananger from './api'
 
-interface ICenter {
+export interface ICenter {
   name: string
   address: string
   nif: string
@@ -10,12 +11,13 @@ interface ICenter {
   createdBy?: string
 }
 
-export const createCenter = async (data: ICenter) => {
+export const createCenterService = async (data: ICenter) => {
+  const { user } = useAuth()
   const { address, documentCode, email, name, nif, phoneNumber } = data
   try {
     const response = await apiMananger.post('/centers/new', {
       address,
-      createdBy: '66a7bcdb7baa3186dd5eddd2',
+      createdBy: user?._id,
       documentCode,
       email,
       name,

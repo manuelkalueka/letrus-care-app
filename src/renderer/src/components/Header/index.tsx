@@ -3,10 +3,13 @@ import { LogoLectrus } from '../LogoLectrus'
 import { Menu, Search, UserRound, School } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@renderer/contexts/auth-context'
+import { useCenter } from '@renderer/contexts/center-context'
+
 export const Header: React.FC = () => {
   const navigate = useNavigate()
 
   const { logout } = useAuth()
+  const { center } = useCenter()
   function handleLogout(): void {
     if (confirm('Terminar Sessão?')) {
       logout()
@@ -33,6 +36,7 @@ export const Header: React.FC = () => {
       <section className="flex items-center justify-between gap-4">
         <button title="NOME DO CENTRO">
           <School />
+          {center?.name}
         </button>
         <button>
           <UserRound

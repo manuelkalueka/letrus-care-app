@@ -36,8 +36,8 @@ export const LoginForm: React.FC = () => {
     try {
       await login(data)
       if (!loading) {
-        navigate('/home')
-        console.log('login state ', signed)
+        navigate('/centers/new')
+        console.log('login state ', signed) // retorna true ou false (normal)
       }
       //ToDo colocar verificação de dados incorrectos
       // MySwal.fire({
