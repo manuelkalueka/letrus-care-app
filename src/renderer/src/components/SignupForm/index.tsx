@@ -4,9 +4,11 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import Swal from 'sweetalert2'
+
 import withReactContent from 'sweetalert2-react-content'
-import { signupService } from '@renderer/services/user'
+
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@renderer/contexts/auth-context'
 
 // Função de validação personalizada para garantir que o nome de usuário não começa com caracteres especiais
 const noSpecialCharAtStart = (value: string): boolean => {
@@ -38,7 +40,11 @@ type FormData = yup.InferType<typeof schema>
 
 export const SignupForm: React.FC = () => {
   const navigate = useNavigate()
+
+  const { signup } = useAuth()
+
   const MySwal = withReactContent(Swal)
+
   const {
     register,
     handleSubmit,
@@ -48,7 +54,7 @@ export const SignupForm: React.FC = () => {
   })
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      const status = await signupService(data)
+      const status = await signup(data)
       if (status === 201) {
         navigate('/login')
       } else {

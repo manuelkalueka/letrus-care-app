@@ -81,7 +81,7 @@ export const CreateCenterScreen: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-2">
             <div className="flex items-center justify-between gap-8">
               <article className="flex flex-col flex-1 justify-center">
-                <label className="mb-1" htmlFor="center-name">
+                <label htmlFor="center-name">
                   Nome <span className="text-orange-700">*</span>
                 </label>
                 <input
@@ -94,7 +94,7 @@ export const CreateCenterScreen: React.FC = () => {
                 {/* {errors.name && <span className="text-red-500">{errors.name?.message}</span>} */}
               </article>
               <article className="flex flex-col flex-1 justify-center">
-                <label className="mb-1" htmlFor="center-code">
+                <label htmlFor="center-code">
                   Código do Centro <span className="text-orange-700">*</span>
                 </label>
                 <input
@@ -107,7 +107,7 @@ export const CreateCenterScreen: React.FC = () => {
                 {/* {errors.code && <span className="text-red-500">{errors.code?.message}</span>} */}
               </article>
             </div>
-            <label className="mb-1" htmlFor="center-address">
+            <label htmlFor="center-address">
               Endereço <span className="text-orange-700">*</span>
             </label>
             <input
@@ -118,7 +118,7 @@ export const CreateCenterScreen: React.FC = () => {
               className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             />
             {errors.address && <span className="text-red-500">{errors.address?.message}</span>}
-            <label className="mb-1" htmlFor="center-address">
+            <label htmlFor="center-nif">
               NIF <span className="text-orange-700">*</span>
             </label>
             <input
@@ -129,10 +129,11 @@ export const CreateCenterScreen: React.FC = () => {
               className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             />
             {errors.nif && <span className="text-red-500">{errors.nif?.message}</span>}
-            <label className="mb-1" htmlFor="center-phone">
+            <label htmlFor="center-phone">
               Telefone <span className="text-orange-700">*</span>
             </label>
             <input
+              id="center-phone"
               {...register('phoneNumber')}
               placeholder="Número de Telefone"
               autoComplete="tel"
@@ -142,10 +143,9 @@ export const CreateCenterScreen: React.FC = () => {
             {errors.phoneNumber && (
               <span className="text-red-500">{errors.phoneNumber?.message}</span>
             )}
-            <label className="mb-1" htmlFor="center-email">
-              Email
-            </label>
+            <label htmlFor="center-email">Email</label>
             <input
+              id="center-email"
               {...register('email')}
               placeholder="E-mail"
               autoComplete="tel"

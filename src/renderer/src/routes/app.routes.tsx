@@ -2,9 +2,6 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import { ErrorScreen } from '../screens/ErrorScreen'
 
-import { LoginScreen } from '@renderer/screens/LoginScreen'
-import { SignupScreen } from '@renderer/screens/SignupScreen'
-
 import { HomeScreen } from '../screens/HomeScreen'
 import { EnrollmentScreen } from '@renderer/screens/EnrollmentScreen'
 import { CreateCenterScreen } from '@renderer/screens/CreateCenterScreen'
@@ -13,12 +10,8 @@ import { ShowCenterScreen } from '@renderer/screens/CreateCenterScreen/ShowCente
 export const appRouter = createBrowserRouter([
   {
     path: '/',
-    element: <LoginScreen />,
+    element: <HomeScreen />,
     errorElement: <ErrorScreen />
-  },
-  {
-    path: '/login',
-    element: <LoginScreen />
   },
   {
     path: '/home',
@@ -27,10 +20,6 @@ export const appRouter = createBrowserRouter([
   {
     path: '/enrollment',
     element: <EnrollmentScreen />
-  },
-  {
-    path: '/signup',
-    element: <SignupScreen />
   },
   {
     path: '/centers/show',

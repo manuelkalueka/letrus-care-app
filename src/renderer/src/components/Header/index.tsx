@@ -2,13 +2,14 @@ import React from 'react'
 import { LogoLectrus } from '../LogoLectrus'
 import { Menu, Search, UserRound, School } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { logoutService } from '@renderer/services/user'
+import { useAuth } from '@renderer/contexts/auth-context'
 export const Header: React.FC = () => {
   const navigate = useNavigate()
 
+  const { logout } = useAuth()
   function handleLogout(): void {
     if (confirm('Terminar Sessão?')) {
-      logoutService()
+      logout()
       navigate('/login')
     }
     return
