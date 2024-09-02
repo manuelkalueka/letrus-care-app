@@ -32,7 +32,7 @@ export const CreateCenterScreen: React.FC = () => {
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
       const { address, documentCode, email, name, nif, phoneNumber } = data
-      await createCenter({
+      const { status } = await createCenter({
         address,
         documentCode,
         email,
@@ -40,20 +40,23 @@ export const CreateCenterScreen: React.FC = () => {
         nif,
         phoneNumber
       })
-      Swal.fire({
-        position: 'bottom-end',
-        icon: 'success',
-        title: 'Centro Cadastrado com Sucesso!',
-        showConfirmButton: false,
-        timer: 2000,
-        customClass: {
-          popup: 'h-44 p-2', // Define a largura e o padding do card
-          title: 'text-sm', // Tamanho do texto do título
-          icon: 'text-xs' // Reduz o tamanho do ícone
-        },
-        timerProgressBar: true // Ativa a barra de progresso
-      })
-      navigate('/home')
+
+      if (status === 201) {
+        Swal.fire({
+          position: 'bottom-end',
+          icon: 'success',
+          title: 'Centro Cadastrado com Sucesso!',
+          showConfirmButton: false,
+          timer: 2000,
+          customClass: {
+            popup: 'h-44 p-2', // Define a largura e o padding do card
+            title: 'text-sm', // Tamanho do texto do título
+            icon: 'text-xs' // Reduz o tamanho do ícone
+          },
+          timerProgressBar: true // Ativa a barra de progresso
+        })
+        navigate('/')
+      }
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',
@@ -62,11 +65,11 @@ export const CreateCenterScreen: React.FC = () => {
         showConfirmButton: false,
         timer: 2000,
         customClass: {
-          popup: 'h-44 p-2', // Define a largura e o padding do card
-          title: 'text-sm', // Tamanho do texto do título
-          icon: 'text-xs' // Reduz o tamanho do ícone
+          popup: 'h-44 p-2',
+          title: 'text-sm',
+          icon: 'text-xs'
         },
-        timerProgressBar: true // Ativa a barra de progresso
+        timerProgressBar: true
       })
     }
   }
@@ -144,7 +147,9 @@ export const CreateCenterScreen: React.FC = () => {
             {errors.phoneNumber && (
               <span className="text-red-500">{errors.phoneNumber?.message}</span>
             )}
-            <label htmlFor="center-email">Email</label>
+            <label htmlFor="center-email">
+              Email <span className="text-orange-700">*</span>
+            </label>
             <input
               id="center-email"
               {...register('email')}

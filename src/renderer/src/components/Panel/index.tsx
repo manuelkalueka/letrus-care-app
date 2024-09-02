@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { createEnrollment } from '@renderer/services/enrollment-service'
 import Swal from 'sweetalert2'
+import { useCenter } from '@renderer/contexts/center-context'
 
 const schema = yup
   .object({
@@ -51,6 +52,9 @@ export const Panel: React.FC = () => {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
+
+  const { center } = useCenter()
+
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
       const {
@@ -68,6 +72,7 @@ export const Panel: React.FC = () => {
       } = data
       const parents = { father, mother }
       const name = { fullName, surname }
+      const centerId = center?._id
       await createEnrollment({
         parents,
         address,
@@ -77,7 +82,8 @@ export const Panel: React.FC = () => {
         grade,
         phoneNumber,
         email,
-        name
+        name,
+        centerId
       })
       Swal.fire({
         position: 'bottom-end',

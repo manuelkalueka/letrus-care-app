@@ -5,7 +5,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react'
 interface CenterContextData {
   loading: boolean
   center: object | null
-  createCenter: (data: ICenter) => Promise<void>
+  createCenter: (data: ICenter) => Promise<any>
 }
 
 // Criação do contexto
@@ -19,8 +19,6 @@ export const CenterProvider: React.FC = ({ children }) => {
   useEffect(() => {
     async function loadStorageData(): Promise<void> {
       const storagedCenter = localStorage.getItem('center')
-      console.log('Sou o centro armazenado ', storagedCenter)
-
       if (storagedCenter) {
         setCenter(JSON.parse(storagedCenter))
       }
@@ -34,11 +32,10 @@ export const CenterProvider: React.FC = ({ children }) => {
       const response = await createCenterService(data)
       setCenter(response.data)
       localStorage.setItem('center', response.data)
-      const center = localStorage.getItem('center')
-      console.log('Sou o centro ', center)
       return response
     } catch (error) {
-      console.log('Erro ao criar centro no contexto')
+      console.log('Erro ao criar centro no contexto: ', error)
+      throw error
     }
   }
 

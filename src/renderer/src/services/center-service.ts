@@ -1,5 +1,5 @@
-import { useAuth } from '@renderer/contexts/auth-context'
 import apiMananger from './api'
+import { useState } from 'react'
 
 export interface ICenter {
   name: string
@@ -12,19 +12,26 @@ export interface ICenter {
 }
 
 export const createCenterService = async (data: ICenter) => {
-  const { user } = useAuth()
-  const { address, documentCode, email, name, nif, phoneNumber } = data
+  const storagedUser = localStorage.getItem('user')
+
   try {
-    const response = await apiMananger.post('/centers/new', {
-      address,
-      createdBy: user?._id,
-      documentCode,
-      email,
-      name,
-      nif,
-      phoneNumber
-    })
-    return response
+    if (storagedUser) {
+      const user = JSON.parse(storagedUser)
+
+      const { address, documentCode, email, name, nif, phoneNumber } = data
+      const createdBy = user?._id
+
+      const response = await apiMananger.post('/centers/new', {
+        address,
+        createdBy,
+        documentCode,
+        email,
+        name,
+        nif,
+        phoneNumber
+      })
+      return response
+    }
   } catch (error) {
     console.log('Erro ao criar centro:', error)
     throw error

@@ -16,9 +16,8 @@ interface IEnrollment {
 }
 
 export const createEnrollment = async (data: IEnrollment): Promise<void> => {
-  const { enrollmentDate, name, birthDate, gender, parents, address, phoneNumber, email } = data
+  const { enrollmentDate, name, birthDate, gender, parents, address, phoneNumber, email,centerId } = data
 
-  const centerId = '66cf4452cd7b270579633e7a' // ID fixo para centro e curso
   const courseId = '66cf4452cd7b270579633e7a' // ID fixo para curso
   const grade = '66cf4452cd7b270579633e7a' // ID fixo para grade
 
