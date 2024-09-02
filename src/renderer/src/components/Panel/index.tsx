@@ -36,7 +36,6 @@ const schema = yup
     address: yup.string().required('Preecha o Endereço'),
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
-    enrollmentDate: yup.date().required('Marca a data de inscrição'),
     grade: yup.string().required('Seleciona um nível'),
     courses: yup.string().required('Seleciona um curso disponível')
   })
@@ -62,7 +61,6 @@ export const Panel: React.FC = () => {
         mother,
         address,
         birthDate,
-        enrollmentDate,
         gender,
         grade,
         fullName,
@@ -77,7 +75,6 @@ export const Panel: React.FC = () => {
         parents,
         address,
         birthDate,
-        enrollmentDate,
         gender,
         grade,
         phoneNumber,
@@ -121,7 +118,11 @@ export const Panel: React.FC = () => {
   const ContactForm: React.FC = () => {
     return (
       <>
+        <label htmlFor="phoneNumber">
+          Telefone <span className="text-orange-700">*</span>
+        </label>
         <input
+          id="phoneNumber"
           {...register('phoneNumber')}
           placeholder="Número de Telefone"
           autoComplete="tel"
@@ -143,7 +144,11 @@ export const Panel: React.FC = () => {
   const StudentForm: React.FC = () => {
     return (
       <>
+        <label htmlFor="fullName">
+          Nome Completo <span className="text-orange-700">*</span>
+        </label>
         <input
+          id="fullName"
           {...register('fullName')}
           placeholder="Nome Completo do Aluno"
           autoComplete="fullName webauthn"
@@ -151,7 +156,11 @@ export const Panel: React.FC = () => {
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.fullName && <span className="text-red-500">{errors.fullName?.message}</span>}
+        <label htmlFor="birthDate">
+          Data de Nascimento <span className="text-orange-700">*</span>
+        </label>
         <input
+          id="birthDate"
           {...register('birthDate')}
           placeholder="Nasceu em"
           autoComplete="bday-day"
@@ -168,7 +177,11 @@ export const Panel: React.FC = () => {
           <option value="feminino">Feminino</option>
         </select>
         {errors.gender && <span className="text-red-500">{errors.gender?.message}</span>}
+        <label htmlFor="father">
+          Nome do Pai <span className="text-orange-700">*</span>
+        </label>
         <input
+          id="father"
           {...register('father')}
           placeholder="Nome do Pai"
           autoComplete="additional-name"
@@ -176,15 +189,23 @@ export const Panel: React.FC = () => {
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.father && <span className="text-red-500">{errors.father?.message}</span>}
+        <label htmlFor="mother">
+          Nome da Mãe <span className="text-orange-700">*</span>
+        </label>
         <input
           {...register('mother')}
+          id="mother"
           placeholder="Nome da Mãe"
           autoComplete="additional-name"
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.mother && <span className="text-red-500">{errors.mother?.message}</span>}
+        <label htmlFor="address">
+          Endereço <span className="text-orange-700">*</span>
+        </label>
         <input
+          id="address"
           {...register('address')}
           placeholder="Endereço Completo onde moram com o Aluno"
           autoComplete="address-level1"
@@ -206,16 +227,6 @@ export const Panel: React.FC = () => {
           <option value="curso-2">Curso 2</option>
         </select>
         {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
-        <input
-          {...register('enrollmentDate')}
-          placeholder="Data de inscrição"
-          type="date"
-          className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-          required
-        />
-        {errors.enrollmentDate && (
-          <span className="text-red-500">{errors.enrollmentDate?.message}</span>
-        )}
         <select
           {...register('grade')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"

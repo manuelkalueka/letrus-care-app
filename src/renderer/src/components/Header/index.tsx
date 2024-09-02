@@ -1,15 +1,67 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { LogoLectrus } from '../LogoLectrus'
 import { Menu, Search, UserRound, School } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
 
+const Dropdown = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const { center } = useCenter()
+  return (
+    <div className="relative inline-block text-left">
+      <div>
+        <button
+          className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium"
+          aria-expanded="true"
+          aria-haspopup="true"
+          onClick={() => setIsOpen(!isOpen)}
+          title={center?.name}
+        >
+          <School />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div
+          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu"
+        >
+          <div className="py-1" role="none">
+            <a
+              href="#"
+              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              role="menuitem"
+            >
+              Option 1
+            </a>
+            <a
+              href="#"
+              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              role="menuitem"
+            >
+              Option 2
+            </a>
+            <a
+              href="#"
+              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              role="menuitem"
+            >
+              Option 3
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export const Header: React.FC = () => {
   const navigate = useNavigate()
 
   const { logout } = useAuth()
-  const { center } = useCenter()
   function handleLogout(): void {
     if (confirm('Terminar Sessão?')) {
       logout()
@@ -34,10 +86,8 @@ export const Header: React.FC = () => {
         />
       </section>
       <section className="flex items-center justify-between gap-4">
-        <button title="NOME DO CENTRO">
-          <School />
-          {center?.name}
-        </button>
+        <Dropdown />
+
         <button>
           <UserRound
             onClick={() => {
