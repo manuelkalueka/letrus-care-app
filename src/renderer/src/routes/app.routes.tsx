@@ -6,6 +6,7 @@ import { HomeScreen } from '../screens/HomeScreen'
 import { EnrollmentScreen } from '@renderer/screens/EnrollmentScreen'
 import { CreateCenterScreen } from '@renderer/screens/CreateCenterScreen'
 import { ShowCenterScreen } from '@renderer/screens/ShowCenterScreen'
+import { CoursesScreen } from '@renderer/screens/CoursesScreen'
 
 export const appRouter = createBrowserRouter([
   {
@@ -24,5 +25,9 @@ export const appRouter = createBrowserRouter([
   {
     path: '/centers/new',
     element: <CreateCenterScreen />
+  },
+  {
+    path: '/courses',
+    element: <CoursesScreen />
   }
 ])

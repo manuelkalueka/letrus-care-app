@@ -4,6 +4,7 @@ import { LoginForm } from '@renderer/components/LoginForm'
 import { ChevronRight, UserPlus } from 'lucide-react'
 
 export const LoginScreen: React.FC = () => {
+
   return (
     <div className="flex w-full h-dvh bg-zinc-800">
       <div className="h-full w-[70%] bg-orange-700 bg-pattern bg-no-repeat bg-center bg-cover"></div>

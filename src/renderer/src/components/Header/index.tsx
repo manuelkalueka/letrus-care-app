@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
 
-const Dropdown = () => {
+const Dropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { center } = useCenter()
   return (
@@ -15,7 +15,10 @@ const Dropdown = () => {
           className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium"
           aria-expanded="true"
           aria-haspopup="true"
-          onClick={() => setIsOpen(!isOpen)}
+          onMouseEnter={() => setIsOpen(true)}
+          onMouseLeave={() => {
+            setTimeout(() => setIsOpen(false), 1800) //atrasa a  saida simulando que ele espera o usuario clicar
+          }}
           title={center?.name}
         >
           <School />
@@ -24,32 +27,32 @@ const Dropdown = () => {
 
       {isOpen && (
         <div
-          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-zinc-800 ring-1 ring-black ring-opacity-5 text-white"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
         >
           <div className="py-1" role="none">
             <a
-              href="#"
-              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              href="/courses"
+              className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
-              Option 1
+              Cursos
             </a>
             <a
               href="#"
-              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
-              Option 2
+              Classes
             </a>
             <a
               href="#"
-              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
-              Option 3
+              Professores
             </a>
           </div>
         </div>
@@ -99,30 +102,3 @@ export const Header: React.FC = () => {
     </div>
   )
 }
-//My Dropdown
-// <ul className="flex flex-col gap-4">
-// <li
-//   className={`flex items-center gap-4 justify-center w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-zinc-700 hover:bg-zinc-700`}
-//   data-state="closed"
-// >
-//   <Link to={'/home'} className="flex items-center gap-3 w-full">
-//     Cursos
-//   </Link>
-// </li>
-// <li
-//   className={`flex items-center gap-4 justify-center w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-zinc-700 hover:bg-zinc-700`}
-//   data-state="closed"
-// >
-//   <Link to={'/home'} className="flex items-center gap-3 w-full">
-//     Classes
-//   </Link>
-// </li>
-// <li
-//   className={`flex items-center gap-4 justify-center w-full h-12 px-3 rounded transition-all text-gray-300 text-sm bg-zinc-700 hover:bg-zinc-700`}
-//   data-state="closed"
-// >
-//   <Link to={'/home'} className="flex items-center gap-3 w-full">
-//     professores
-//   </Link>
-// </li>
-// </ul>
