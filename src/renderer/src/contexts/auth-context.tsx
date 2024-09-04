@@ -20,7 +20,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   // Persistência do usuário e token no local storage
   useEffect(() => {
-    async function loadStorageData(): Promise<void> {
+    function loadStorageData(): void {
       const storagedUser = localStorage.getItem('user')
       const storagedToken = localStorage.getItem('token')
 

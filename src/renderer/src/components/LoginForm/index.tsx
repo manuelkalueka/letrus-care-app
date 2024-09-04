@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -20,7 +20,7 @@ type FormData = yup.InferType<typeof schema>
 export const LoginForm: React.FC = () => {
   const MySwal = withReactContent(Swal)
 
-  const { login, loading, signed } = useAuth()
+  const { login, loading } = useAuth()
 
   const navigate = useNavigate()
 
@@ -36,8 +36,8 @@ export const LoginForm: React.FC = () => {
     try {
       await login(data)
       if (!loading) {
-        navigate('/centers/new')
-        console.log('login state ', signed) // retorna true ou false (normal)
+        navigate('/')
+
       }
       //ToDo colocar verificação de dados incorrectos
       // MySwal.fire({

@@ -12,8 +12,6 @@ const AppContent: React.FC = () => {
     return <div>Loading...</div>
   }
 
-  console.log('Estado de Login:', signed) // Agora deve retornar true ou false corretamente
-
   const router = signed ? appRouter : authRoutes
 
   return <RouterProvider router={router} />
