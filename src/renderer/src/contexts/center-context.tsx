@@ -31,7 +31,7 @@ export const CenterProvider: React.FC = ({ children }) => {
     try {
       const response = await createCenterService(data)
       setCenter(response.data)
-      localStorage.setItem('center', response.data)
+      localStorage.setItem('center', JSON.stringify(response.data))
       return response
     } catch (error) {
       console.log('Erro ao criar centro no contexto: ', error)
