@@ -12,6 +12,8 @@ export const CoursesScreen: React.FC = () => {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
+  const handleEdit = (id: string) => {}
+  const handleDelete = (id: string) => {}
 
   const [tableData, setTableData] = useState([
     {
@@ -84,6 +86,9 @@ export const CoursesScreen: React.FC = () => {
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                       Status
                     </th>
+                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                      Acções
+                    </th>
                   </tr>
                 </thead>
 
@@ -110,6 +115,23 @@ export const CoursesScreen: React.FC = () => {
                       </td>
                       <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
                         {row.status}
+                      </td>
+                      <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                        {/* Botões para Ações */}
+                        <div className="flex items-center justify-evenly gap-1">
+                          <button
+                            onClick={() => handleEdit(row.id)}
+                            className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleDelete(row.id)}
+                            className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
+                          >
+                            Deletar
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
