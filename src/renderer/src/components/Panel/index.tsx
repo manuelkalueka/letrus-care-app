@@ -245,7 +245,7 @@ export const Panel: React.FC = () => {
     )
   }
   return (
-    <div className="border rounded mt-6 border-zinc-800 w-10/12 mx-auto">
+    <div className="border rounded mt-6 border-zinc-800">
       <nav>
         <ul className="flex items-center justify-around bg-zinc-800 h-12 gap-24">
           <li

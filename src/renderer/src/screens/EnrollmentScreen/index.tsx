@@ -11,8 +11,10 @@ export const EnrollmentScreen: React.FC = () => {
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
-          <h2 className="text-3xl text-zinc-500 w-10/12 mx-auto">Inscrições</h2>
-          <Panel />
+          <div className="w-11/12 mx-auto">
+            <h2 className="text-3xl text-zinc-500">Inscrições</h2>
+            <Panel />
+          </div>
         </div>
       </div>
     </div>
