@@ -3,11 +3,16 @@ import React, { useState } from 'react'
 import { Header } from '@renderer/components/Header'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
+import { Modal } from '@renderer/components/Modal'
 
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
 
-  // Estado para armazenar os dados da tabela
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => setIsModalOpen(true)
+  const closeModal = () => setIsModalOpen(false)
+
   const [tableData, setTableData] = useState([
     {
       name: 'Event A',
@@ -35,19 +40,6 @@ export const CoursesScreen: React.FC = () => {
     }
   ])
 
-  // Função para adicionar um novo dado à tabela
-  const handleAddNewData = () => {
-    const newData = {
-      name: 'Event D',
-      description: 'This is event D',
-      startDate: '2024-01-01',
-      endDate: '2024-01-05',
-      fee: '$150',
-      status: 'Active'
-    }
-    setTableData([...tableData, newData])
-  }
-
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
@@ -64,7 +56,7 @@ export const CoursesScreen: React.FC = () => {
 
             {/* Botão para adicionar novo dado  ToDo alinhar a directa*/}
             <button
-              onClick={handleAddNewData}
+              onClick={openModal}
               className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
             >
               Criar Novo Curso
@@ -127,6 +119,14 @@ export const CoursesScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <h2 className="text-lg font-bold mb-4">Modal Title</h2>
+        <p>This is a simple modal with TailwindCSS.</p>
+        <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onClick={closeModal}>
+          Close
+        </button>
+      </Modal>
     </div>
   )
 }
