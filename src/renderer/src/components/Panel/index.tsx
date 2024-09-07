@@ -39,7 +39,9 @@ const schema = yup
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
     grade: yup.string().required('Seleciona um nível'),
-    courses: yup.string().required('Seleciona um curso disponível')
+    courses: yup.string().required('Seleciona um curso disponível'),
+    doc_file: yup.string(),
+    image_file: yup.string()
   })
   .required()
 type FormData = yup.InferType<typeof schema>
@@ -154,6 +156,7 @@ export const Panel: React.FC = () => {
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.phoneNumber && <span className="text-red-500">{errors.phoneNumber?.message}</span>}
+        <label htmlFor="phoneNumber">E-mail</label>
         <input
           {...register('email')}
           placeholder="E-mail"
@@ -243,28 +246,58 @@ export const Panel: React.FC = () => {
   const EnrollmentForm: React.FC = () => {
     return (
       <>
-        <select
-          {...register('courses')}
-          className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-        >
-          {courses?.map((course, index) => (
-            <option value={course?.name} key={index}>
-              {course?.name}
-            </option>
-          ))}
-        </select>
-        {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
-        <select
-          {...register('grade')}
-          className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-        >
-          {grades?.map((grade, index) => (
-            <option value={grade?.grade} key={index}>
-              {grade?.grade}
-            </option>
-          ))}
-        </select>
-        {errors.grade && <span className="text-red-500">{errors.grade?.message}</span>}
+        <div className="flex items-center gap-12 justify-between">
+          <div className="flex flex-col gap-4 w-1/2">
+            <label htmlFor="courses">
+              Curso <span className="text-orange-700">*</span>
+            </label>
+            <select
+              id="courses"
+              {...register('courses')}
+              className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+            >
+              {courses?.map((course, index) => (
+                <option value={course?.name} key={index}>
+                  {course?.name}
+                </option>
+              ))}
+            </select>
+            {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
+            <label htmlFor="grade">
+              Nível <span className="text-orange-700">*</span>
+            </label>
+            <select
+              id="grade"
+              {...register('grade')}
+              className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+            >
+              {grades?.map((grade, index) => (
+                <option value={grade?.grade} key={index}>
+                  {grade?.grade}
+                </option>
+              ))}
+            </select>
+            {errors.grade && <span className="text-red-500">{errors.grade?.message}</span>}
+          </div>
+          <div className="flex flex-col justify-between gap-4 w-1/2">
+            <label htmlFor="doc_file">Cópia do Documento de Identidade (tamanho máx. 1MB)</label>
+            <input
+              id="doc_file"
+              type="file"
+              accept=".png,.jpg,.jpeg,.pdf"
+              {...register('doc_file')}
+              className="flex-1 w-full h-12 p-3  bg-zinc-950 border rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+            />
+            <label htmlFor="image_file">Foto 4x4 (tamanho máx. 1MB)</label>
+            <input
+              id="image_file"
+              type="file"
+              accept=".png,.jpg,.jpeg,.pdf"
+              {...register('image_file')}
+              className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  border focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+            />
+          </div>
+        </div>
         <button
           type="submit"
           className="bg-orange-700 w-1/6 h-12 p-3 mt-6 text-white shadow-shape rounded-md self-end hover:brightness-110"
@@ -305,7 +338,11 @@ export const Panel: React.FC = () => {
         </ul>
       </nav>
       <div className="px-8 my-12">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-2">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex gap-3 flex-col my-2"
+          encType="multipart/form-data"
+        >
           {activeForm === 'student' ? (
             <StudentForm />
           ) : activeForm === 'contact' ? (

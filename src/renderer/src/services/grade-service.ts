@@ -26,7 +26,7 @@ export async function getGradesService() {
 
 export async function deleteGradeService(id: string): Promise<void> {
   try {
-    await apiMananger.patch(`/grades/delete/${id}`)
+    await apiMananger.delete(`/grades/delete/${id}`)
   } catch (error) {
     console.log('Erro ao eliminar níveis', error)
     throw error
