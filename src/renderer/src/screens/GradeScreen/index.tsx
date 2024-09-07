@@ -2,21 +2,19 @@ import React, { useEffect, useState } from 'react'
 
 import { Header } from '@renderer/components/Header'
 import { Sidebar } from '@renderer/components/Sidebar'
-import { useCenter } from '@renderer/contexts/center-context'
 import { Modal } from '@renderer/components/Modal'
-import Swal from 'sweetalert2'
+import { useCenter } from '@renderer/contexts/center-context'
+
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import withReactContent from 'sweetalert2-react-content'
-import {
-  createCourse,
-  deleteCourseService,
-  getCoursesService
-} from '@renderer/services/course-service'
-import { formatDate, formateCurrency } from '@renderer/utils/format'
 
-export const CoursesScreen: React.FC = () => {
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import { createGrade, deleteGradeService, getGradesService } from '@renderer/services/grade-service'
+import { formatDate } from '@renderer/utils/format'
+
+export const GradeScreen: React.FC = () => {
   const { center } = useCenter()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -24,29 +22,24 @@ export const CoursesScreen: React.FC = () => {
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
   const handleEdit = async (id: string) => {
-    console.log('Tela de Editar Curso')
+    console.log('Tela de Editar Gradee')
   }
   const handleDelete = async (id: string): Promise<void> => {
     const ispermitted = confirm('Tens a Certeza, ToDo Personalizar o Confirm')
     if (ispermitted) {
-      await deleteCourseService(id)
+      await deleteGradeService(id)
       //ToDo, atualizar a lista depois de eliminar
     }
   }
   const schema = yup
     .object({
-      name: yup.string().required('Preecha o nome do curso'),
-      description: yup.string().required('Explique um pouco sobre o curso'),
-      startDate: yup.date().required(),
-      endDate: yup.date().required(),
-      fee: yup.number().required('Preecha a propina'),
-      centerId: yup.string().required(),
-      status: yup.string().oneOf(['active', 'inactive'])
+      grade: yup.string().required('Especifique um nível'),
+      centerId: yup.string().required()
     })
     .required()
   type FormData = yup.InferType<typeof schema>
 
-  const ModalCreateCourse: React.FC = () => {
+  const ModalCreateGrade: React.FC = () => {
     const MySwal = withReactContent(Swal)
 
     const {
@@ -58,12 +51,12 @@ export const CoursesScreen: React.FC = () => {
     })
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
-        await createCourse(data)
+        await createGrade(data)
         closeModal()
         Swal.fire({
           position: 'bottom-end',
           icon: 'success',
-          title: 'Curso Adicionado',
+          title: 'nível Adicionado',
           showConfirmButton: false,
           timer: 2000,
           customClass: {
@@ -76,7 +69,7 @@ export const CoursesScreen: React.FC = () => {
       } catch (error) {
         MySwal.fire({
           title: 'Erro interno',
-          text: 'Erro ao cadastrar curso.',
+          text: 'Erro ao cadastrar nível.',
           icon: 'error',
           confirmButtonText: 'OK'
         })
@@ -85,62 +78,17 @@ export const CoursesScreen: React.FC = () => {
 
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">
-        <label className="text-gray-200" htmlFor="name">
-          Nome do Curso
+        <label className="text-gray-200" htmlFor="grade">
+          Nível
         </label>
         <input
-          {...register('name')}
-          placeholder="Nome do curso"
-          id="name"
+          {...register('grade')}
+          placeholder="Ex.: Nível 1 ou 1ª Classe"
+          id="grade"
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
-        <span className="text-red-500">{errors.name?.message}</span>
-
-        <label className="text-gray-200" htmlFor="description">
-          Descrição
-        </label>
-        <input
-          {...register('description')}
-          placeholder="Descrição"
-          id="description"
-          type="text"
-          maxLength={120}
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <span className="text-red-500">{errors.description?.message}</span>
-        <label className="text-gray-200" htmlFor="startDate">
-          Data de Ínicio
-        </label>
-        <input
-          {...register('startDate')}
-          id="startDate"
-          type="date"
-          required
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <label className="text-gray-200" htmlFor="fee">
-          Propina Mensal (Kz)
-        </label>
-        <input
-          {...register('fee')}
-          placeholder="Propina"
-          id="fee"
-          type="number"
-          min={0}
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <span className="text-red-500">{errors.fee?.message}</span>
-        <label className="text-gray-200" htmlFor="endDate">
-          Data de Término
-        </label>
-        <input
-          {...register('endDate')}
-          id="endDate"
-          type="date"
-          required
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
+        <span className="text-red-500">{errors.grade?.message}</span>
         <input {...register('centerId')} type="hidden" value={center?._id} required />
         <button
           type="submit"
@@ -151,15 +99,15 @@ export const CoursesScreen: React.FC = () => {
       </form>
     )
   }
-  const [courses, setCourses] = useState<Array<object> | null>(null)
+  const [grades, setGrades] = useState<Array<object> | null>(null)
 
   useEffect(() => {
-    async function getCourses(): Promise<void> {
-      const data = await getCoursesService()
-      setCourses(data)
+    async function getGrades(): Promise<void> {
+      const data = await getGradesService()
+      setGrades(data)
     }
 
-    getCourses()
+    getGrades()
   }, [isModalOpen])
 
   return (
@@ -171,9 +119,9 @@ export const CoursesScreen: React.FC = () => {
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
-            <h2 className="text-3xl text-zinc-400">Cursos</h2>
+            <h2 className="text-3xl text-zinc-400">Níveis</h2>
             <article className="text-zinc-600 mt-3">
-              <p>Cursos de Excelência no (a) {center?.name}</p>
+              <p>Níveis Disponíveis no (a) {center?.name}</p>
             </article>
 
             {/* Botão para adicionar novo dado  ToDo alinhar a directa*/}
@@ -181,7 +129,7 @@ export const CoursesScreen: React.FC = () => {
               onClick={openModal}
               className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
             >
-              Criar Novo Curso
+              Criar Novo Nível
             </button>
             {/* Tabela */}
             <div className="overflow-x-auto mt-6">
@@ -192,19 +140,7 @@ export const CoursesScreen: React.FC = () => {
                       Nome
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Descrição
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Data de Ínicio
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Data de Termino
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Propina (Kz)
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Status
+                      Data de Aplicação
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                       Acções
@@ -213,29 +149,17 @@ export const CoursesScreen: React.FC = () => {
                 </thead>
 
                 <tbody className="block md:table-row-group">
-                  {courses &&
-                    courses.map((row, index) => (
+                  {grades &&
+                    grades.map((row, index) => (
                       <tr
                         key={index}
                         className="bg-zinc-800 border border-zinc-700 block md:table-row"
                       >
                         <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.name}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.description}
+                          {row?.grade}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {formatDate(row?.startDate)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {formatDate(row?.endDate)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
-                          {formateCurrency(row?.fee)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.status}
+                          {formatDate(row?.dateRecorded)}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
                           {/* Botões para Ações */}
@@ -265,9 +189,9 @@ export const CoursesScreen: React.FC = () => {
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div>
-          <h2 className="text-3xl">Criar Curso</h2>
+          <h2 className="text-3xl">Criar Nível</h2>
           <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
-          <ModalCreateCourse />
+          <ModalCreateGrade />
         </div>
       </Modal>
     </div>

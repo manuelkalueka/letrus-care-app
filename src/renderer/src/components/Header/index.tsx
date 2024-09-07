@@ -41,11 +41,11 @@ const Dropdown: React.FC = () => {
               Cursos
             </a>
             <a
-              href="#"
+              href="/grades"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
-              Classes
+              Níveis
             </a>
             <a
               href="#"

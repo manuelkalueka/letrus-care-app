@@ -33,4 +33,9 @@ function formatDateWithTime(date: Date) {
   return moment(date).locale('pt').format('MMMM Do YYYY, h:mm:ss a')
 }
 
-export { relativeTime, formatDate, getHour, formatDateWithTime }
+function formateCurrency(value): string {
+  const newValue = new Intl.NumberFormat('pt', { style: 'currency', currency: 'AOA' }).format(value)
+
+  return newValue
+}
+export { relativeTime, formatDate, getHour, formatDateWithTime, formateCurrency }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
-import { formatDateWithTime } from '@renderer/utils/format-date'
+import { formatDateWithTime } from '@renderer/utils/format'
 
 export const DateTimeDisplay: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(formatDateWithTime(new Date()))

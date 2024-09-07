@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -6,6 +6,8 @@ import * as yup from 'yup'
 import { createEnrollment } from '@renderer/services/enrollment-service'
 import Swal from 'sweetalert2'
 import { useCenter } from '@renderer/contexts/center-context'
+import { getCoursesService } from '@renderer/services/course-service'
+import { getGradesService } from '@renderer/services/grade-service'
 
 const schema = yup
   .object({
@@ -53,6 +55,28 @@ export const Panel: React.FC = () => {
   })
 
   const { center } = useCenter()
+
+  const [courses, setCourses] = useState<Array<object> | null>(null)
+
+  useEffect(() => {
+    async function getCourses(): Promise<void> {
+      const data = await getCoursesService()
+      setCourses(data)
+    }
+
+    getCourses()
+  }, [])
+
+  const [grades, setGrades] = useState<Array<object> | null>(null)
+
+  useEffect(() => {
+    async function getGrades(): Promise<void> {
+      const data = await getGradesService()
+      setGrades(data)
+    }
+
+    getGrades()
+  }, [])
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
@@ -223,16 +247,22 @@ export const Panel: React.FC = () => {
           {...register('courses')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
-          <option value="curso-1">Curso 1</option>
-          <option value="curso-2">Curso 2</option>
+          {courses?.map((course, index) => (
+            <option value={course?.name} key={index}>
+              {course?.name}
+            </option>
+          ))}
         </select>
         {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
         <select
           {...register('grade')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
-          <option value="class-1">Classe 1</option>
-          <option value="class-2">Classe 2</option>
+          {grades?.map((grade, index) => (
+            <option value={grade?.grade} key={index}>
+              {grade?.grade}
+            </option>
+          ))}
         </select>
         {errors.grade && <span className="text-red-500">{errors.grade?.message}</span>}
         <button
