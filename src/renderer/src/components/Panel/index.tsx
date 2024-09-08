@@ -62,7 +62,7 @@ export const Panel: React.FC = () => {
 
   useEffect(() => {
     async function getCourses(): Promise<void> {
-      const data = await getCoursesService()
+      const data = await getCoursesService(center?._id)
       setCourses(data)
     }
 
@@ -73,7 +73,7 @@ export const Panel: React.FC = () => {
 
   useEffect(() => {
     async function getGrades(): Promise<void> {
-      const data = await getGradesService()
+      const data = await getGradesService(center?._id)
       setGrades(data)
     }
 

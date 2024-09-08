@@ -155,7 +155,7 @@ export const CoursesScreen: React.FC = () => {
 
   useEffect(() => {
     async function getCourses(): Promise<void> {
-      const data = await getCoursesService()
+      const data = await getCoursesService(center?._id)
       setCourses(data)
     }
 

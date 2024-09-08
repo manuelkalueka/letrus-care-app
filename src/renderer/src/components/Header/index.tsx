@@ -8,6 +8,7 @@ import { useCenter } from '@renderer/contexts/center-context'
 const Dropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { center } = useCenter()
+  const navigate = useNavigate()
   return (
     <div className="relative inline-block text-left">
       <div>
@@ -20,6 +21,9 @@ const Dropdown: React.FC = () => {
             setTimeout(() => setIsOpen(false), 1800) //atrasa a  saida simulando que ele espera o usuario clicar
           }}
           title={center?.name}
+          onClick={() => {
+            navigate('/centers/new')
+          }}
         >
           <School />
         </button>

@@ -19,9 +19,9 @@ export async function createCourse(data: ICourse): Promise<void> {
   }
 }
 
-export async function getCoursesService() {
+export async function getCoursesService(centerId: string) {
   try {
-    const { data } = await apiMananger.get('/courses/all')
+    const { data } = await apiMananger.get(`/courses/all/${centerId}`)
     return data
   } catch (error) {
     console.log('Erro ao buscar cursos', error)
