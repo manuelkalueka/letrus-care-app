@@ -48,22 +48,34 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
       userId
     })
 
+    // Criando um FormData para enviar os arquivos e outros dados
+    const formData = new FormData()
+
+    // Adiciona os campos ao FormData
+    formData.append('courseId', courseId)
+    formData.append('grade', grade)
+    formData.append('centerId', centerId)
+    formData.append('studentId', studentData?._id)
+    formData.append('userId', userId)
+
+    // Adiciona os arquivos (se existirem)
+    if (doc_file) {
+      formData.append('doc_file', doc_file)
+    }
+    if (image_file) {
+      formData.append('image_file', image_file)
+    }
+
     // Usa o ID do estudante recém-criado para criar a inscrição
-    await apiMananger.post(
-      '/enrollments/new',
-      {
-        courseId,
-        grade,
-        centerId,
-        studentId: studentData?._id,
-        userId,
-        doc_file,
-        image_file
-      },
-      {
-        headers: { 'Content-Type': 'multpart/form' }
-      }
-    )
+    await apiMananger.post('/enrollments/new', {
+      courseId,
+      grade,
+      centerId,
+      studentId: studentData?._id,
+      userId,
+      doc_file,
+      image_file
+    })
   } catch (error) {
     console.log('Erro ao criar inscrição:', error)
     throw error
