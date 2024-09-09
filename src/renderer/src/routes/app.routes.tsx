@@ -7,7 +7,8 @@ import { EnrollmentScreen } from '@renderer/screens/EnrollmentScreen'
 import { CreateCenterScreen } from '@renderer/screens/CreateCenterScreen'
 import { ShowCenterScreen } from '@renderer/screens/ShowCenterScreen'
 import { CoursesScreen } from '@renderer/screens/CoursesScreen'
-import {GradeScreen } from '@renderer/screens/GradeScreen'
+import { GradeScreen } from '@renderer/screens/GradeScreen'
+import { CreateEnrollmentScreen } from '@renderer/screens/CreateEnrollmentScreen'
 
 export const appRouter = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const appRouter = createBrowserRouter([
   {
     path: '/enrollment',
     element: <EnrollmentScreen />
+  },
+  {
+    path: '/enrollment/new',
+    element: <CreateEnrollmentScreen />
   },
   {
     path: '/centers/show',

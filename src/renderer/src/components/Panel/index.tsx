@@ -6,8 +6,10 @@ import * as yup from 'yup'
 import { createEnrollment } from '@renderer/services/enrollment-service'
 import Swal from 'sweetalert2'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getCoursesService } from '@renderer/services/course-service'
+
+import { useAuth } from '@renderer/contexts/auth-context'
 import { getGradesService } from '@renderer/services/grade-service'
+import { getCoursesService } from '@renderer/services/course-service'
 
 const schema = yup
   .object({
@@ -39,9 +41,11 @@ const schema = yup
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
     grade: yup.string().required('Seleciona um nível'),
-    courses: yup.string().required('Seleciona um curso disponível'),
+    course: yup.string().required('Seleciona um curso disponível'),
     doc_file: yup.string(),
-    image_file: yup.string()
+    image_file: yup.string(),
+    userId: yup.string().required(),
+    centerId: yup.string().required()
   })
   .required()
 type FormData = yup.InferType<typeof schema>
@@ -57,6 +61,7 @@ export const Panel: React.FC = () => {
   })
 
   const { center } = useCenter()
+  const { user } = useAuth()
 
   const [courses, setCourses] = useState<Array<object> | null>(null)
 
@@ -92,11 +97,13 @@ export const Panel: React.FC = () => {
         fullName,
         surname,
         phoneNumber,
-        email
+        email,
+        course,
+        userId,
+        centerId
       } = data
       const parents = { father, mother }
       const name = { fullName, surname }
-      const centerId = center?._id
       await createEnrollment({
         parents,
         address,
@@ -106,7 +113,9 @@ export const Panel: React.FC = () => {
         phoneNumber,
         email,
         name,
-        centerId
+        centerId,
+        courseId: course,
+        userId
       })
       Swal.fire({
         position: 'bottom-end',
@@ -183,6 +192,16 @@ export const Panel: React.FC = () => {
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.fullName && <span className="text-red-500">{errors.fullName?.message}</span>}
+        <label htmlFor="surname">Alcunha</label>
+        <input
+          id="surname"
+          {...register('surname')}
+          placeholder="Alcunha"
+          autoComplete="fullName webauthn"
+          type="text"
+          className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+        />
+        {errors.surname && <span className="text-red-500">{errors.surname?.message}</span>}
         <label htmlFor="birthDate">
           Data de Nascimento <span className="text-orange-700">*</span>
         </label>
@@ -248,21 +267,21 @@ export const Panel: React.FC = () => {
       <>
         <div className="flex items-center gap-12 justify-between">
           <div className="flex flex-col gap-4 w-1/2">
-            <label htmlFor="courses">
+            <label htmlFor="course">
               Curso <span className="text-orange-700">*</span>
             </label>
             <select
-              id="courses"
-              {...register('courses')}
+              id="course"
+              {...register('course')}
               className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             >
               {courses?.map((course, index) => (
-                <option value={course?.name} key={index}>
+                <option value={course?._id} key={index}>
                   {course?.name}
                 </option>
               ))}
             </select>
-            {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
+            {errors.course && <span className="text-red-500">{errors.course?.message}</span>}
             <label htmlFor="grade">
               Nível <span className="text-orange-700">*</span>
             </label>
@@ -272,7 +291,7 @@ export const Panel: React.FC = () => {
               className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             >
               {grades?.map((grade, index) => (
-                <option value={grade?.grade} key={index}>
+                <option value={grade?._id} key={index}>
                   {grade?.grade}
                 </option>
               ))}
@@ -297,6 +316,8 @@ export const Panel: React.FC = () => {
               className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  border focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             />
           </div>
+          <input type="hidden" value={user?._id} {...register('userId')} />
+          <input type="hidden" value={center?._id} {...register('centerId')} />
         </div>
         <button
           type="submit"

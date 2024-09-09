@@ -2,7 +2,7 @@ import apiMananger from './api'
 
 interface IEnrollment {
   studentId?: string
-  courseId?: string
+  courseId: string
   grade: string | string
   name: { fullName: string; surname?: string }
   birthDate: Date
@@ -11,14 +11,26 @@ interface IEnrollment {
   address: string
   phoneNumber: string
   email?: string
-  centerId?: string
+  centerId: string
+  userId: string
+  doc_file?: string
+  image_file?: string
 }
 
 export const createEnrollment = async (data: IEnrollment): Promise<void> => {
-  const { name, birthDate, gender, parents, address, phoneNumber, email, centerId } = data
-
-  const courseId = '66cf4452cd7b270579633e7a' // ID fixo para curso
-  const grade = '66cf4452cd7b270579633e7a' // ID fixo para grade
+  const {
+    name,
+    birthDate,
+    gender,
+    parents,
+    address,
+    phoneNumber,
+    email,
+    centerId,
+    courseId,
+    grade,
+    userId
+  } = data
 
   try {
     // Cria o estudante
@@ -30,7 +42,8 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
       phoneNumber,
       email,
       parents,
-      centerId
+      centerId,
+      userId
     })
 
     // Usa o ID do estudante recém-criado para criar a inscrição
@@ -38,10 +51,21 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
       courseId,
       grade,
       centerId,
-      studentId: studentData?._id
+      studentId: studentData?._id,
+      userId
     })
   } catch (error) {
     console.log('Erro ao criar inscrição:', error)
+    throw error
+  }
+}
+
+export const getEnrollmentsService = async (centerId: string) => {
+  try {
+    const { data } = await apiMananger.get(`/enrollments/all/${centerId}`)
+    return data
+  } catch (error) {
+    console.log('Erro ao buscar inscrições: ', error)
     throw error
   }
 }
