@@ -13,8 +13,8 @@ interface IEnrollment {
   email?: string
   centerId: string
   userId: string
-  doc_file?: string
-  image_file?: string
+  doc_file?: File
+  image_file?: File
 }
 
 export const createEnrollment = async (data: IEnrollment): Promise<void> => {
@@ -29,7 +29,9 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
     centerId,
     courseId,
     grade,
-    userId
+    userId,
+    doc_file,
+    image_file
   } = data
 
   try {
@@ -47,13 +49,21 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
     })
 
     // Usa o ID do estudante recém-criado para criar a inscrição
-    await apiMananger.post('/enrollments/new', {
-      courseId,
-      grade,
-      centerId,
-      studentId: studentData?._id,
-      userId
-    })
+    await apiMananger.post(
+      '/enrollments/new',
+      {
+        courseId,
+        grade,
+        centerId,
+        studentId: studentData?._id,
+        userId,
+        doc_file,
+        image_file
+      },
+      {
+        headers: { 'Content-Type': 'multpart/form' }
+      }
+    )
   } catch (error) {
     console.log('Erro ao criar inscrição:', error)
     throw error

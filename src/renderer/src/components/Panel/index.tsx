@@ -42,8 +42,8 @@ const schema = yup
     email: yup.string().email('Email Inválido'),
     grade: yup.string().required('Seleciona um nível'),
     course: yup.string().required('Seleciona um curso disponível'),
-    doc_file: yup.string(),
-    image_file: yup.string(),
+    doc_file: yup.mixed().nullable(),
+    image_file: yup.mixed().nullable(),
     userId: yup.string().required(),
     centerId: yup.string().required()
   })
@@ -130,7 +130,8 @@ export const Panel: React.FC = () => {
         },
         timerProgressBar: true // Ativa a barra de progresso
       })
-      reset()
+      //Limpa o Form
+      // reset()
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',
@@ -311,7 +312,7 @@ export const Panel: React.FC = () => {
             <input
               id="image_file"
               type="file"
-              accept=".png,.jpg,.jpeg,.pdf"
+              accept=".png,.jpg,.jpeg"
               {...register('image_file')}
               className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  border focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             />
