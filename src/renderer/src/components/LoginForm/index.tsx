@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -8,6 +8,7 @@ import withReactContent from 'sweetalert2-react-content'
 
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useNavigate } from 'react-router-dom'
+import { isCenterExists } from '@renderer/services/center-service'
 
 const schema = yup
   .object({
@@ -23,6 +24,7 @@ export const LoginForm: React.FC = () => {
   const { login, loading } = useAuth()
 
   const navigate = useNavigate()
+  // const { user } = useAuth()
 
   const {
     register,
@@ -34,25 +36,31 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      await login(data)
+      const { user: userLoginData } = await login(data)
       if (!loading) {
-        navigate('/')
-
+        const isExists = await isCenterExists(userLoginData?._id)
+        if (isExists) {
+          navigate('/')
+        } else {
+          navigate('/centers/new')
+        }
       }
-      //ToDo colocar verificação de dados incorrectos
-      // MySwal.fire({
-      //   title: 'Erro',
-      //   text: 'Verifique os dados de acesso',
-      //   icon: 'error',
-      //   confirmButtonText: 'OK'
-      // })
     } catch (error) {
-      MySwal.fire({
-        title: 'Erro',
-        text: 'Erro ao entrar na conta.',
-        icon: 'error',
-        confirmButtonText: 'OK'
-      })
+      if (error?.response?.status === 404) {
+        navigate('/centers/new')
+      } else {
+        if (error?.response?.status === 401) {
+          MySwal.fire({
+            title: 'Erro',
+            text: 'Verifique os dados de acesso',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          })
+        } else {
+          console.log('Erro no Login ', error)
+          throw error
+        }
+      }
     }
   }
 

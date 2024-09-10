@@ -56,6 +56,19 @@ export const SignupForm: React.FC = () => {
     try {
       const status = await signup(data)
       if (status === 201) {
+        Swal.fire({
+          position: 'bottom-end',
+          icon: 'success',
+          title: 'Usuário Cadastrado com sucesso, pode inciar sessão',
+          showConfirmButton: false,
+          timer: 2000,
+          customClass: {
+            popup: 'h-44 p-2',
+            title: 'text-sm',
+            icon: 'text-xs'
+          },
+          timerProgressBar: true
+        })
         navigate('/login')
       } else {
         MySwal.fire({

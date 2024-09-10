@@ -6,7 +6,7 @@ interface AuthContextData {
   signed: boolean
   loading: boolean
   user: object | null
-  login: (data: IAuth) => Promise<void>
+  login: (data: IAuth) => Promise<object | null>
   signup: (data: IAuth) => Promise<number | undefined>
   logout: () => void
 }
@@ -34,7 +34,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [])
 
   // Função para login
-  const login = async ({ password, username }: IAuth) => {
+  const login = async ({ password, username }: IAuth):Promise<object | null> => {
     try {
       const { data } = await loginService({ password, username })
 
@@ -44,8 +44,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       localStorage.setItem('token', token)
       apiMananger.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
-      console.log('Usuário autenticado:', user)
-      console.log('Token salvo:', token)
+      return data
     } catch (error) {
       console.log('Erro no login em contexto ', error)
       throw error

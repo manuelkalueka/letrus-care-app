@@ -37,3 +37,15 @@ export const createCenterService = async (data: ICenter) => {
     throw error
   }
 }
+
+export const isCenterExists = async (createdBy: string): Promise<boolean> => {
+  try {
+    const { data } = await apiMananger.get(`/centers/user/${createdBy}`)
+    const isExists = !!data
+    return isExists
+  } catch (error) {
+    console.log('Erro ao verificar existencia de centro ', error)
+
+    throw error
+  }
+}
