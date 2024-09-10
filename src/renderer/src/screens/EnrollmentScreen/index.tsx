@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom'
 import { formatDate } from '@renderer/utils/format'
 import { getEnrollmentsService } from '@renderer/services/enrollment-service'
 import { useCenter } from '@renderer/contexts/center-context'
-import { Eye, PenSquare } from 'lucide-react'
+import { Download, DownloadCloud, Eye, PenSquare } from 'lucide-react'
 
 export const EnrollmentScreen: React.FC = () => {
   const navigate = useNavigate()
   const { center } = useCenter()
+  const ENROLLMENT_STATUS = ['Inscrito', 'Completa', 'Cancelado']
 
   const [enrollments, setEnrolments] = useState<Array<object> | null>(null)
 
@@ -100,13 +101,17 @@ export const EnrollmentScreen: React.FC = () => {
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {row?.grade?.grade}
                         </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
+                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {formatDate(row?.enrollmentDate)}
                         </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.status}
+                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                          {row?.status === 'enrolled'
+                            ? ENROLLMENT_STATUS[0]
+                            : row?.status === 'completed'
+                              ? ENROLLMENT_STATUS[1]
+                              : ENROLLMENT_STATUS.pop()}
                         </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {/* Botões para Ações */}
                           <div className="flex items-center justify-evenly gap-1">
                             <button
@@ -114,6 +119,12 @@ export const EnrollmentScreen: React.FC = () => {
                               className="bg-zinc-500 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               <Eye />
+                            </button>
+                            <button
+                              onClick={() => handleEdit(row?._id)}
+                              className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
+                            >
+                              <DownloadCloud />
                             </button>
                             <button
                               onClick={() => handleEdit(row?._id)}
