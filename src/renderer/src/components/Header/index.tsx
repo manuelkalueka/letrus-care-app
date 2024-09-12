@@ -22,7 +22,7 @@ const Dropdown: React.FC = () => {
           }}
           title={center?.name}
           onClick={() => {
-            navigate('/centers/new')
+            navigate('/centers/show')
           }}
         >
           <School />

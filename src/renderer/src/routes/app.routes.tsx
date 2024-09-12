@@ -5,10 +5,10 @@ import { ErrorScreen } from '../screens/ErrorScreen'
 import { HomeScreen } from '../screens/HomeScreen'
 import { EnrollmentScreen } from '@renderer/screens/EnrollmentScreen'
 import { CreateCenterScreen } from '@renderer/screens/CreateCenterScreen'
-import { ShowCenterScreen } from '@renderer/screens/ShowCenterScreen'
 import { CoursesScreen } from '@renderer/screens/CoursesScreen'
 import { GradeScreen } from '@renderer/screens/GradeScreen'
 import { CreateEnrollmentScreen } from '@renderer/screens/CreateEnrollmentScreen'
+import { CenterScreen } from '@renderer/screens/CenterScreen'
 
 export const appRouter = createBrowserRouter([
   {
@@ -25,10 +25,6 @@ export const appRouter = createBrowserRouter([
     element: <CreateEnrollmentScreen />
   },
   {
-    path: '/centers/show',
-    element: <ShowCenterScreen />
-  },
-  {
     path: '/centers/new',
     element: <CreateCenterScreen />
   },
@@ -39,5 +35,9 @@ export const appRouter = createBrowserRouter([
   {
     path: '/grades',
     element: <GradeScreen />
+  },
+  {
+    path: '/centers/show',
+    element: <CenterScreen />
   }
 ])
