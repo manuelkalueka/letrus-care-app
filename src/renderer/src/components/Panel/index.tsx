@@ -10,6 +10,7 @@ import { useCenter } from '@renderer/contexts/center-context'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { getGradesService } from '@renderer/services/grade-service'
 import { getCoursesService } from '@renderer/services/course-service'
+import { useNavigate } from 'react-router-dom'
 
 const schema = yup
   .object({
@@ -62,6 +63,7 @@ export const Panel: React.FC = () => {
 
   const { center } = useCenter()
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [courses, setCourses] = useState<Array<object> | null>(null)
 
@@ -132,6 +134,7 @@ export const Panel: React.FC = () => {
       })
       //Limpa o Form
       // reset()
+      navigate('/enrollment')
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',

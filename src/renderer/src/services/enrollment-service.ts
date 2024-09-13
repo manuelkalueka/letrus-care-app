@@ -29,7 +29,7 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
     centerId,
     courseId,
     grade,
-    userId,
+    userId
   } = data
 
   try {
@@ -66,6 +66,25 @@ export const getEnrollmentsService = async (centerId: string) => {
     return data
   } catch (error) {
     console.log('Erro ao buscar inscrições: ', error)
+    throw error
+  }
+}
+
+export const getOneEnrollmentService = async (enrollmentId: string) => {
+  try {
+    const { data } = await apiMananger.get(`/enrollments/${enrollmentId}`)
+    return data
+  } catch (error) {
+    console.log('Erro ao buscar inscrição: ', error)
+    throw error
+  }
+}
+
+export const editEnrollment = async (enrollmentId: string, data: IEnrollment) => {
+  try {
+    await apiMananger.put(`/edit/${enrollmentId}`, data)
+  } catch (error) {
+    console.log('Erro ao editar inscrições: ', error)
     throw error
   }
 }
