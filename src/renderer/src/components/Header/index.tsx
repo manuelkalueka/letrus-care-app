@@ -21,7 +21,7 @@ const Dropdown: React.FC = () => {
             setTimeout(() => setIsOpen(false), 1800) //atrasa a  saida simulando que ele espera o usuario clicar
           }}
           title={center?.name}
-          onClick={() => {
+          onDoubleClick={() => {
             navigate('/centers/show')
           }}
         >
