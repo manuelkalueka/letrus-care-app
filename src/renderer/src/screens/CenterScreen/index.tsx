@@ -30,36 +30,31 @@ export const CenterScreen: React.FC = () => {
     resolver: yupResolver(schema)
   })
 
-  const { center } = useCenter()
+  const { center, editCenterContext } = useCenter()
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      const { address, documentCode, email, name, nif, phoneNumber } = data
-      const { status } = await createCenter({
+      const { address, email, name, phoneNumber } = data
+      await editCenterContext(center?._id, {
         address,
-        documentCode,
         email,
         name,
-        nif,
         phoneNumber
       })
 
-      if (status === 201) {
-        Swal.fire({
-          position: 'bottom-end',
-          icon: 'success',
-          title: 'Centro Cadastrado com Sucesso!',
-          showConfirmButton: false,
-          timer: 2000,
-          customClass: {
-            popup: 'h-44 p-2', // Define a largura e o padding do card
-            title: 'text-sm', // Tamanho do texto do título
-            icon: 'text-xs' // Reduz o tamanho do ícone
-          },
-          timerProgressBar: true // Ativa a barra de progresso
-        })
-        navigate('/')
-      }
+      Swal.fire({
+        position: 'bottom-end',
+        icon: 'success',
+        title: 'Centro Editado com Sucesso!',
+        showConfirmButton: false,
+        timer: 2000,
+        customClass: {
+          popup: 'h-44 p-2', // Define a largura e o padding do card
+          title: 'text-sm', // Tamanho do texto do título
+          icon: 'text-xs' // Reduz o tamanho do ícone
+        },
+        timerProgressBar: true // Ativa a barra de progresso
+      })
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',

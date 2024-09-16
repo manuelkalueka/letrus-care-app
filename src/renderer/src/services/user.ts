@@ -1,4 +1,5 @@
 import apiMananger from './api'
+import { getCenterService } from './center-service'
 
 export interface IAuth {
   username: string
@@ -26,7 +27,7 @@ export const loginService = async ({ username, password }: IAuth) => {
       username,
       password
     })
-
+    await getCenterService()
     return response
   } catch (error) {
     console.log(error)

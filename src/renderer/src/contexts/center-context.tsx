@@ -1,4 +1,4 @@
-import { createCenterService, ICenter } from '@renderer/services/center-service'
+import { createCenterService, editCenterService, ICenter } from '@renderer/services/center-service'
 
 import React, { createContext, useState, useEffect, useContext } from 'react'
 
@@ -6,6 +6,7 @@ interface CenterContextData {
   loading: boolean
   center: object | null
   createCenter: (data: ICenter) => Promise<any>
+  editCenterContext: (centerId: string, data: ICenter) => Promise<void>
 }
 
 // Criação do contexto
@@ -30,8 +31,8 @@ export const CenterProvider: React.FC = ({ children }) => {
   async function createCenter(data: ICenter) {
     try {
       const response = await createCenterService(data)
-      setCenter(response.data)
-      localStorage.setItem('center', JSON.stringify(response.data))
+      setCenter(response?.data)
+      localStorage.setItem('center', JSON.stringify(response?.data))
       return response
     } catch (error) {
       console.log('Erro ao criar centro no contexto: ', error)
@@ -39,8 +40,20 @@ export const CenterProvider: React.FC = ({ children }) => {
     }
   }
 
+  async function editCenterContext(centerId: string, data: ICenter): Promise<void> {
+    try {
+      const response = await editCenterService(centerId, data)
+      setCenter(response?.data)
+      localStorage.removeItem('center')
+      localStorage.setItem('center', JSON.stringify(response?.data))
+    } catch (error) {
+      console.log('Erro ao editar centro no contexto: ', error)
+      throw error
+    }
+  }
+
   return (
-    <CenterContext.Provider value={{ center, createCenter, loading }}>
+    <CenterContext.Provider value={{ center, createCenter, loading, editCenterContext }}>
       {children}
     </CenterContext.Provider>
   )

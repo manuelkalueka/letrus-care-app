@@ -1,13 +1,12 @@
 import apiMananger from './api'
-import { useState } from 'react'
 
 export interface ICenter {
   name: string
   address: string
-  nif: string
+  nif?: string
   phoneNumber: string
   email?: string
-  documentCode: string
+  documentCode?: string
   createdBy?: string
 }
 
@@ -38,6 +37,25 @@ export const createCenterService = async (data: ICenter) => {
   }
 }
 
+export const getCenterService = async () => {
+  const storagedUser = localStorage.getItem('user')
+  try {
+    if (storagedUser) {
+      const user = JSON.parse(storagedUser)
+
+      const createdBy = user?._id
+
+      const response = await apiMananger.get(`/centers/${createdBy}`)
+
+      localStorage.setItem('center', response.data)
+      return response
+    }
+  } catch (error) {
+    console.log('Erro ao criar centro:', error)
+    throw error
+  }
+}
+
 export const isCenterExists = async (createdBy: string): Promise<boolean> => {
   try {
     const { data } = await apiMananger.get(`/centers/user/${createdBy}`)
@@ -45,6 +63,17 @@ export const isCenterExists = async (createdBy: string): Promise<boolean> => {
     return isExists
   } catch (error) {
     console.log('Erro ao verificar existencia de centro ', error)
+
+    throw error
+  }
+}
+
+export const editCenterService = async (centerId: string, data: ICenter) => {
+  try {
+    const response = await apiMananger.put(`/centers/edit/${centerId}`, data)
+    return response.data
+  } catch (error) {
+    console.log('Erro editar centro ', error)
 
     throw error
   }

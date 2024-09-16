@@ -170,14 +170,18 @@ const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <label htmlFor="gender">
           Género <span className="text-orange-700">*</span>
         </label>
-        <select
+        <input
           {...register('gender')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-          defaultValue={enrollmentInfo?.studentId?.gender || 'masculino'}
-        >
-          <option value="masculino">Masculino</option>
-          <option value="feminino">Feminino</option>
-        </select>
+          defaultValue={enrollmentInfo?.studentId?.gender || 'Kalueka'}
+          list="list-gender"
+        />
+
+        <datalist id="list-gender">
+          <option value="masculino" />
+          <option value="feminino" />
+        </datalist>
+
         {errors.gender && <span className="text-red-500">{errors.gender?.message}</span>}
         <label htmlFor="father">
           Nome do Pai <span className="text-orange-700">*</span>
@@ -225,17 +229,10 @@ const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           id="course"
           {...register('course')}
           className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+          value={enrollmentInfo?.courseId?.name}
         >
           {courses?.map((course, index) => (
-            <option
-              value={course?._id}
-              key={index}
-              defaultValue={
-                enrollmentInfo?.couserId?._id === course?._id
-                  ? enrollmentInfo?.couserId?._id
-                  : course?._id
-              }
-            >
+            <option value={course?._id} key={index}>
               {course?.name}
             </option>
           ))}
