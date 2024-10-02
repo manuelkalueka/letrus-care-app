@@ -82,7 +82,7 @@ export const getOneEnrollmentService = async (enrollmentId: string) => {
 
 export const editEnrollment = async (enrollmentId: string, data: IEnrollment) => {
   try {
-    await apiMananger.put(`/edit/${enrollmentId}`, data)
+    await apiMananger.put(`/enrollments/edit/${enrollmentId}`, data)
   } catch (error) {
     console.log('Erro ao editar inscrições: ', error)
     throw error

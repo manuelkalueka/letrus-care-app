@@ -16,6 +16,7 @@ import {
 } from '@renderer/services/course-service'
 import { formatDate, formateCurrency } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
+import { Rings } from 'react-loader-spinner'
 
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
@@ -25,7 +26,25 @@ export const CoursesScreen: React.FC = () => {
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
   const handleEdit = async (id: string) => {
-    console.log('Tela de Editar Curso')
+    try {
+      const data = await getOneEnrollmentService(id)
+      setEnrollmentInfo(data)
+      openModal()
+    } catch (error) {
+      Swal.fire({
+        position: 'bottom-end',
+        icon: 'error',
+        title: 'Erro ao carregar informações',
+        showConfirmButton: false,
+        timer: 2000,
+        customClass: {
+          popup: 'h-44 p-2', // Define a largura e o padding do card
+          title: 'text-sm', // Tamanho do texto do título
+          icon: 'text-xs' // Reduz o tamanho do ícone
+        },
+        timerProgressBar: true // Ativa a barra de progresso
+      })
+    }
   }
   const handleDelete = async (id: string): Promise<void> => {
     const ispermitted = confirm('Tens a Certeza, ToDo Personalizar o Confirm')
@@ -57,8 +76,10 @@ export const CoursesScreen: React.FC = () => {
     } = useForm<FormData>({
       resolver: yupResolver(schema)
     })
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
+        setIsSubmitting(true)
         await createCourse(data)
         closeModal()
         Swal.fire({
@@ -74,6 +95,7 @@ export const CoursesScreen: React.FC = () => {
           },
           timerProgressBar: true // Ativa a barra de progresso
         })
+        setIsSubmitting(false)
       } catch (error) {
         MySwal.fire({
           title: 'Erro interno',
@@ -145,9 +167,21 @@ export const CoursesScreen: React.FC = () => {
         <input {...register('centerId')} type="hidden" value={center?._id} required />
         <button
           type="submit"
-          className="bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
+          className="flex items-center justify-center bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
         >
-          Criar
+          {isSubmitting ? (
+            <Rings
+              height="32"
+              width="32"
+              color="#fff"
+              ariaLabel="bars-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : (
+            <span>Criar</span>
+          )}
         </button>
       </form>
     )
@@ -155,11 +189,142 @@ export const CoursesScreen: React.FC = () => {
   const [courses, setCourses] = useState<Array<object> | null>(null)
   const [isLoaderCourseList, setIsLoaderCourseList] = useState(true)
 
+
+
+  interface ModalEditCourseProps {
+    data: object | null
+    onClose: () => void
+  }
+
+  const ModalEditCourse: React.FC<ModalEditCourseProps> = ({
+    data: courseInfo,
+    onClose: closeModal
+  }) => {
+    const MySwal = withReactContent(Swal)
+
+    const {
+      register,
+      handleSubmit,
+      formState: { errors }
+    } = useForm<FormData>({
+      resolver: yupResolver(schema)
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const onSubmit = async (data: FormData): Promise<void> => {
+      try {
+        setIsSubmitting(true)
+        await createCourse(data)
+        closeModal()
+        Swal.fire({
+          position: 'bottom-end',
+          icon: 'success',
+          title: 'Curso Adicionado',
+          showConfirmButton: false,
+          timer: 2000,
+          customClass: {
+            popup: 'h-44 p-2', // Define a largura e o padding do card
+            title: 'text-sm', // Tamanho do texto do título
+            icon: 'text-xs' // Reduz o tamanho do ícone
+          },
+          timerProgressBar: true // Ativa a barra de progresso
+        })
+        setIsSubmitting(false)
+      } catch (error) {
+        MySwal.fire({
+          title: 'Erro interno',
+          text: 'Erro ao cadastrar curso.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+      }
+    }
+
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">
+        <label className="text-gray-200" htmlFor="name">
+          Nome do Curso
+        </label>
+        <input
+          {...register('name')}
+          placeholder="Nome do curso"
+          id="name"
+          type="text"
+          className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <span className="text-red-500">{errors.name?.message}</span>
+
+        <label className="text-gray-200" htmlFor="description">
+          Descrição
+        </label>
+        <input
+          {...register('description')}
+          placeholder="Descrição"
+          id="description"
+          type="text"
+          maxLength={120}
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <span className="text-red-500">{errors.description?.message}</span>
+        <label className="text-gray-200" htmlFor="startDate">
+          Data de Ínicio
+        </label>
+        <input
+          {...register('startDate')}
+          id="startDate"
+          type="date"
+          required
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <label className="text-gray-200" htmlFor="fee">
+          Propina Mensal (Kz)
+        </label>
+        <input
+          {...register('fee')}
+          placeholder="Propina"
+          id="fee"
+          type="number"
+          min={0}
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <span className="text-red-500">{errors.fee?.message}</span>
+        <label className="text-gray-200" htmlFor="endDate">
+          Data de Término
+        </label>
+        <input
+          {...register('endDate')}
+          id="endDate"
+          type="date"
+          required
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <input {...register('centerId')} type="hidden" value={center?._id} required />
+        <button
+          type="submit"
+          className="flex items-center justify-center bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
+        >
+          {isSubmitting ? (
+            <Rings
+              height="32"
+              width="32"
+              color="#fff"
+              ariaLabel="bars-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : (
+            <span>Criar</span>
+          )}
+        </button>
+      </form>
+    )
+  }
+
   useEffect(() => {
     async function getCourses(): Promise<void> {
       const data = await getCoursesService(center?._id)
       setCourses(data)
-      setIsLoaderCourseList(true)
+      setIsLoaderCourseList(false)
     }
 
     getCourses()
@@ -273,6 +438,14 @@ export const CoursesScreen: React.FC = () => {
           <h2 className="text-3xl">Criar Curso</h2>
           <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
           <ModalCreateCourse />
+        </div>
+      </Modal>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <div>
+          <h2 className="text-3xl">Editar Curso</h2>
+          <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
+          <ModalEditCourse />
         </div>
       </Modal>
     </div>

@@ -19,12 +19,31 @@ export async function createCourse(data: ICourse): Promise<void> {
   }
 }
 
+export const getOneCourseService = async (courseId: string) => {
+  try {
+    const { data } = await apiMananger.get(`/courses/${courseId}`)
+    return data
+  } catch (error) {
+    console.log('Erro ao buscar inscrição: ', error)
+    throw error
+  }
+}
+
 export async function getCoursesService(centerId: string) {
   try {
     const { data } = await apiMananger.get(`/courses/all/${centerId}`)
     return data
   } catch (error) {
     console.log('Erro ao buscar cursos', error)
+    throw error
+  }
+}
+
+export const editCourse = async (courseId: string, data: ICourse) => {
+  try {
+    await apiMananger.put(`/courses/edit/${courseId}`, data)
+  } catch (error) {
+    console.log('Erro ao editar curso: ', error)
     throw error
   }
 }
