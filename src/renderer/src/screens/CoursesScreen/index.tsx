@@ -15,7 +15,7 @@ import {
   getCoursesService
 } from '@renderer/services/course-service'
 import { formatDate, formateCurrency } from '@renderer/utils/format'
-import { Loader } from '@renderer/components/Loader'
+import { LoaderComponent } from '@renderer/components/Loader'
 
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
@@ -153,7 +153,7 @@ export const CoursesScreen: React.FC = () => {
     )
   }
   const [courses, setCourses] = useState<Array<object> | null>(null)
-  const [isLoaderCourseList, setIsLoaderCourseList] = useState(false)
+  const [isLoaderCourseList, setIsLoaderCourseList] = useState(true)
 
   useEffect(() => {
     async function getCourses(): Promise<void> {
@@ -166,7 +166,7 @@ export const CoursesScreen: React.FC = () => {
   }, [isModalOpen])
 
   return isLoaderCourseList ? (
-    <Loader />
+    <LoaderComponent />
   ) : (
     <div className="flex flex-col h-screen">
       {/* Header */}
