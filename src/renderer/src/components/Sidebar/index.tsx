@@ -36,7 +36,7 @@ export const Sidebar: React.FC = () => {
       <ul className="flex flex-col gap-4">
         {renderMenuItem('home', <Home />, 'Home', '/')}
         {renderMenuItem('enrollment', <NotebookPen />, 'Inscrição', '/enrollment')}
-        {renderMenuItem('payment', <HandCoins />, 'Pagamentos', '/payment')}
+        {renderMenuItem('payment', <HandCoins />, 'Pagamentos', '/payments')}
         {renderMenuItem('attendance', <BookOpenCheck />, 'Aulas e Presenças', '/attendance')}
       </ul>
       <ul className="flex flex-col gap-4">

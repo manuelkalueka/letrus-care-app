@@ -10,6 +10,8 @@ import { GradeScreen } from '@renderer/screens/GradeScreen'
 import { CreateEnrollmentScreen } from '@renderer/screens/CreateEnrollmentScreen'
 import { CenterScreen } from '@renderer/screens/CenterScreen'
 import { TeacherScreen } from '@renderer/screens/TeacherScreen'
+import { PaymentScreen } from '@renderer/screens/PaymentScreen'
+import { NewPaymentScreen } from '@renderer/screens/NewPaymentScreen'
 
 export const appRouter = createBrowserRouter([
   {
@@ -44,5 +46,13 @@ export const appRouter = createBrowserRouter([
   {
     path: '/teachers',
     element: <TeacherScreen />
+  },
+  {
+    path: '/payments',
+    element: <PaymentScreen />
+  },
+  {
+    path: '/payments/new',
+    element: <NewPaymentScreen />
   }
 ])
