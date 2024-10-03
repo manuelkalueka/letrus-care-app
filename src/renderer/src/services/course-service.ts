@@ -7,7 +7,7 @@ export interface ICourse extends Document {
   endDate: Date
   fee: number
   centerId: string
-  status: 'active' | 'inactive'
+  status?: 'active' | 'inactive'
 }
 
 export async function createCourse(data: ICourse): Promise<void> {
@@ -24,7 +24,7 @@ export const getOneCourseService = async (courseId: string) => {
     const { data } = await apiMananger.get(`/courses/${courseId}`)
     return data
   } catch (error) {
-    console.log('Erro ao buscar inscrição: ', error)
+    console.log('Erro ao buscar curso: ', error)
     throw error
   }
 }
@@ -52,7 +52,7 @@ export async function deleteCourseService(id: string): Promise<void> {
   try {
     await apiMananger.patch(`/courses/delete/${id}`)
   } catch (error) {
-    console.log('Erro ao eliminar cursos', error)
+    console.log('Erro ao eliminar curso', error)
     throw error
   }
 }

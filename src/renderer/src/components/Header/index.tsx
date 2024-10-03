@@ -52,7 +52,7 @@ const Dropdown: React.FC = () => {
               Níveis
             </a>
             <a
-              href="#"
+              href="/teachers"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >

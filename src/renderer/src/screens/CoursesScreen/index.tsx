@@ -12,7 +12,9 @@ import withReactContent from 'sweetalert2-react-content'
 import {
   createCourse,
   deleteCourseService,
-  getCoursesService
+  editCourse,
+  getCoursesService,
+  getOneCourseService
 } from '@renderer/services/course-service'
 import { formatDate, formateCurrency } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
@@ -21,15 +23,21 @@ import { Rings } from 'react-loader-spinner'
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [courseInfo, setCourseInfo] = useState<object | null>(null)
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const openEditModal = () => setIsEditModalOpen(true)
+  const closeEditModal = () => setIsEditModalOpen(false)
+
   const handleEdit = async (id: string) => {
     try {
-      const data = await getOneEnrollmentService(id)
-      setEnrollmentInfo(data)
-      openModal()
+      const data = await getOneCourseService(id) //busca curso na db
+      setCourseInfo(data)
+      openEditModal()
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',
@@ -47,7 +55,7 @@ export const CoursesScreen: React.FC = () => {
     }
   }
   const handleDelete = async (id: string): Promise<void> => {
-    const ispermitted = confirm('Tens a Certeza, ToDo Personalizar o Confirm')
+    const ispermitted = confirm('Tens a Certeza?')
     if (ispermitted) {
       await deleteCourseService(id)
       //ToDo, atualizar a lista depois de eliminar
@@ -97,6 +105,8 @@ export const CoursesScreen: React.FC = () => {
         })
         setIsSubmitting(false)
       } catch (error) {
+        setIsSubmitting(false)
+
         MySwal.fire({
           title: 'Erro interno',
           text: 'Erro ao cadastrar curso.',
@@ -188,18 +198,14 @@ export const CoursesScreen: React.FC = () => {
   }
   const [courses, setCourses] = useState<Array<object> | null>(null)
   const [isLoaderCourseList, setIsLoaderCourseList] = useState(true)
-
-
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   interface ModalEditCourseProps {
     data: object | null
     onClose: () => void
   }
 
-  const ModalEditCourse: React.FC<ModalEditCourseProps> = ({
-    data: courseInfo,
-    onClose: closeModal
-  }) => {
+  const ModalEditCourse: React.FC<ModalEditCourseProps> = ({ data: courseInfo, onClose }) => {
     const MySwal = withReactContent(Swal)
 
     const {
@@ -209,16 +215,15 @@ export const CoursesScreen: React.FC = () => {
     } = useForm<FormData>({
       resolver: yupResolver(schema)
     })
-    const [isSubmitting, setIsSubmitting] = useState(false)
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
         setIsSubmitting(true)
-        await createCourse(data)
-        closeModal()
+        await editCourse(courseInfo?._id, data)
+        onClose()
         Swal.fire({
           position: 'bottom-end',
           icon: 'success',
-          title: 'Curso Adicionado',
+          title: 'Novas Informações de Curso Salvas',
           showConfirmButton: false,
           timer: 2000,
           customClass: {
@@ -232,7 +237,7 @@ export const CoursesScreen: React.FC = () => {
       } catch (error) {
         MySwal.fire({
           title: 'Erro interno',
-          text: 'Erro ao cadastrar curso.',
+          text: 'Erro ao Salvar.',
           icon: 'error',
           confirmButtonText: 'OK'
         })
@@ -247,6 +252,7 @@ export const CoursesScreen: React.FC = () => {
         <input
           {...register('name')}
           placeholder="Nome do curso"
+          defaultValue={courseInfo?.name}
           id="name"
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
@@ -259,6 +265,7 @@ export const CoursesScreen: React.FC = () => {
         <input
           {...register('description')}
           placeholder="Descrição"
+          defaultValue={courseInfo?.description}
           id="description"
           type="text"
           maxLength={120}
@@ -271,6 +278,9 @@ export const CoursesScreen: React.FC = () => {
         <input
           {...register('startDate')}
           id="startDate"
+          defaultValue={
+            courseInfo?.startDate ? new Date(courseInfo?.startDate).toISOString().split('T')[0] : ''
+          }
           type="date"
           required
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
@@ -281,6 +291,7 @@ export const CoursesScreen: React.FC = () => {
         <input
           {...register('fee')}
           placeholder="Propina"
+          defaultValue={courseInfo?.fee}
           id="fee"
           type="number"
           min={0}
@@ -294,6 +305,9 @@ export const CoursesScreen: React.FC = () => {
           {...register('endDate')}
           id="endDate"
           type="date"
+          defaultValue={
+            courseInfo?.endDate ? new Date(courseInfo?.endDate).toISOString().split('T')[0] : ''
+          }
           required
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
@@ -328,7 +342,9 @@ export const CoursesScreen: React.FC = () => {
     }
 
     getCourses()
-  }, [isModalOpen])
+  }, [isEditModalOpen, isModalOpen])
+
+  const COURSE_STATUS = ['activo', 'inactivo']
 
   return isLoaderCourseList ? (
     <LoaderComponent />
@@ -404,8 +420,10 @@ export const CoursesScreen: React.FC = () => {
                         <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
                           {formateCurrency(row?.fee)}
                         </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.status}
+                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                          {row?.status === 'active'
+                            ? COURSE_STATUS[0]
+                            : row?.status === 'inactive' && COURSE_STATUS[1]}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
                           {/* Botões para Ações */}
@@ -420,7 +438,7 @@ export const CoursesScreen: React.FC = () => {
                               onClick={() => handleDelete(row?._id)}
                               className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
                             >
-                              Deletar
+                              Eliminar
                             </button>
                           </div>
                         </td>
@@ -441,11 +459,11 @@ export const CoursesScreen: React.FC = () => {
         </div>
       </Modal>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
         <div>
           <h2 className="text-3xl">Editar Curso</h2>
           <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
-          <ModalEditCourse />
+          <ModalEditCourse data={courseInfo} onClose={closeEditModal} />
         </div>
       </Modal>
     </div>

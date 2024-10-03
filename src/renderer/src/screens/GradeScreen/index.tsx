@@ -11,24 +11,58 @@ import * as yup from 'yup'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { createGrade, deleteGradeService, getGradesService } from '@renderer/services/grade-service'
+import {
+  createGrade,
+  deleteGradeService,
+  editGradeService,
+  getGradeService,
+  getGradesService
+} from '@renderer/services/grade-service'
 import { formatDate } from '@renderer/utils/format'
+import { LoaderComponent } from '@renderer/components/Loader'
+import { Rings } from 'react-loader-spinner'
 
 export const GradeScreen: React.FC = () => {
   const { center } = useCenter()
 
+  const [gradeInfo, setGradeInfo] = useState<object | null>(null)
+  
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const openEditModal = () => setIsEditModalOpen(true)
+  const closeEditModal = () => setIsEditModalOpen(false)
+
   const handleEdit = async (id: string) => {
-    console.log('Tela de Editar Gradee')
+    try {
+      const data = await getGradeService(id)
+      setGradeInfo(data)
+      openEditModal()
+    } catch (error) {
+      Swal.fire({
+        position: 'bottom-end',
+        icon: 'error',
+        title: 'Erro ao carregar informações',
+        showConfirmButton: false,
+        timer: 2000,
+        customClass: {
+          popup: 'h-44 p-2', // Define a largura e o padding do card
+          title: 'text-sm', // Tamanho do texto do título
+          icon: 'text-xs' // Reduz o tamanho do ícone
+        },
+        timerProgressBar: true // Ativa a barra de progresso
+      })
+    }
   }
+
   const handleDelete = async (id: string): Promise<void> => {
+    //ToDo, atualizar a lista depois de eliminar
     const ispermitted = confirm('Tens a Certeza, ToDo Personalizar o Confirm')
     if (ispermitted) {
       await deleteGradeService(id)
-      //ToDo, atualizar a lista depois de eliminar
     }
   }
   const schema = yup
@@ -40,6 +74,8 @@ export const GradeScreen: React.FC = () => {
   type FormData = yup.InferType<typeof schema>
 
   const ModalCreateGrade: React.FC = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     const MySwal = withReactContent(Swal)
 
     const {
@@ -51,6 +87,7 @@ export const GradeScreen: React.FC = () => {
     })
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
+        setIsSubmitting(true)
         await createGrade(data)
         closeModal()
         Swal.fire({
@@ -66,6 +103,7 @@ export const GradeScreen: React.FC = () => {
           },
           timerProgressBar: true // Ativa a barra de progresso
         })
+        setIsSubmitting(false)
       } catch (error) {
         MySwal.fire({
           title: 'Erro interno',
@@ -94,23 +132,108 @@ export const GradeScreen: React.FC = () => {
           type="submit"
           className="bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
         >
-          Criar
+          {isSubmitting ? (
+            <Rings
+              height="32"
+              width="32"
+              color="#fff"
+              ariaLabel="bars-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : (
+            <span>Criar</span>
+          )}
         </button>
       </form>
     )
   }
+
   const [grades, setGrades] = useState<Array<object> | null>(null)
 
   useEffect(() => {
     async function getGrades(): Promise<void> {
       const data = await getGradesService(center?._id)
       setGrades(data)
+      setIsLoaderGradeList(false)
     }
 
     getGrades()
-  }, [isModalOpen])
+  }, [isEditModalOpen, isModalOpen])
 
-  return (
+  interface ModalEditGradeProps {
+    data: object | null
+    onClose: () => void
+  }
+
+  const ModalEditGrade: React.FC<ModalEditGradeProps> = ({ data: gradeInfo, onClose }) => {
+    const MySwal = withReactContent(Swal)
+
+    const {
+      register,
+      handleSubmit,
+      formState: { errors }
+    } = useForm<FormData>({
+      resolver: yupResolver(schema)
+    })
+    const onSubmit = async (data: FormData): Promise<void> => {
+      try {
+        await editGradeService(gradeInfo?._id, data)
+        onClose()
+        Swal.fire({
+          position: 'bottom-end',
+          icon: 'success',
+          title: 'Nível editado',
+          showConfirmButton: false,
+          timer: 2000,
+          customClass: {
+            popup: 'h-44 p-2', // Define a largura e o padding do card
+            title: 'text-sm', // Tamanho do texto do título
+            icon: 'text-xs' // Reduz o tamanho do ícone
+          },
+          timerProgressBar: true // Ativa a barra de progresso
+        })
+      } catch (error) {
+        MySwal.fire({
+          title: 'Erro interno',
+          text: 'Erro ao editar nível.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+      }
+    }
+
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">
+        <label className="text-gray-200" htmlFor="grade">
+          Nível
+        </label>
+        <input
+          {...register('grade')}
+          placeholder="Ex.: Nível 1 ou 1ª Classe"
+          defaultValue={gradeInfo?.grade}
+          id="grade"
+          type="text"
+          className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <span className="text-red-500">{errors.grade?.message}</span>
+        <input {...register('centerId')} type="hidden" value={center?._id} required />
+        <button
+          type="submit"
+          className="bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
+        >
+          Criar
+        </button>
+      </form>
+    )
+  }
+
+  const [isLoaderGradeList, setIsLoaderGradeList] = useState(true)
+
+  return isLoaderGradeList ? (
+    <LoaderComponent />
+  ) : (
     <div className="flex flex-col h-screen">
       {/* Header */}
       <Header />
@@ -192,6 +315,14 @@ export const GradeScreen: React.FC = () => {
           <h2 className="text-3xl">Criar Nível</h2>
           <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
           <ModalCreateGrade />
+        </div>
+      </Modal>
+
+      <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+        <div>
+          <h2 className="text-3xl">Editar Nível</h2>
+          <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
+          <ModalEditGrade data={gradeInfo} onClose={closeEditModal} />
         </div>
       </Modal>
     </div>
