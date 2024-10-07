@@ -3,7 +3,7 @@ import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
 import { searchStudentService } from '@renderer/services/student'
-import { ArrowRight, BookUser } from 'lucide-react'
+import { ArrowRight, BookUser, GraduationCap, PersonStanding, ShieldCheck } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -27,8 +27,6 @@ export const NewPaymentScreen: React.FC = () => {
     resolver: yupResolver(schema)
   })
 
-  const studentSearch = watch('studentSearch')
-
   // Função para buscar dados da API
   const fetchResults = async (query: string) => {
     if (query) {
@@ -43,6 +41,8 @@ export const NewPaymentScreen: React.FC = () => {
       setResults(null) // Limpa os resultados se o input estiver vazio
     }
   }
+
+  const studentSearch = watch('studentSearch')
 
   // useEffect para monitorar o valor do campo de pesquisa e fazer a busca
   useEffect(() => {
@@ -72,11 +72,8 @@ export const NewPaymentScreen: React.FC = () => {
               <p>Regularize o Pagamento</p>
             </article>
           </div>
-          <section className="flex items-center justify-center">
-            <div className="max-w-3xl w-full px-6 text-center space-y-10">
-              <div className="flex flex-col items-center gap-2">
-                <p>Estudante correspondete: {results?.name?.fullName}</p>
-              </div>
+          <section className="flex items-center justify-center pt-10">
+            <div className="flex flex-col items-center max-w-3xl w-full px-6 text-center space-y-10">
               <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="h-16 bg-zinc-900 px-4 rounded-lg flex items-center justify-between shadow-shape gap-3"
@@ -101,6 +98,30 @@ export const NewPaymentScreen: React.FC = () => {
               {errors.studentSearch && (
                 <p className="text-red-400">{errors.studentSearch.message}</p>
               )}
+
+              {results ? (
+                <div
+                  className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
+                  onClick={() => {
+                    alert('Dados carregados,comece a pagar')
+                  }}
+                >
+                  <p>
+                    <GraduationCap />
+                  </p>
+                  <p>
+                    <span className="text-orange-600">{results?.name?.fullName}</span>
+                  </p>
+                  <div className="bg-zinc-900 h-5 border shadow-shape border-zinc-400" />
+                  <p className="flex items-center justify-center gap-1 pl-2">
+                    <ShieldCheck /> Seleccionar
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <p>Estudante não encontrado!</p>
+                </div>
+              )}
             </div>
           </section>
         </div>
@@ -108,4 +129,3 @@ export const NewPaymentScreen: React.FC = () => {
     </div>
   )
 }
-  
