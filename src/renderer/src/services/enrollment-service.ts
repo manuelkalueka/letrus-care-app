@@ -80,6 +80,16 @@ export const getOneEnrollmentService = async (enrollmentId: string) => {
   }
 }
 
+export const getEnrollmentByStudentService = async (studentId: string) => {
+  try {
+    const { data } = await apiMananger.get(`/enrollments/student/${studentId}`)
+    return data
+  } catch (error) {
+    console.log('Erro ao buscar inscrição com estudante: ', error)
+    throw error
+  }
+}
+
 export const editEnrollment = async (enrollmentId: string, data: IEnrollment) => {
   try {
     await apiMananger.put(`/enrollments/edit/${enrollmentId}`, data)
