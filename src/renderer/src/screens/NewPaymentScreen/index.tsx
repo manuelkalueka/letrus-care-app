@@ -4,20 +4,38 @@ import { Sidebar } from '@renderer/components/Sidebar'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
 import { getEnrollmentByStudentService } from '@renderer/services/enrollment-service'
+import { createPaymentService } from '@renderer/services/payment-service'
 import { searchStudentService } from '@renderer/services/student'
+import { formateCurrency } from '@renderer/utils/format'
 import { ArrowRight, BookUser, GraduationCap, ShieldCheck } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 // Validação com yup
-const schema = yup
+const schemaStudentSearch = yup
   .object({
     studentSearch: yup.string().required('Preencha o campo para pesquisar um aluno')
   })
   .required()
 
-type FormData = yup.InferType<typeof schema>
+const schemaPayment = yup
+  .object({
+    enrollmentId: yup.string(),
+    amount: yup.number().required(),
+    paymentDate: yup.date(),
+    paymentMonthReference: yup.string(),
+    paymentYearReference: yup.number(),
+    dueDate: yup.date(),
+    status: yup.string().oneOf(['paid', 'pending', 'overdue']),
+    centerId: yup.string(),
+    user: yup.string()
+  })
+  .required()
+
+//Colocar novas funções do form-hook para outro form
+type FormData = yup.InferType<typeof schemaStudentSearch>
+type FormPaymentData = yup.InferType<typeof schemaPayment>
 
 // Função para gerar a lista de anos
 function getYearsInterval(): number[] {
@@ -59,18 +77,25 @@ export const NewPaymentScreen: React.FC = () => {
   const yearsList = getYearsInterval() // Obter lista de anos
   const monthsList = getMonths() // Obter lista de meses
 
-  // Hook para capturar dados do formulário
+  // Hook do formulário de busca do estudante
   const {
-    register,
-    handleSubmit,
-    watch,
-    reset,
-    formState: { errors }
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch,
+    watch: watchSearch,
+    reset: resetSearch,
+    formState: { errors: errorsSearch }
   } = useForm<FormData>({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schemaStudentSearch)
   })
 
-  const studentSearch = watch('studentSearch') // Observa mudanças no campo de busca
+  // Hook do formulário de pagamento
+  const { register: registerPayment, handleSubmit: handleSubmitPayment } = useForm<FormPaymentData>(
+    {
+      resolver: yupResolver(schemaPayment)
+    }
+  )
+
+  const studentSearch = watchSearch('studentSearch') // Observa mudanças no campo de busca
 
   // Função para buscar dados da API
   const fetchResults = async (query: string) => {
@@ -96,10 +121,15 @@ export const NewPaymentScreen: React.FC = () => {
     return () => clearTimeout(delayDebounceFn) // Limpa o debounce se o usuário continuar digitando
   }, [studentSearch])
 
-  // Função de submit para o formulário
-  const onSubmit = async (data: FormData): Promise<void> => {
-    await fetchResults(data.studentSearch) // Executa a busca quando o usuário submete
+  // // Função de submit para o formulário
+  // const onSubmit = async (data: FormData): Promise<void> => {
+  //   await fetchResults(data.studentSearch) // Executa a busca quando o usuário submete
+  // }
+
+  const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
+    await createPaymentService(data) // Executa a busca quando o usuário submete
   }
+
   const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
 
   useEffect(() => {
@@ -108,16 +138,25 @@ export const NewPaymentScreen: React.FC = () => {
         const enrollment = await getEnrollmentByStudentService(studentId)
         setEnrollmentByStudent(enrollment)
       }
-      setEnrollmentByStudent(null)
     }
     getEnrollmentByStudent(results?._id)
   }, [results])
+
+  function resetStatesAndFields(): void {
+    setIsSelected(false)
+    setResults(null)
+    setEnrollmentByStudent(null)
+    resetSearch()
+  }
 
   // Componente de formulário de pagamento
   const PaymentForm: React.FC = () => (
     <>
       <h3 className="text-xl text-zinc-100 mb-4">Detalhes do Pagamento</h3>
-      <form className="flex flex-col gap-4 flex-1">
+      <form
+        className="flex flex-col gap-4 flex-1"
+        onSubmit={handleSubmitPayment(onSubmitPaymentForm)}
+      >
         {/* Informações do Aluno */}
         <h3>Dados do Estudante</h3>
         <div className="flex flex-col gap-2">
@@ -147,6 +186,7 @@ export const NewPaymentScreen: React.FC = () => {
           <label htmlFor="month-select">Mês de Referência</label>
           <select
             id="month-select"
+            {...registerPayment('paymentMonthReference')}
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
@@ -161,6 +201,7 @@ export const NewPaymentScreen: React.FC = () => {
           <select
             id="year-select"
             value={selectedYear}
+            {...registerPayment('paymentYearReference')}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
           >
@@ -172,39 +213,14 @@ export const NewPaymentScreen: React.FC = () => {
           </select>
 
           {/* Valor do Pagamento */}
-          <label>Valor da Propina</label>
+          <label>Valor a Pagar</label>
           <input
             type="text"
-            value="00.00 AOA"
-            disabled
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-          />
-          <label>Juros/Multa</label>
-          <input
-            type="text"
-            value="00.00 AOA"
-            disabled
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-          />
-          <label>Total a Pagar</label>
-          <input
-            type="text"
-            value="00.00 AOA"
-            disabled
+            {...registerPayment('amount')}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
           />
         </div>
 
-        {/* Método de Pagamento */}
-        <h3>Meio de Pagamento</h3>
-        <div className="flex items-center gap-2">
-          <input type="radio" id="cash" name="paymentMethod" value="cash" />
-          <label htmlFor="cash">Cash</label>
-        </div>
-        <div className="flex items-center gap-2">
-          <input type="radio" id="bankTransfer" name="paymentMethod" value="bankTransfer" />
-          <label htmlFor="bankTransfer">Transferência Bancária</label>
-        </div>
         <div>
           <input
             type="hidden"
@@ -216,15 +232,16 @@ export const NewPaymentScreen: React.FC = () => {
         </div>
         {/* Botões */}
         <div className="flex gap-8 items-center">
-          <button className="bg-orange-600 text-white rounded-md py-2 mt-4 hover:bg-orange-700 transition-all p-2">
+          <button
+            type="submit"
+            className="bg-orange-600 text-white rounded-md py-2 mt-4 hover:bg-orange-700 transition-all p-2"
+          >
             Confirmar Pagamento
           </button>
           <button
             type="reset"
             onClick={() => {
-              setIsSelected(false)
-              setResults(null)
-              reset()
+              resetStatesAndFields()
             }}
             className="bg-red-600 text-white rounded-md py-2 mt-4 hover:bg-red-700 transition-all p-2"
           >
@@ -255,14 +272,14 @@ export const NewPaymentScreen: React.FC = () => {
               {/* Formulário de busca do estudante */}
               {!isSelected && (
                 <form
-                  onSubmit={handleSubmit(onSubmit)}
+                  onSubmit={handleSubmitSearch(onSubmit)}
                   className="h-16 bg-zinc-900 px-4 rounded-lg flex items-center justify-between shadow-shape gap-3"
                 >
                   <div className="flex items-center gap-2 flex-1">
                     <BookUser className="size-8 text-zinc-400" />
                     <input
                       type="text"
-                      {...register('studentSearch')}
+                      {...registerSearch('studentSearch')}
                       autoFocus={true}
                       placeholder="Nome ou código do Aluno"
                       className="bg-transparent text-lg placeholder-zinc-400 outline-none rounded-md shadow-shape flex-1"
@@ -278,32 +295,31 @@ export const NewPaymentScreen: React.FC = () => {
                 </form>
               )}
 
-              {errors.studentSearch && !isSelected && (
-                <p className="text-red-400">{errors.studentSearch.message}</p>
+              {errorsSearch.studentSearch && !isSelected && (
+                <p className="text-red-400">{errorsSearch.studentSearch.message}</p>
               )}
 
               {/* Exibe os resultados da busca */}
-              {results ? (
-                !isSelected && (
-                  <div
-                    className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
-                    onClick={() => {
-                      setIsSelected(true)
-                    }}
-                  >
-                    <p>
-                      <GraduationCap />
-                    </p>
-                    <p>
-                      <span className="text-orange-600">{results?.name?.fullName}</span>
-                    </p>
-                    <div className="bg-zinc-900 h-5 border shadow-shape border-zinc-400" />
-                    <p className="flex items-center justify-center gap-1 pl-2">
-                      <ShieldCheck /> Selecionar
-                    </p>
-                  </div>
-                )
-              ) : (
+              {results && !isSelected && (
+                <div
+                  className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
+                  onClick={() => {
+                    setIsSelected(true)
+                  }}
+                >
+                  <p>
+                    <GraduationCap />
+                  </p>
+                  <p>
+                    <span className="text-orange-600">{results?.name?.fullName}</span>
+                  </p>
+                  <div className="bg-zinc-900 h-5 border shadow-shape border-zinc-400" />
+                  <p className="flex items-center justify-center gap-1 pl-2">
+                    <ShieldCheck /> Selecionar
+                  </p>
+                </div>
+              )}
+              {!!results === false && (
                 <div className="flex items-center gap-2">
                   <p>Estudante não encontrado!</p>
                 </div>
