@@ -1,3 +1,4 @@
+import { Footer } from '@renderer/components/Footer'
 import { Header } from '@renderer/components/Header'
 import { Sidebar } from '@renderer/components/Sidebar'
 import React from 'react'
@@ -12,7 +13,7 @@ export const PaymentScreen: React.FC = () => {
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <h2 className="text-3xl text-zinc-400">Pagamentos</h2>
             <article className="text-zinc-600 mt-3">
@@ -27,6 +28,7 @@ export const PaymentScreen: React.FC = () => {
               Novo Pagamento
             </button>
           </div>
+          <Footer />
         </div>
       </div>
     </div>

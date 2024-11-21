@@ -19,6 +19,7 @@ import {
 import { formatDate, formateCurrency } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
 import { Rings } from 'react-loader-spinner'
+import { Footer } from '@renderer/components/Footer'
 
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
@@ -355,7 +356,7 @@ export const CoursesScreen: React.FC = () => {
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex flex-col flex-1 overflow-auto pt-4">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <h2 className="text-3xl text-zinc-400">Cursos</h2>
             <article className="text-zinc-600 mt-3">
@@ -448,6 +449,7 @@ export const CoursesScreen: React.FC = () => {
               </table>
             </div>
           </div>
+          <Footer />
         </div>
       </div>
 

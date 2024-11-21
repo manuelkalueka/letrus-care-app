@@ -14,6 +14,7 @@ import { useAuth } from '@renderer/contexts/auth-context'
 import { getCoursesService } from '@renderer/services/course-service'
 import { formatDate } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
+import { Footer } from '@renderer/components/Footer'
 
 export const TeacherScreen: React.FC = () => {
   const { center } = useCenter()
@@ -233,7 +234,7 @@ export const TeacherScreen: React.FC = () => {
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex flex-col flex-1 overflow-auto pt-4">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <h2 className="text-3xl text-zinc-400">Professores</h2>
             <article className="text-zinc-600 mt-3">
@@ -287,7 +288,7 @@ export const TeacherScreen: React.FC = () => {
                           {row?.fullName}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          <select className="flex-1 bg-transparent border-none outline-none">
+                          <select className="bg-transparent border-none outline-none">
                             {row?.courses?.map((course, index) => (
                               <option key={index} className="bg-zinc-800">
                                 {course?.name}
@@ -329,6 +330,7 @@ export const TeacherScreen: React.FC = () => {
               </table>
             </div>
           </div>
+          <Footer />
         </div>
       </div>
 
