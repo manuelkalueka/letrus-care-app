@@ -9,7 +9,7 @@ interface ITeacher {
   hireDate?: Date
   centerId: string
   user: string
-  course: string
+  courses: string[]
   teacherCode?: string
 }
 

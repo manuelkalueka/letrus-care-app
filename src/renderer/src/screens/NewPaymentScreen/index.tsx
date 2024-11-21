@@ -121,10 +121,10 @@ export const NewPaymentScreen: React.FC = () => {
     return () => clearTimeout(delayDebounceFn) // Limpa o debounce se o usuário continuar digitando
   }, [studentSearch])
 
-  // // Função de submit para o formulário
-  // const onSubmit = async (data: FormData): Promise<void> => {
-  //   await fetchResults(data.studentSearch) // Executa a busca quando o usuário submete
-  // }
+  // Função de submit para o formulário
+  const onSubmit = async (data: FormData): Promise<void> => {
+    await fetchResults(data.studentSearch) // Executa a busca quando o usuário submete
+  }
 
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
     await createPaymentService(data) // Executa a busca quando o usuário submete

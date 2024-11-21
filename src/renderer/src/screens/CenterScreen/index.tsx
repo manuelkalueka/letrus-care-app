@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Footer } from '@renderer/components/Footer'
 import { Header } from '@renderer/components/Header'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
@@ -9,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 
 import * as yup from 'yup'
+
 const schema = yup
   .object({
     name: yup.string().required('Preecha o Nome do Centro'),
@@ -179,8 +179,6 @@ export const CenterScreen: React.FC = () => {
               </form>
             </div>
           </div>
-          {/* Footer */}
-          <Footer />
         </div>
       </div>
     </div>

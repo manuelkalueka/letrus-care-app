@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { getCoursesService } from '@renderer/services/course-service'
 import { getGradesService } from '@renderer/services/grade-service'
+import { Footer } from '@renderer/components/Footer'
 
 const schema = yup
   .object({
@@ -357,7 +358,7 @@ export const EnrollmentScreen: React.FC = () => {
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <h2 className="text-3xl text-zinc-400">Inscrições</h2>
 
@@ -460,6 +461,7 @@ export const EnrollmentScreen: React.FC = () => {
               </div>
             </Modal>
           </div>
+          <Footer />
         </div>
       </div>
     </div>

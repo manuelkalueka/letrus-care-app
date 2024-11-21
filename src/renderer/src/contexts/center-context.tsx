@@ -5,7 +5,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react'
 interface CenterContextData {
   loading: boolean
   center: object | null
-  createCenter: (data: ICenter) => Promise<any>
+  createCenter: (data: ICenter) => Promise<void>
   editCenterContext: (centerId: string, data: ICenter) => Promise<void>
 }
 
@@ -23,6 +23,7 @@ export const CenterProvider: React.FC = ({ children }) => {
       if (storagedCenter) {
         setCenter(JSON.parse(storagedCenter))
       }
+      //ToDo colocar função de colocar centro no login
       setLoading(false)
     }
     loadStorageData()

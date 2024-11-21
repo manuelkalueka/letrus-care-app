@@ -37,6 +37,7 @@ export const createCenterService = async (data: ICenter) => {
   }
 }
 
+//Rever guardar centro o localStorage
 export const getCenterService = async () => {
   const storagedUser = localStorage.getItem('user')
   try {
@@ -44,14 +45,14 @@ export const getCenterService = async () => {
       const user = JSON.parse(storagedUser)
 
       const createdBy = user?._id
-
+      console.log('Sou o centro antes ')
       const response = await apiMananger.get(`/centers/${createdBy}`)
-
+      console.log('Sou o centro durante o login: ', response)
       localStorage.setItem('center', response.data)
       return response
     }
   } catch (error) {
-    console.log('Erro ao criar centro:', error)
+    console.log('Erro ao buscar centro:', error)
     throw error
   }
 }

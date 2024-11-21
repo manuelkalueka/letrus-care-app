@@ -34,7 +34,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [])
 
   // Função para login
-  const login = async ({ password, username }: IAuth):Promise<object | null> => {
+  const login = async ({ password, username }: IAuth): Promise<object | null> => {
     try {
       const { data } = await loginService({ password, username })
 
@@ -66,6 +66,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const logout = (): void => {
     localStorage.removeItem('user')
     localStorage.removeItem('token')
+    // localStorage.removeItem('center')
     delete apiMananger.defaults.headers.common['Authorization']
     setUser(null)
   }

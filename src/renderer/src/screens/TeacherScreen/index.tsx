@@ -51,7 +51,7 @@ export const TeacherScreen: React.FC = () => {
       hireDate: yup.date(),
       centerId: yup.string().required('Preecha este campo'),
       user: yup.string().required('Preecha este campo'),
-      course: yup.string().required('Preecha este campo'),
+      courses: yup.array().required(),
       teacherCode: yup.string()
     })
     .required()
@@ -71,21 +71,27 @@ export const TeacherScreen: React.FC = () => {
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
         setIsSubmitting(true)
-        await createTeacher(data)
-        closeModal()
-        Swal.fire({
-          position: 'bottom-end',
-          icon: 'success',
-          title: 'professor Adicionado',
-          showConfirmButton: false,
-          timer: 2000,
-          customClass: {
-            popup: 'h-44 p-2', // Define a largura e o padding do card
-            title: 'text-sm', // Tamanho do texto do título
-            icon: 'text-xs' // Reduz o tamanho do ícone
-          },
-          timerProgressBar: true // Ativa a barra de progresso
-        })
+        const { courses } = data
+        if (courses.length < 1) {
+          throw new Error('Selecione pelo menos um curso')
+        } else {
+          await createTeacher(data)
+          closeModal()
+          Swal.fire({
+            position: 'bottom-end',
+            icon: 'success',
+            title: 'professor Adicionado',
+            showConfirmButton: false,
+            timer: 2000,
+            customClass: {
+              popup: 'h-44 p-2', // Define a largura e o padding do card
+              title: 'text-sm', // Tamanho do texto do título
+              icon: 'text-xs' // Reduz o tamanho do ícone
+            },
+            timerProgressBar: true // Ativa a barra de progresso
+          })
+        }
+
         setIsSubmitting(false)
       } catch (error) {
         MySwal.fire({
@@ -176,11 +182,12 @@ export const TeacherScreen: React.FC = () => {
           required
         />
         <label htmlFor="course">
-          Curso <span className="text-orange-700">*</span>
+          Cursos <span className="text-orange-700">*</span>
         </label>
         <select
           id="course"
-          {...register('course')}
+          {...register('courses')}
+          multiple={true}
           className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         >
           {courses?.map((course, index) => (
@@ -189,7 +196,7 @@ export const TeacherScreen: React.FC = () => {
             </option>
           ))}
         </select>
-        {errors.course && <span className="text-red-500">{errors.course?.message}</span>}
+        {errors.courses && <span className="text-red-500">{errors.courses?.message}</span>}
         <input {...register('centerId')} type="hidden" value={center?._id} required />
         <input {...register('user')} type="hidden" value={user?._id} required />
         <button
@@ -252,7 +259,7 @@ export const TeacherScreen: React.FC = () => {
                       Nome Completo
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Curso Leccionado
+                      Cursos Leccionados
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                       Data de Contrato
@@ -280,7 +287,13 @@ export const TeacherScreen: React.FC = () => {
                           {row?.fullName}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {row?.course?.name}
+                          <select className="flex-1 bg-transparent border-none outline-none">
+                            {row?.courses?.map((course, index) => (
+                              <option key={index} className="bg-zinc-800">
+                                {course?.name}
+                              </option>
+                            ))}
+                          </select>
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {formatDate(row?.hireDate)}
