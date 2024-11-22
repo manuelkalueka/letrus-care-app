@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 export const Sidebar: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<
-    'home' | 'payment' | 'enrollment' | 'notification' | 'help' | 'attendance'
+    'home' | 'payment' | 'enrollment' | 'notifications' | 'help' | 'attendances'
   >(() => (localStorage.getItem('activeMenu') as any) || 'home')
 
   // Atualiza o estado quando a tela é recarregada ou ao montar o componente
@@ -37,10 +37,10 @@ export const Sidebar: React.FC = () => {
         {renderMenuItem('home', <Home />, 'Home', '/')}
         {renderMenuItem('enrollment', <NotebookPen />, 'Inscrição', '/enrollment')}
         {renderMenuItem('payment', <HandCoins />, 'Pagamentos', '/payments')}
-        {renderMenuItem('attendance', <BookOpenCheck />, 'Aulas e Presenças', '/attendance')}
+        {renderMenuItem('attendance', <BookOpenCheck />, 'Aulas e Presenças', '/attendances')}
       </ul>
       <ul className="flex flex-col gap-4">
-        {renderMenuItem('notification', <BellDot />, 'Notificações', '/notification')}
+        {renderMenuItem('notification', <BellDot />, 'Notificações', '/notifications')}
         {renderMenuItem('help', <CircleHelp />, 'Ajuda', '/help')}
       </ul>
     </div>

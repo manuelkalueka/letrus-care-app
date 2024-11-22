@@ -12,6 +12,9 @@ import { CenterScreen } from '@renderer/screens/CenterScreen'
 import { TeacherScreen } from '@renderer/screens/TeacherScreen'
 import { PaymentScreen } from '@renderer/screens/PaymentScreen'
 import { NewPaymentScreen } from '@renderer/screens/NewPaymentScreen'
+import { AttendanceScreen } from '@renderer/screens/AttendanceScreen'
+import { NotificationScreen } from '@renderer/screens/NotificationScreen'
+import { HelpScreen } from '@renderer/screens/HelpScreen'
 
 export const appRouter = createBrowserRouter([
   {
@@ -54,5 +57,17 @@ export const appRouter = createBrowserRouter([
   {
     path: '/payments/new',
     element: <NewPaymentScreen />
+  },
+  {
+    path: '/attendances',
+    element: <AttendanceScreen />
+  },
+  {
+    path: '/notifications',
+    element: <NotificationScreen />
+  },
+  {
+    path: '/help',
+    element: <HelpScreen />
   }
 ])
