@@ -1,30 +1,31 @@
 # 📚 Lectrus Care  
 
-**Lectrus Care** é uma aplicação focada na gestão e regularização de pagamentos escolares. O sistema permite aos centros de ensino monitorar matrículas, gerir pagamentos e facilitar a comunicação com estudantes e responsáveis, oferecendo uma interface moderna e optimizada.
+**Lectrus Care** é uma aplicação desktop multiplataforma focada na gestão e regularização de pagamentos escolares. Desenvolvida com **Electron** e **Vite**, a aplicação combina desempenho optimizado e uma interface moderna, permitindo aos centros de ensino gerir matrículas, pagamentos e comunicação de forma eficiente.
 
 ---
 
 ## 🚀 **Funcionalidades Principais**  
 
-- **Gestão de Estudantes:** Pesquisa de estudantes pelo nome ou código.  
-- **Gestão de Pagamentos:** Cadastro e acompanhamento de pagamentos com cálculo automático de taxas de multa.  
-- **Histórico de Matrículas:** Consulta ao histórico de matrículas e taxas associadas.  
-- **Interface Responsiva:** Design acessível para diversos dispositivos.  
+- **Gestão de Estudantes:** Pesquisa e gestão de estudantes pelo nome ou código.  
+- **Gestão de Pagamentos:** Registro e acompanhamento de pagamentos com cálculo automático de taxas de multa.  
+- **Histórico de Matrículas:** Acesso ao histórico de matrículas e propinas associadas.  
+- **Interface Multiplataforma:** Compatível com Windows, macOS e Linux.  
 
 ---
 
 ## 🛠️ **Tecnologias Utilizadas**  
 
-| Tecnologia          | Aplicação                                     |
-|---------------------|-----------------------------------------------|
-| **React.js**        | Construção da interface do utilizador (frontend). |
-| **React Hook Form** | Gestão de formulários com validação simplificada. |
-| **Yup**             | Validação de dados.                          |
-| **Context API**     | Gestão de estado global (centros e autenticação). |
-| **TypeScript**      | Adição de tipagem estática para maior robustez. |
-| **TailwindCSS**     | Estilização moderna e responsiva.             |
-| **Lucide Icons**    | Ícones para melhorar a usabilidade visual.    |
-| **Node.js e APIs REST** | Backend e integração com serviços externos. |
+| Tecnologia          | Aplicação                                         |
+|---------------------|---------------------------------------------------|
+| **Electron**        | Construção de aplicações desktop multiplataforma. |
+| **Vite**            | Ferramenta de desenvolvimento rápida e leve.     |
+| **React.js**        | Criação da interface do utilizador (frontend).    |
+| **React Hook Form** | Gestão e validação de formulários.                |
+| **Yup**             | Validação de dados de formulários.               |
+| **Context API**     | Gestão de estado global.                         |
+| **TypeScript**      | Tipagem estática para maior segurança e robustez. |
+| **TailwindCSS**     | Estilização moderna e responsiva.                 |
+| **Lucide Icons**    | Ícones para melhorar a experiência do utilizador. |
 
 ---
 
@@ -39,4 +40,5 @@ Lectrus-Care/
 │   ├── services/       # Serviços de integração com APIs
 │   ├── utils/          # Funções auxiliares (e.g., formatação)
 │   └── styles/         # Configurações de estilos globais
-└── public/             # Recursos estáticos (imagens, ícones, etc.)
+├── public/             # Recursos estáticos (imagens, ícones, etc.)
+└── main/               # Arquivos principais para Electron
