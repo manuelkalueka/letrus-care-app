@@ -22,10 +22,8 @@
 | **React.js**        | Criação da interface do utilizador (frontend).    |
 | **React Hook Form** | Gestão e validação de formulários.                |
 | **Yup**             | Validação de dados de formulários.               |
-| **Context API**     | Gestão de estado global.                         |
 | **TypeScript**      | Tipagem estática para maior segurança e robustez. |
 | **TailwindCSS**     | Estilização moderna e responsiva.                 |
-| **Lucide Icons**    | Ícones para melhorar a experiência do utilizador. |
 
 ---
 
