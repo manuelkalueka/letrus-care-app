@@ -8,6 +8,7 @@ export interface ICourse extends Document {
   fee: number
   centerId: string
   status?: 'active' | 'inactive'
+  courseType?: 'on_home' | 'on_center'
 }
 
 export async function createCourse(data: ICourse): Promise<void> {

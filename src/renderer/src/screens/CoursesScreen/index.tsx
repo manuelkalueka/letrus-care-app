@@ -71,7 +71,8 @@ export const CoursesScreen: React.FC = () => {
       fee: yup.number().required('Preecha a propina'),
       feeFine: yup.number().required('Preecha a multa'),
       centerId: yup.string().required(),
-      status: yup.string().oneOf(['active', 'inactive'])
+      status: yup.string().oneOf(['active', 'inactive']),
+      courseType: yup.string().oneOf(['on_home', 'on_center'])
     })
     .required()
   type FormData = yup.InferType<typeof schema>
@@ -187,6 +188,21 @@ export const CoursesScreen: React.FC = () => {
           required
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
+        <label className="text-gray-200" htmlFor="courseType">
+          Modalidade do Curso
+        </label>
+        <select
+          {...register('courseType')}
+          id="courseType"
+          required
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        >
+          <option value="on_center" selected>
+            Centro
+          </option>
+
+          <option value="on_home">Domiciliar</option>
+        </select>
         <input {...register('centerId')} type="hidden" value={center?._id} required />
         <button
           type="submit"
@@ -336,6 +352,21 @@ export const CoursesScreen: React.FC = () => {
           required
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
+        <label className="text-gray-200" htmlFor="courseType">
+          Modalidade do Curso
+        </label>
+        <select
+          {...register('courseType')}
+          id="courseType"
+          required
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        >
+          <option value="on_center" selected>
+            Centro
+          </option>
+
+          <option value="on_home">Domiciliar</option>
+        </select>
         <input {...register('centerId')} type="hidden" value={center?._id} required />
         <button
           type="submit"
@@ -370,7 +401,7 @@ export const CoursesScreen: React.FC = () => {
   }, [isEditModalOpen, isModalOpen])
 
   const COURSE_STATUS = ['activo', 'inactivo']
-
+  //Tela Principal
   return isLoaderCourseList ? (
     <LoaderComponent />
   ) : (
@@ -387,7 +418,7 @@ export const CoursesScreen: React.FC = () => {
               <p>Cursos de Excelência no (a) {center?.name}</p>
             </article>
 
-            {/* Botão para adicionar novo dado  ToDo alinhar a directa*/}
+            {/* Botão para adicionar novo dado */}
             <button
               onClick={openModal}
               className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
@@ -403,7 +434,7 @@ export const CoursesScreen: React.FC = () => {
                       Nome
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Descrição
+                      Modalidade
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                       Data de Ínicio
@@ -437,7 +468,7 @@ export const CoursesScreen: React.FC = () => {
                           {row?.name}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.description}
+                          {row?.courseType == 'on_home' ? 'Domiciliar' : 'Centro'}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {formatDate(row?.startDate)}

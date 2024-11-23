@@ -69,15 +69,15 @@ function getMonths(): string[] {
 
 // Componente de Novo Pagamento
 export const NewPaymentScreen: React.FC = () => {
+  const yearsList = getYearsInterval() // Obter lista de anos
+  const monthsList = getMonths() // Obter lista de meses
+
   const [results, setResults] = useState<object | null>(null) // Armazenar resultados da pesquisa
   const { center } = useCenter()
   const { user } = useAuth()
   const [isSelected, setIsSelected] = useState(false) // Estado para controle da seleção do estudante
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // Ano atual por padrão
-  const [selectedMonth, setSelectedMonth] = useState<string>('Janeiro') // Mês padrão
-
-  const yearsList = getYearsInterval() // Obter lista de anos
-  const monthsList = getMonths() // Obter lista de meses
+  const [selectedMonth, setSelectedMonth] = useState<string>(monthsList[new Date().getMonth()]) // Mês actual padrão
 
   // Hook do formulário de busca do estudante
   const {
@@ -225,26 +225,24 @@ export const NewPaymentScreen: React.FC = () => {
             {/* Valor a Pagar */}
             <label>Propina</label>
             <input
-              value={enrollmentByStudent?.courseId?.fee}
-              type="number"
-              step="0.01"
+              value={formateCurrency(enrollmentByStudent?.courseId?.fee)}
               disabled
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               placeholder="Exemplo: 150.00"
             />
             <label>Multa</label>
             <input
-              type="number"
-              value={enrollmentByStudent?.courseId?.feeFine}
-              step="0.01"
+              value={formateCurrency(enrollmentByStudent?.courseId?.feeFine)}
               disabled
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               placeholder="Exemplo: 150.00"
             />
             <label>Valor a Pagar</label>
             <input
-              type="number"
-              step="0.01"
+              disabled
+              value={formateCurrency(
+                Number(enrollmentByStudent?.courseId?.fee + enrollmentByStudent?.courseId?.feeFine)
+              )}
               {...registerPayment('amount')}
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               placeholder="Exemplo: 150.00"
