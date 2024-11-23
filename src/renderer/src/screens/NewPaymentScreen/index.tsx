@@ -29,7 +29,9 @@ const schemaPayment = yup
     dueDate: yup.date(),
     status: yup.string().oneOf(['paid', 'pending', 'overdue']),
     centerId: yup.string(),
-    user: yup.string()
+    user: yup.string(),
+    paymentMethod: yup.string(),
+    notes: yup.string()
   })
   .required()
 
@@ -142,6 +144,7 @@ export const NewPaymentScreen: React.FC = () => {
     getEnrollmentByStudent(results?._id)
   }, [results])
 
+  // Limpa Todos os Campos
   function resetStatesAndFields(): void {
     setIsSelected(false)
     setResults(null)
@@ -150,107 +153,157 @@ export const NewPaymentScreen: React.FC = () => {
   }
 
   // Componente de formulário de pagamento
-  const PaymentForm: React.FC = () => (
-    <>
-      <h3 className="text-xl text-zinc-100 mb-4">Detalhes do Pagamento</h3>
-      <form
-        className="flex flex-col gap-4 flex-1"
-        onSubmit={handleSubmitPayment(onSubmitPaymentForm)}
-      >
-        {/* Informações do Aluno */}
-        <h3>Dados do Estudante</h3>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="fullName">Nome Completo</label>
-          <input
-            id="fullName"
-            placeholder="Nome Completo do Aluno"
-            type="text"
-            value={results?.name?.fullName}
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-            disabled
-          />
-          <label htmlFor="studentCode">Código do Aluno</label>
-          <input
-            id="studentCode"
-            placeholder="Código do Aluno"
-            type="text"
-            value={results?.studentCode}
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-            disabled
-          />
-        </div>
+  const PaymentForm: React.FC = () => {
+    const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
 
-        {/* Dados de Pagamento */}
-        <h3>Detalhes do Pagamento</h3>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="month-select">Mês de Referência</label>
-          <select
-            id="month-select"
-            {...registerPayment('paymentMonthReference')}
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-          >
-            {monthsList.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-          <label htmlFor="year-select">Ano de Referência</label>
-          <select
-            id="year-select"
-            value={selectedYear}
-            {...registerPayment('paymentYearReference')}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-          >
-            {yearsList.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+    return (
+      <>
+        <h3 className="text-xl text-zinc-100 mb-4">Detalhes do Pagamento</h3>
+        <form
+          className="flex flex-col gap-4 flex-1"
+          onSubmit={handleSubmitPayment(onSubmitPaymentForm)}
+        >
+          {/* Informações do Aluno */}
+          <h3>Dados do Estudante</h3>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="fullName">Nome Completo</label>
+            <input
+              id="fullName"
+              placeholder="Nome Completo do Aluno"
+              type="text"
+              value={results?.name?.fullName}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+              disabled
+            />
+            <label htmlFor="studentCode">Código do Aluno</label>
+            <input
+              id="studentCode"
+              placeholder="Código do Aluno"
+              type="text"
+              value={results?.studentCode}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+              disabled
+            />
+          </div>
 
-          {/* Valor do Pagamento */}
-          <label>Valor a Pagar</label>
-          <input
-            type="text"
-            {...registerPayment('amount')}
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
-          />
-        </div>
+          {/* Dados do Pagamento */}
+          <h3 className="text-xl font-semibold text-zinc-400">Detalhes do Pagamento</h3>
+          <div className="flex flex-col gap-2">
+            {/* Mês de Referência */}
+            <label htmlFor="month-select">Mês de Referência</label>
+            <select
+              id="month-select"
+              {...registerPayment('paymentMonthReference')}
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+            >
+              {monthsList.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
 
-        <div>
+            {/* Ano de Referência */}
+            <label htmlFor="year-select">Ano de Referência</label>
+            <select
+              id="year-select"
+              value={selectedYear}
+              {...registerPayment('paymentYearReference')}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+            >
+              {yearsList.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+
+            {/* Valor a Pagar */}
+            <label>Propina</label>
+            <input
+              value={enrollmentByStudent?.courseId?.fee}
+              type="number"
+              step="0.01"
+              disabled
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+              placeholder="Exemplo: 150.00"
+            />
+            <label>Multa</label>
+            <input
+              type="number"
+              value={enrollmentByStudent?.courseId?.feeFine}
+              step="0.01"
+              disabled
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+              placeholder="Exemplo: 150.00"
+            />
+            <label>Valor a Pagar</label>
+            <input
+              type="number"
+              step="0.01"
+              {...registerPayment('amount')}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+              placeholder="Exemplo: 150.00"
+            />
+
+            {/* Método de Pagamento */}
+            <label htmlFor="payment-method">Método de Pagamento</label>
+            <select
+              id="payment-method"
+              value={selectedPaymentMethod}
+              {...registerPayment('paymentMethod')}
+              onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+            >
+              {paymentMethods.map((method) => (
+                <option key={method} value={method}>
+                  {method}
+                </option>
+              ))}
+            </select>
+
+            {/* Observações */}
+            <label>Observações</label>
+            <textarea
+              {...registerPayment('notes')}
+              className="w-full p-2 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+              placeholder="Insira detalhes adicionais sobre o pagamento, se necessário."
+            ></textarea>
+          </div>
+
+          {/* Dados Ocultos */}
           <input
             type="hidden"
             value={enrollmentByStudent?._id}
-            className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
+            {...registerPayment('enrollmentId')}
           />
-          <input type="hidden" value={center?._id} />
-          <input type="hidden" value={user?._id} />
-        </div>
-        {/* Botões */}
-        <div className="flex gap-8 items-center">
-          <button
-            type="submit"
-            className="bg-orange-600 text-white rounded-md py-2 mt-4 hover:bg-orange-700 transition-all p-2"
-          >
-            Confirmar Pagamento
-          </button>
-          <button
-            type="reset"
-            onClick={() => {
-              resetStatesAndFields()
-            }}
-            className="bg-red-600 text-white rounded-md py-2 mt-4 hover:bg-red-700 transition-all p-2"
-          >
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </>
-  )
+          <input type="hidden" value={center?._id} {...registerPayment('centerId')} />
+          <input type="hidden" value={user?._id} {...registerPayment('userId')} />
+
+          {/* Botões */}
+          <div className="flex gap-8 items-center">
+            <button
+              type="submit"
+              className="bg-orange-600 text-white rounded-md py-2 mt-4 hover:bg-orange-700 transition-all p-2"
+            >
+              Confirmar Pagamento
+            </button>
+            <button
+              type="reset"
+              onClick={resetStatesAndFields}
+              className="bg-red-600 text-white rounded-md py-2 mt-4 hover:bg-red-700 transition-all p-2"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </>
+    )
+  }
 
   return (
     <div className="flex flex-col h-screen">

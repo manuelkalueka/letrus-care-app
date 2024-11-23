@@ -69,6 +69,7 @@ export const CoursesScreen: React.FC = () => {
       startDate: yup.date().required(),
       endDate: yup.date().required(),
       fee: yup.number().required('Preecha a propina'),
+      feeFine: yup.number().required('Preecha a multa'),
       centerId: yup.string().required(),
       status: yup.string().oneOf(['active', 'inactive'])
     })
@@ -164,7 +165,18 @@ export const CoursesScreen: React.FC = () => {
           min={0}
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
-        <span className="text-red-500">{errors.fee?.message}</span>
+        <label className="text-gray-200" htmlFor="fee">
+          Multa por atraso (Kz)
+        </label>
+        <input
+          {...register('feeFine')}
+          placeholder="Multa"
+          id="feeFine"
+          type="number"
+          min={0}
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <span className="text-red-500">{errors.feeFine?.message}</span>
         <label className="text-gray-200" htmlFor="endDate">
           Data de Término
         </label>
@@ -299,6 +311,18 @@ export const CoursesScreen: React.FC = () => {
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
         <span className="text-red-500">{errors.fee?.message}</span>
+        <label className="text-gray-200" htmlFor="fee">
+          Multa por atraso (Kz)
+        </label>
+        <input
+          {...register('feeFine')}
+          placeholder="Multa"
+          id="feeFine"
+          type="number"
+          min={0}
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+        />
+        <span className="text-red-500">{errors.feeFine?.message}</span>
         <label className="text-gray-200" htmlFor="endDate">
           Data de Término
         </label>
@@ -391,6 +415,9 @@ export const CoursesScreen: React.FC = () => {
                       Propina (Kz)
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                      Multa (Kz)
+                    </th>
+                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                       Status
                     </th>
                     <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
@@ -420,6 +447,9 @@ export const CoursesScreen: React.FC = () => {
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
                           {formateCurrency(row?.fee)}
+                        </td>
+                        <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
+                          {formateCurrency(row?.feeFine)}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {row?.status === 'active'

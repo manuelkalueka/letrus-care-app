@@ -246,7 +246,7 @@ export const TeacherScreen: React.FC = () => {
               onClick={openModal}
               className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
             >
-              Criar Novo Professor
+              Novo Professor
             </button>
             {/* Tabela */}
             <div className="overflow-x-auto mt-6">

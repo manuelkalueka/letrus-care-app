@@ -1,19 +1,19 @@
-# 📚 Lectrus Care  
+# 📚 Lectrus Care
 
 **Lectrus Care** é uma aplicação desktop multiplataforma focada na gestão e regularização de pagamentos escolares. Desenvolvida com **Electron** e **Vite**, a aplicação combina desempenho optimizado e uma interface moderna, permitindo aos centros de ensino gerir matrículas, pagamentos e comunicação de forma eficiente.
 
 ---
 
-## 🚀 **Funcionalidades Principais**  
+## 🚀 **Funcionalidades Principais**
 
-- **Gestão de Estudantes:** Pesquisa e gestão de estudantes pelo nome ou código.  
-- **Gestão de Pagamentos:** Registro e acompanhamento de pagamentos com cálculo automático de taxas de multa.  
-- **Histórico de Matrículas:** Acesso ao histórico de matrículas e propinas associadas.  
-- **Interface Multiplataforma:** Compatível com Windows, macOS e Linux.  
+- **Gestão de Estudantes:** Pesquisa e gestão de estudantes pelo nome ou código.
+- **Gestão de Pagamentos:** Registro e acompanhamento de pagamentos com cálculo automático de taxas de multa.
+- **Histórico de Matrículas:** Acesso ao histórico de matrículas e propinas associadas.
+- **Interface Multiplataforma:** Compatível com Windows, macOS e Linux.
 
 ---
 
-## 🛠️ **Tecnologias Utilizadas**  
+## 🛠️ **Tecnologias Utilizadas**
 
 | Tecnologia          | Aplicação                                         |
 |---------------------|---------------------------------------------------|
@@ -27,7 +27,7 @@
 
 ---
 
-## 📂 **Estrutura do Projeto**  
+## 📂 **Estrutura do Projeto**
 
 ```plaintext
 Lectrus-Care/
@@ -40,14 +40,16 @@ Lectrus-Care/
 │   └── styles/         # Configurações de estilos globais
 ├── public/             # Recursos estáticos (imagens, ícones, etc.)
 └── main/               # Arquivos principais para Electron
+
 ---
-# 🔧 Como Configurar o Projeto
+
+# 🔧 **Como Configurar o Projeto**
 
 ## **Pré-requisitos**
 
-- **Node.js** (versão LTS recomendada).  
-- **Git**.  
-- Gerenciador de pacotes: **Yarn** ou **npm**.  
+- **Node.js** (versão LTS recomendada).
+- **Git**.
+- Gerenciador de pacotes: **Yarn** ou **npm**.
 
 ---
 

@@ -20,3 +20,13 @@ export async function createPaymentService(data: IPayment): Promise<void> {
     throw error
   }
 }
+
+export async function getAllPaymentsService() {
+  try {
+    const result = await apiMananger.get('/payments/')
+    return result
+  } catch (error) {
+    console.log('Erro ao buscar pagamentos: ', error)
+    throw error
+  }
+}
