@@ -491,12 +491,21 @@ export const CoursesScreen: React.FC = () => {
                           {/* Botões para Ações */}
                           <div className="flex items-center justify-evenly gap-1">
                             <button
+                              type="button"
+                              onClick={() => handleEdit(row?._id)}
+                              className="bg-zinc-200 text-zinc-600 px-2 py-1 rounded hover:brightness-125"
+                            >
+                              Ver
+                            </button>
+                            <button
+                              type="submit"
                               onClick={() => handleEdit(row?._id)}
                               className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               Editar
                             </button>
                             <button
+                              type="submit"
                               onClick={() => handleDelete(row?._id)}
                               className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
                             >
