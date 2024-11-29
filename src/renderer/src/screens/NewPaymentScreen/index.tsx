@@ -68,7 +68,11 @@ function getMonths(): string[] {
 }
 
 // Componente de Novo Pagamento
-export const NewPaymentScreen: React.FC = () => {
+interface NewPaymentScreenProps {
+  resultStudent?: object
+}
+
+export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
   const yearsList = getYearsInterval() // Obter lista de anos
   const monthsList = getMonths() // Obter lista de meses
 
@@ -104,7 +108,7 @@ export const NewPaymentScreen: React.FC = () => {
     if (query) {
       try {
         const response = await searchStudentService(center?._id, query)
-        setResults(response) // Armazena os resultados vindos da API
+          setResults(response) // Armazena os resultados vindos da API
       } catch (error) {
         console.error('Erro ao buscar dados:', error)
         setResults(null)
@@ -159,15 +163,16 @@ export const NewPaymentScreen: React.FC = () => {
 
     return (
       <>
-        <h3 className="text-xl text-zinc-100 mb-4">Detalhes do Pagamento</h3>
         <form
           className="flex flex-col gap-4 flex-1"
           onSubmit={handleSubmitPayment(onSubmitPaymentForm)}
         >
           {/* Informações do Aluno */}
-          <h3>Dados do Estudante</h3>
+          <h3 className="text-xl text-zinc-100 space-y-2">Dados do Estudante</h3>
           <div className="flex flex-col gap-2">
-            <label htmlFor="fullName">Nome Completo</label>
+            <label className="text-zinc-300" htmlFor="fullName">
+              Nome Completo
+            </label>
             <input
               id="fullName"
               placeholder="Nome Completo do Aluno"
@@ -176,7 +181,9 @@ export const NewPaymentScreen: React.FC = () => {
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               disabled
             />
-            <label htmlFor="studentCode">Código do Aluno</label>
+            <label className="text-zinc-300" htmlFor="studentCode">
+              Código do Aluno
+            </label>
             <input
               id="studentCode"
               placeholder="Código do Aluno"
@@ -188,10 +195,12 @@ export const NewPaymentScreen: React.FC = () => {
           </div>
 
           {/* Dados do Pagamento */}
-          <h3 className="text-xl font-semibold text-zinc-400">Detalhes do Pagamento</h3>
+          <h3 className="text-xl text-zinc-100 space-y-2">Detalhes do Pagamento</h3>
           <div className="flex flex-col gap-2">
             {/* Mês de Referência */}
-            <label htmlFor="month-select">Mês de Referência</label>
+            <label className="text-zinc-300" htmlFor="month-select">
+              Mês de Referência
+            </label>
             <select
               id="month-select"
               {...registerPayment('paymentMonthReference')}
@@ -207,7 +216,9 @@ export const NewPaymentScreen: React.FC = () => {
             </select>
 
             {/* Ano de Referência */}
-            <label htmlFor="year-select">Ano de Referência</label>
+            <label className="text-zinc-300" htmlFor="year-select">
+              Ano de Referência
+            </label>
             <select
               id="year-select"
               value={selectedYear}
@@ -223,21 +234,21 @@ export const NewPaymentScreen: React.FC = () => {
             </select>
 
             {/* Valor a Pagar */}
-            <label>Propina</label>
+            <label className="text-zinc-300">Propina</label>
             <input
               value={formateCurrency(enrollmentByStudent?.courseId?.fee)}
               disabled
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               placeholder="Exemplo: 150.00"
             />
-            <label>Multa</label>
+            <label className="text-zinc-300">Multa</label>
             <input
               value={formateCurrency(enrollmentByStudent?.courseId?.feeFine)}
               disabled
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               placeholder="Exemplo: 150.00"
             />
-            <label>Valor a Pagar</label>
+            <label className="text-zinc-300">Valor a Pagar</label>
             <input
               disabled
               value={formateCurrency(
@@ -249,7 +260,9 @@ export const NewPaymentScreen: React.FC = () => {
             />
 
             {/* Método de Pagamento */}
-            <label htmlFor="payment-method">Método de Pagamento</label>
+            <label className="text-zinc-300" htmlFor="payment-method">
+              Método de Pagamento
+            </label>
             <select
               id="payment-method"
               value={selectedPaymentMethod}
@@ -265,8 +278,11 @@ export const NewPaymentScreen: React.FC = () => {
             </select>
 
             {/* Observações */}
-            <label>Observações</label>
+            <label className="text-zinc-300" htmlFor="notes">
+              Observações
+            </label>
             <textarea
+              id="notes"
               {...registerPayment('notes')}
               className="w-full p-2 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               placeholder="Insira detalhes adicionais sobre o pagamento, se necessário."
@@ -352,23 +368,23 @@ export const NewPaymentScreen: React.FC = () => {
 
               {/* Exibe os resultados da busca */}
               {results && !isSelected && (
-                <div
-                  className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
-                  onClick={() => {
-                    setIsSelected(true)
-                  }}
-                >
-                  <p>
-                    <GraduationCap />
-                  </p>
-                  <p>
+                  <div
+                    className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
+                    onClick={() => {
+                      setIsSelected(true)
+                    }}
+                  >
+                    <p>
+                      <GraduationCap />
+                    </p>
+                    <p>
                     <span className="text-orange-600">{results?.name?.fullName}</span>
-                  </p>
-                  <div className="bg-zinc-900 h-5 border shadow-shape border-zinc-400" />
-                  <p className="flex items-center justify-center gap-1 pl-2">
-                    <ShieldCheck /> Selecionar
-                  </p>
-                </div>
+                    </p>
+                    <div className="bg-zinc-900 h-5 border shadow-shape border-zinc-400" />
+                    <p className="flex items-center justify-center gap-1 pl-2">
+                      <ShieldCheck /> Selecionar
+                    </p>
+                  </div>
               )}
               {!!results === false && (
                 <div className="flex items-center gap-2">
