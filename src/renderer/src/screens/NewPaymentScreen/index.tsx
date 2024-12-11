@@ -75,7 +75,7 @@ interface NewPaymentScreenProps {
 export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
   const yearsList = getYearsInterval() // Obter lista de anos
   const monthsList = getMonths() // Obter lista de meses
-
+  const [resultList, setResultList] = useState<[] | null>(null)
   const [results, setResults] = useState<object | null>(null) // Armazenar resultados da pesquisa
   const { center } = useCenter()
   const { user } = useAuth()
@@ -108,13 +108,13 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
     if (query) {
       try {
         const response = await searchStudentService(center?._id, query)
-          setResults(response) // Armazena os resultados vindos da API
+        setResultList(response) // Armazena os resultados vindos da API
       } catch (error) {
         console.error('Erro ao buscar dados:', error)
-        setResults(null)
+        setResultList(null)
       }
     } else {
-      setResults(null) // Limpa os resultados se o input estiver vazio
+      setResultList(null) // Limpa os resultados se o input estiver vazio
     }
   }
 
@@ -156,8 +156,16 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
     resetSearch()
   }
 
+  function selectedStudentForPayment(student: object | null): void {
+    setIsSelected(true)
+    setResults(student)
+  }
+
   // Componente de formulário de pagamento
-  const PaymentForm: React.FC = () => {
+  interface PaymentFormProps {
+    resultsInForm: object | null
+  }
+  const PaymentForm: React.FC<PaymentFormProps> = ({ resultsInForm }) => {
     const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
 
@@ -177,7 +185,7 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
               id="fullName"
               placeholder="Nome Completo do Aluno"
               type="text"
-              value={results?.name?.fullName}
+              value={resultsInForm?.name?.fullName}
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               disabled
             />
@@ -188,7 +196,7 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
               id="studentCode"
               placeholder="Código do Aluno"
               type="text"
-              value={results?.studentCode}
+              value={resultsInForm?.studentCode}
               className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
               disabled
             />
@@ -333,9 +341,9 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
               <p>Regularize o Pagamento</p>
             </article>
           </div>
-
+          {/* Secção de Pesquisa de Estudante */}
           <section className="flex items-center justify-center pt-10">
-            <div className="flex flex-col items-center max-w-3xl w-full px-6 text-center space-y-10">
+            <div className="flex flex-col items-center max-w-3xl w-full px-6 text-center space-y-4">
               {/* Formulário de busca do estudante */}
               {!isSelected && (
                 <form
@@ -367,36 +375,40 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
               )}
 
               {/* Exibe os resultados da busca */}
-              {results && !isSelected && (
+              {resultList &&
+                !isSelected &&
+                resultList.map((resultItem) => (
                   <div
+                    key={resultItem._id}
                     className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
                     onClick={() => {
-                      setIsSelected(true)
+                      selectedStudentForPayment(resultItem)
                     }}
                   >
                     <p>
                       <GraduationCap />
                     </p>
                     <p>
-                    <span className="text-orange-600">{results?.name?.fullName}</span>
+                      <span className="text-orange-600">{resultItem?.name?.fullName}</span>
                     </p>
                     <div className="bg-zinc-900 h-5 border shadow-shape border-zinc-400" />
                     <p className="flex items-center justify-center gap-1 pl-2">
                       <ShieldCheck /> Selecionar
                     </p>
                   </div>
-              )}
-              {!!results === false && (
+                ))}
+              {!!resultList === false && (
                 <div className="flex items-center gap-2">
                   <p>Estudante não encontrado!</p>
                 </div>
               )}
             </div>
           </section>
-          {results && isSelected && (
+          {/* Area do estudante Selecionado  */}
+          {(results || props.resultStudent) && isSelected && (
             <div className="flex flex-col bg-zinc-800 w-11/12 mx-auto p-4 rounded-lg shadow-md transition-all">
               {/* Formulário de pagamento aparece ao selecionar o estudante */}
-              <PaymentForm />
+              <PaymentForm resultsInForm={props.resultStudent ? props.resultStudent : results} />
             </div>
           )}
         </div>

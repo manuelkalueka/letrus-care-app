@@ -135,6 +135,7 @@ export const Panel: React.FC = () => {
       })
       //Limpa o Form
       // reset()
+      // ToDo chamar o componente <NewPaymentScreen resultStudent ={newStudent}/>
       navigate('/enrollment')
     } catch (error) {
       Swal.fire({
