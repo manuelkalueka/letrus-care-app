@@ -77,42 +77,39 @@ export const CenterScreen: React.FC = () => {
     <div className="flex flex-col h-screen">
       {/* Header */}
       <HeaderMain />
-
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <h2 className="text-3xl text-zinc-400">{center?.name.toLocaleUpperCase()}</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-6">
+              <label htmlFor="center-name">
+                Nome <span className="text-orange-700">*</span>
+              </label>
+              <input
+                id="center-name"
+                defaultValue={center?.name}
+                {...register('name')}
+                placeholder="Ex.: Centro ABC"
+                type="text"
+                className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+              />
+              <span className="text-red-500">{errors.name?.message}</span>
+              <label htmlFor="center-address">
+                Endereço <span className="text-orange-700">*</span>
+              </label>
+              <input
+                id="center-address"
+                defaultValue={center?.address}
+                {...register('address')}
+                placeholder="Endereço do Centro"
+                type="text"
+                className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+              />
+              {errors.address && <span className="text-red-500">{errors.address?.message}</span>}
 
-            <div className="flex flex-col flex-1 w-11/12 mx-auto">
-              <div className="overflow-x-auto mt-6">
-                <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-11">
-                  <label htmlFor="center-name">
-                    Nome <span className="text-orange-700">*</span>
-                  </label>
-                  <input
-                    id="center-name"
-                    defaultValue={center?.name}
-                    {...register('name')}
-                    placeholder="Ex.: Centro ABC"
-                    type="text"
-                    className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-                  />
-                  <span className="text-red-500">{errors.name?.message}</span>
-                  <label htmlFor="center-address">
-                    Endereço <span className="text-orange-700">*</span>
-                  </label>
-                  <input
-                    id="center-address"
-                    defaultValue={center?.address}
-                    {...register('address')}
-                    placeholder="Endereço do Centro"
-                    type="text"
-                    className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-                  />
-                  {errors.address && (
-                    <span className="text-red-500">{errors.address?.message}</span>
-                  )}
+              <div className="flex items-center gap-12 justify-between my-4">
+                <div className="flex flex-col gap-4 w-1/2">
                   <label htmlFor="center-code" className="flex gap-1">
                     Código do Centro{' '}
                     <span className="text-orange-700 hover:cursor-pointer">
@@ -129,7 +126,9 @@ export const CenterScreen: React.FC = () => {
                     type="text"
                     className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
                   />
-                  <span className="text-red-500">{errors.documentCode?.message}</span>
+                  {errors.documentCode && (
+                    <span className="text-red-500">{errors.documentCode?.message}</span>
+                  )}
                   <label htmlFor="center-nif" className="flex gap-1">
                     NIF{' '}
                     <span className="text-orange-700 hover:cursor-pointer">
@@ -147,6 +146,8 @@ export const CenterScreen: React.FC = () => {
                     className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
                   />
                   {errors.nif && <span className="text-red-500">{errors.nif?.message}</span>}
+                </div>
+                <div className="flex flex-col gap-4 w-1/2">
                   <label htmlFor="center-phone">
                     Telefone <span className="text-orange-700">*</span>
                   </label>
@@ -175,18 +176,17 @@ export const CenterScreen: React.FC = () => {
                     className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
                   />
                   {errors.email && <span className="text-red-500">{errors.email?.message}</span>}
-
-                  <button
-                    type="submit"
-                    className="bg-orange-700 w-1/6 h-12 p-3 text-white shadow-shape rounded-md self-end"
-                  >
-                    Salvar
-                  </button>
-                </form>
+                </div>
               </div>
-            </div>
-            <Footer />
+              <button
+                type="submit"
+                className="bg-orange-700 w-1/6 h-12 p-3 text-white shadow-shape rounded-md self-end"
+              >
+                Salvar
+              </button>
+            </form>
           </div>
+          <Footer />
         </div>
       </div>
     </div>
