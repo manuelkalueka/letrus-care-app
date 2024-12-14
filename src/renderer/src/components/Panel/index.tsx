@@ -289,7 +289,7 @@ export const Panel: React.FC = () => {
             </select>
             {errors.course && <span className="text-red-500">{errors.course?.message}</span>}
             <label htmlFor="grade">
-              Nível <span className="text-orange-700">*</span>
+              Nível Inicial <span className="text-orange-700">*</span>
             </label>
             <select
               id="grade"

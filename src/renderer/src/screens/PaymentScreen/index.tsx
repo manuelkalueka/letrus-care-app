@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAllPaymentsService } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
-import { Search, Filter } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
@@ -73,7 +73,7 @@ export const PaymentScreen: React.FC = () => {
                 placeholder="Buscar por aluno ou código..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="flex-1 p-2 rounded-md border border-gray-400 bg-gray-50 text-zinc-700 focus:outline-orange-700"
+                className="flex-1 p-2 rounded-md border border-gray-400 bg-zinc-300 text-gray-700 placeholder:text-gray-700"
               />
             </div>
 

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Footer } from '@renderer/components/Footer'
-import { Header } from '@renderer/components/Header'
+import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
 import { CircleHelp } from 'lucide-react'
@@ -76,7 +76,7 @@ export const CenterScreen: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <Header />
+      <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />

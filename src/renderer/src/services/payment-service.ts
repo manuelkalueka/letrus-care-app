@@ -6,10 +6,11 @@ interface IPayment {
   paymentDate: Date
   paymentMonthReference: string
   paymentYearReference: number
-  dueDate: Date
-  status: 'paid' | 'pending' | 'overdue'
+  dueDate?: Date
+  status?: 'paid' | 'pending' | 'overdue'
+  paymentMethod?: 'Dinheiro' | 'Multicaixa Express' | 'Transferência Bancária (ATM)'
   centerId: string
-  user: string
+  userId: string
 }
 
 export async function createPaymentService(data: IPayment): Promise<void> {
