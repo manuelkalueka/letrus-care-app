@@ -1,11 +1,11 @@
-import { Footer } from '@renderer/components/Footer'
-import { Header } from '@renderer/components/Header'
-import { Sidebar } from '@renderer/components/Sidebar'
 import React, { useEffect, useState } from 'react'
+import { Footer } from '@renderer/components/Footer'
+import { Sidebar } from '@renderer/components/Sidebar'
 import { useNavigate } from 'react-router-dom'
 import { getAllPaymentsService } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
 import { Search } from 'lucide-react'
+import { HeaderMain } from '@renderer/components/HeaderMain'
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
@@ -45,7 +45,7 @@ export const PaymentScreen: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <Header />
+      <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />

@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Header } from '@renderer/components/Header'
 import { Modal } from '@renderer/components/Modal'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
@@ -15,6 +14,7 @@ import { getCoursesService } from '@renderer/services/course-service'
 import { formatDate } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
 import { Footer } from '@renderer/components/Footer'
+import { HeaderMain } from '@renderer/components/HeaderMain'
 
 export const TeacherScreen: React.FC = () => {
   const { center } = useCenter()
@@ -230,7 +230,7 @@ export const TeacherScreen: React.FC = () => {
   ) : (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <Header />
+      <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />

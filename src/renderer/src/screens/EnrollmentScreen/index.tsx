@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Sidebar } from '@renderer/components/Sidebar'
-import { Header } from '@renderer/components/Header'
 import { useNavigate } from 'react-router-dom'
 import { formatDate } from '@renderer/utils/format'
 import {
@@ -18,6 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { getCoursesService } from '@renderer/services/course-service'
 import { getGradesService } from '@renderer/services/grade-service'
 import { Footer } from '@renderer/components/Footer'
+import { HeaderMain } from '@renderer/components/HeaderMain'
 
 const schema = yup
   .object({
@@ -354,7 +354,7 @@ export const EnrollmentScreen: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <Header />
+      <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />

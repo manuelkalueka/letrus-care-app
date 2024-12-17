@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-import { Header } from '@renderer/components/Header'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { Modal } from '@renderer/components/Modal'
 import { useCenter } from '@renderer/contexts/center-context'
@@ -22,6 +21,7 @@ import { formatDate } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
 import { Rings } from 'react-loader-spinner'
 import { Footer } from '@renderer/components/Footer'
+import { HeaderMain } from '@renderer/components/HeaderMain'
 
 export const GradeScreen: React.FC = () => {
   const { center } = useCenter()
@@ -237,7 +237,7 @@ export const GradeScreen: React.FC = () => {
   ) : (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <Header />
+      <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
