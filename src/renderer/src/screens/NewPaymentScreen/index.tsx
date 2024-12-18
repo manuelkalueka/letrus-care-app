@@ -128,9 +128,8 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
               )}
 
               {/* Exibe os resultados da busca */}
-              {resultList &&
-                !isSelected &&
-                resultList.map((resultItem) => (
+              {!isSelected &&
+                resultList?.map((resultItem) => (
                   <div
                     key={resultItem._id}
                     className="bg-zinc-800 flex items-center justify-center gap-2 hover:brightness-110 min-w-min h-12 rounded-md cursor-pointer px-4 transition-all"
@@ -158,7 +157,7 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
             </div>
           </section>
           {/* Area do estudante Selecionado  */}
-          {(results || props.resultStudent) && isSelected && (
+          {isSelected && (
             <div className="flex flex-col bg-zinc-800 w-11/12 mx-auto p-4 rounded-lg shadow-md transition-all">
               {/* Formulário de pagamento aparece ao selecionar o estudante */}
               <PaymentForm resultsInForm={props.resultStudent ? props.resultStudent : results} />

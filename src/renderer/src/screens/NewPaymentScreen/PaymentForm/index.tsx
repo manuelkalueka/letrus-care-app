@@ -9,6 +9,7 @@ import { formateCurrency } from '@renderer/utils/format'
 import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
+import { getMonths, getYearsInterval } from '@renderer/utils/date'
 
 const schemaPayment = yup
   .object({
@@ -28,7 +29,6 @@ const schemaPayment = yup
   })
   .required()
 
-//Colocar novas funções do form-hook para outro form
 type FormPaymentData = yup.InferType<typeof schemaPayment>
 
 // Componente de formulário de pagamento
@@ -41,45 +41,13 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     resolver: yupResolver(schemaPayment)
   })
 
-  // Função para gerar a lista de anos
-  function getYearsInterval(): number[] {
-    const currentYear = new Date().getFullYear()
-    const startYear = currentYear - 2
-    const endYear = currentYear
-
-    // Gera a lista de anos entre startYear e endYear
-    return Array.from({ length: endYear - startYear + 1 }, (_, index) => startYear + index)
-  }
-
-  // Função para obter os meses
-  function getMonths(): string[] {
-    return [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ]
-  }
-
   const yearsList = getYearsInterval() // Obter lista de anos
   const monthsList = getMonths() // Obter lista de meses
 
   const { user } = useAuth()
   const { center } = useCenter()
 
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // Ano atual por padrão
-  const [selectedMonth, setSelectedMonth] = useState<string>(monthsList[new Date().getMonth()]) // Mês actual
-
   const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
 
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
     try {
@@ -98,17 +66,14 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         timerProgressBar: true
       })
     } catch (error) {
+      const errorMessage = error?.response?.data?.message || 'Erro inesperado'
       Swal.fire({
         position: 'bottom-end',
         icon: 'error',
-        title: 'Ocorreu um erro, tente mais tarde...',
+        title: errorMessage,
         showConfirmButton: false,
         timer: 2000,
-        customClass: {
-          popup: 'h-44 p-2',
-          title: 'text-sm',
-          icon: 'text-xs'
-        },
+        customClass: { popup: 'h-44 p-2', title: 'text-sm', icon: 'text-xs' },
         timerProgressBar: true
       })
       console.log('Erro ao realizar pagamento no front: ', error)
@@ -163,8 +128,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
             disabled
           />
         </div>
-
-        {/* Dados do Pagamento */}
+        Dados do Pagamento
         <h3 className="text-xl text-zinc-100 space-y-2">Detalhes do Pagamento</h3>
         <div className="flex flex-col gap-2">
           {/* Mês de Referência */}
@@ -173,9 +137,8 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           </label>
           <select
             id="month-select"
+            defaultValue={monthsList[new Date().getMonth()]}
             {...register('paymentMonthReference')}
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
           >
             {monthsList.map((month) => (
@@ -191,9 +154,8 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           </label>
           <select
             id="year-select"
-            value={selectedYear}
+            defaultValue={new Date().getFullYear()}
             {...register('paymentYearReference')}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
           >
             {yearsList.map((year) => (
@@ -235,9 +197,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           </label>
           <select
             id="payment-method"
-            value={selectedPaymentMethod}
             {...register('paymentMethod')}
-            onChange={(e) => setSelectedPaymentMethod(e.target.value)}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
           >
             {paymentMethods.map((method) => (
@@ -258,12 +218,14 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
             placeholder="Insira detalhes adicionais sobre o pagamento, se necessário."
           ></textarea>
         </div>
-
         {/* Dados Ocultos */}
-        <input type="hidden" value={enrollmentByStudent?._id} {...register('enrollmentId')} />
-        <input type="hidden" value={center?._id} {...register('centerId')} />
-        <input type="hidden" value={user?._id} {...register('userId')} />
-
+        <input
+          type="hidden"
+          defaultValue={enrollmentByStudent?._id}
+          {...register('enrollmentId')}
+        />
+        <input type="hidden" defaultValue={center?._id} {...register('centerId')} />
+        <input type="hidden" defaultValue={user?._id} {...register('userId')} />
         {/* Botões */}
         <div className="flex gap-8 items-center">
           <button
