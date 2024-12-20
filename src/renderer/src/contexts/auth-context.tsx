@@ -1,4 +1,5 @@
 import apiMananger from '@renderer/services/api'
+import { getCenterService, setCenterServiceOnStorage } from '@renderer/services/center-service'
 import { IAuth, loginService, signupService } from '@renderer/services/user'
 import React, { createContext, useState, useEffect, useContext } from 'react'
 
@@ -36,15 +37,15 @@ export const AuthProvider: React.FC = ({ children }) => {
   // Função para login
   const login = async ({ password, username }: IAuth): Promise<object | null> => {
     try {
-      const { data } = await loginService({ password, username })
+      const response = await loginService({ password, username })
 
-      const { user, token } = data
+      const { user, token } = response
       setUser(user)
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('token', token)
       apiMananger.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
-      return data
+      return response?.data
     } catch (error) {
       console.log('Erro no login em contexto ', error)
       throw error
@@ -66,7 +67,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const logout = (): void => {
     localStorage.removeItem('user')
     localStorage.removeItem('token')
-    // localStorage.removeItem('center')
+    localStorage.removeItem('center')
     delete apiMananger.defaults.headers.common['Authorization']
     setUser(null)
   }

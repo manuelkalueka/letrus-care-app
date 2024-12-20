@@ -1,4 +1,6 @@
+import { useAuth } from '@renderer/contexts/auth-context'
 import apiMananger from './api'
+import { AxiosResponse } from 'axios'
 
 export interface ICenter {
   name: string
@@ -37,29 +39,10 @@ export const createCenterService = async (data: ICenter) => {
   }
 }
 
-//Rever guardar centro o localStorage
-export const getCenterService = async () => {
-  const storagedUser = localStorage.getItem('user')
-  try {
-    if (storagedUser) {
-      const user = JSON.parse(storagedUser)
-
-      const createdBy = user?._id
-      console.log('Sou o centro antes ')
-      const response = await apiMananger.get(`/centers/${createdBy}`)
-      console.log('Sou o centro durante o login: ', response)
-      localStorage.setItem('center', response.data)
-      return response
-    }
-  } catch (error) {
-    console.log('Erro ao buscar centro:', error)
-    throw error
-  }
-}
-
 export const isCenterExists = async (createdBy: string): Promise<boolean> => {
   try {
     const { data } = await apiMananger.get(`/centers/user/${createdBy}`)
+    localStorage.setItem('center', data)
     const isExists = !!data
     return isExists
   } catch (error) {

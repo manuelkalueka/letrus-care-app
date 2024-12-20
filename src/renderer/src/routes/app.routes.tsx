@@ -25,6 +25,11 @@ export const appRouter = createBrowserRouter(
       errorElement: <ErrorScreen />
     },
     {
+      path: '/home',
+      element: <HomeScreen />,
+      errorElement: <ErrorScreen />
+    },
+    {
       path: '/enrollment',
       element: <EnrollmentScreen />
     },

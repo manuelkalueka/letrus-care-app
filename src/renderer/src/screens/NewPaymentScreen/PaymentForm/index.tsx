@@ -14,11 +14,10 @@ import { getMonths, getYearsInterval } from '@renderer/utils/date'
 const schemaPayment = yup
   .object({
     enrollmentId: yup.string().required(),
-    amount: yup.number().required(),
+    amount: yup.string().required(),
     paymentDate: yup.date().required(),
     paymentMonthReference: yup.string().required(),
     paymentYearReference: yup.number().required(),
-    status: yup.string().oneOf(['paid', 'pending', 'overdue']).required(),
     paymentMethod: yup
       .string()
       .oneOf(['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)'])
@@ -48,8 +47,9 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const { center } = useCenter()
 
   const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
-
+  const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
+    console.log('Dados submetidos:', data)
     try {
       await createPaymentService(data)
       Swal.fire({
@@ -79,7 +79,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
       console.log('Erro ao realizar pagamento no front: ', error)
     }
   }
-  const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
 
   useEffect(() => {
     async function getEnrollmentByStudent(studentId: string): Promise<void> {
@@ -90,6 +89,17 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     }
     getEnrollmentByStudent(props.resultsInForm?._id)
   }, [props.resultsInForm])
+
+  useEffect(() => {
+    const totalAmount = Number(
+      enrollmentByStudent?.courseId?.fee + enrollmentByStudent?.courseId?.feeFine
+    )
+    setValue('amount', totalAmount.toString())
+
+    if (enrollmentByStudent?._id) {
+      setValue('enrollmentId', enrollmentByStudent?._id)
+    }
+  }, [enrollmentByStudent, setValue])
 
   // Limpa Todos os Campos
   // function resetStatesAndFields(): void {
@@ -183,9 +193,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           <label className="text-zinc-300">Valor a Pagar</label>
           <input
             disabled
-            value={formateCurrency(
-              Number(enrollmentByStudent?.courseId?.fee + enrollmentByStudent?.courseId?.feeFine)
-            )}
             {...register('amount')}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
             placeholder="Exemplo: 150.00"

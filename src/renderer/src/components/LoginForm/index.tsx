@@ -40,7 +40,7 @@ export const LoginForm: React.FC = () => {
       if (!loading) {
         const isExists = await isCenterExists(userLoginData?._id)
         if (isExists) {
-          navigate('/')
+          navigate('/home')
         } else {
           navigate('/centers/new')
         }
