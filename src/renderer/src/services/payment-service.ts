@@ -3,7 +3,7 @@ import apiMananger from './api'
 interface IPayment {
   enrollmentId: string
   amount: number
-  paymentDate: Date
+  paymentDate?: Date
   paymentMonthReference: string
   paymentYearReference: number
   dueDate?: Date
@@ -24,7 +24,7 @@ export async function createPaymentService(data: IPayment): Promise<void> {
 
 export async function getAllPaymentsService() {
   try {
-    const result = await apiMananger.get('/payments/')
+    const result = await apiMananger.get('/payments/all')
     return result
   } catch (error) {
     console.log('Erro ao buscar pagamentos: ', error)

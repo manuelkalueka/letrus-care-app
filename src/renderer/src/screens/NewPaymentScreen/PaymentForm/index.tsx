@@ -14,8 +14,7 @@ import { getMonths, getYearsInterval } from '@renderer/utils/date'
 const schemaPayment = yup
   .object({
     enrollmentId: yup.string().required(),
-    amount: yup.string().required(),
-    paymentDate: yup.date().required(),
+    amount: yup.number().required(),
     paymentMonthReference: yup.string().required(),
     paymentYearReference: yup.number().required(),
     paymentMethod: yup
@@ -36,7 +35,7 @@ interface PaymentFormProps {
 }
 export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   // Hook do formulário de pagamento
-  const { register, handleSubmit } = useForm<FormPaymentData>({
+  const { register, handleSubmit, setValue } = useForm<FormPaymentData>({
     resolver: yupResolver(schemaPayment)
   })
 
@@ -94,7 +93,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     const totalAmount = Number(
       enrollmentByStudent?.courseId?.fee + enrollmentByStudent?.courseId?.feeFine
     )
-    setValue('amount', totalAmount.toString())
+    setValue('amount', totalAmount)
 
     if (enrollmentByStudent?._id) {
       setValue('enrollmentId', enrollmentByStudent?._id)
