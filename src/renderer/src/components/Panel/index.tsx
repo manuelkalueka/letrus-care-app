@@ -10,7 +10,7 @@ import { useCenter } from '@renderer/contexts/center-context'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { getGradesService } from '@renderer/services/grade-service'
 import { getCoursesService } from '@renderer/services/course-service'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { NewPaymentScreen } from '@renderer/screens/NewPaymentScreen'
 
 const schema = yup

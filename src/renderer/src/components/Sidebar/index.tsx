@@ -1,6 +1,6 @@
 import { BellDot, BookOpenCheck, CircleHelp, HandCoins, Home, NotebookPen } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 export const Sidebar: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<

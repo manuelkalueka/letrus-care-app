@@ -12,9 +12,7 @@ export interface ICenter {
   createdBy?: string
 }
 
-export const createCenterService = async (data: ICenter) => {
-  const storagedUser = localStorage.getItem('user')
-
+export const createCenterService = async (data: ICenter, createdBy: string) => {
   try {
     if (storagedUser) {
       const user = JSON.parse(storagedUser)
@@ -41,9 +39,9 @@ export const createCenterService = async (data: ICenter) => {
 
 export const isCenterExists = async (createdBy: string): Promise<boolean> => {
   try {
-    const { data } = await apiMananger.get(`/centers/user/${createdBy}`)
-    localStorage.setItem('center', data)
-    const isExists = !!data
+    const response = await apiMananger.get(`/centers/user/${createdBy}`)
+    localStorage.setItem('center', response.data)
+    const isExists = !!response.data
     return isExists
   } catch (error) {
     console.log('Erro ao verificar existencia de centro ', error)

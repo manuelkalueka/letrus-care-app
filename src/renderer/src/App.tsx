@@ -1,5 +1,5 @@
 import React from 'react'
-import { RouterProvider } from 'react-router-dom'
+import { RouterProvider } from 'react-router'
 import { appRouter } from './routes/app.routes'
 import { authRoutes } from './routes/auth.routes'
 import { AuthProvider, useAuth } from './contexts/auth-context'

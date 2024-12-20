@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import { useAuth } from '@renderer/contexts/auth-context'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { isCenterExists } from '@renderer/services/center-service'
 
 const schema = yup
@@ -40,7 +40,7 @@ export const LoginForm: React.FC = () => {
       if (!loading) {
         const isExists = await isCenterExists(userLoginData?._id)
         if (isExists) {
-          navigate('/home')
+          navigate('/')
         } else {
           navigate('/centers/new')
         }

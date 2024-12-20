@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Sidebar } from '@renderer/components/Sidebar'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { formatDate } from '@renderer/utils/format'
 import {
   getEnrollmentsService,

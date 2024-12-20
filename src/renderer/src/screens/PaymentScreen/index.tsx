@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Footer } from '@renderer/components/Footer'
 import { Sidebar } from '@renderer/components/Sidebar'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { getAllPaymentsService } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
 import { Search } from 'lucide-react'
