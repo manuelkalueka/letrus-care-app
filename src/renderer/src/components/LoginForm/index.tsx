@@ -8,7 +8,9 @@ import withReactContent from 'sweetalert2-react-content'
 
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useNavigate } from 'react-router'
-import { isCenterExists } from '@renderer/services/center-service'
+import { useCenter } from '@renderer/contexts/center-context'
+import { getCenterService } from '@renderer/services/center-service'
+import { getFromLocalStorage, saveToLocalStorage } from '@renderer/utils/localStorage'
 
 const schema = yup
   .object({
@@ -22,9 +24,8 @@ export const LoginForm: React.FC = () => {
   const MySwal = withReactContent(Swal)
 
   const { login, loading } = useAuth()
-
+  const { centerExistsContext } = useCenter()
   const navigate = useNavigate()
-  // const { user } = useAuth()
 
   const {
     register,
@@ -38,9 +39,16 @@ export const LoginForm: React.FC = () => {
     try {
       const { user: userLoginData } = await login(data)
       if (!loading) {
-        const isExists = await isCenterExists(userLoginData?._id)
+        const isExists = await centerExistsContext(userLoginData?._id)
+
         if (isExists) {
-          navigate('/')
+          // Verificar se o centro já está no localStorage; se não, buscar e salvar.
+          const storedCenter = getFromLocalStorage('center')
+          if (!storedCenter) {
+            const { data: centerData } = await getCenterService(userLoginData._id)
+            saveToLocalStorage('center', centerData)
+          }
+          navigate('/home')
         } else {
           navigate('/centers/new')
         }
@@ -48,18 +56,13 @@ export const LoginForm: React.FC = () => {
     } catch (error) {
       if (error?.response?.status === 404) {
         navigate('/centers/new')
-      } else {
-        if (error?.response?.status === 401) {
-          MySwal.fire({
-            title: 'Erro',
-            text: 'Verifique os dados de acesso',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          })
-        } else {
-          console.log('Erro no Login ', error)
-          throw error
-        }
+      } else if (error?.response || error?.request) {
+        MySwal.fire({
+          title: 'Erro',
+          text: 'Verifique os dados de acesso',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
       }
     }
   }

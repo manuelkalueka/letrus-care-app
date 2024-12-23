@@ -1,5 +1,4 @@
 import apiMananger from '@renderer/services/api'
-import { getCenterService, setCenterServiceOnStorage } from '@renderer/services/center-service'
 import { IAuth, loginService, signupService } from '@renderer/services/user'
 import React, { createContext, useState, useEffect, useContext } from 'react'
 
@@ -66,10 +65,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   // Função para logout
   const logout = (): void => {
     localStorage.removeItem('center')
-    
+
     localStorage.removeItem('user')
     localStorage.removeItem('token')
- 
+
     delete apiMananger.defaults.headers.common['Authorization']
     setUser(null)
   }

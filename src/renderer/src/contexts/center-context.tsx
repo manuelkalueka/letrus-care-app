@@ -1,11 +1,21 @@
-import { createCenterService, editCenterService, ICenter } from '@renderer/services/center-service'
+import {
+  createCenterService,
+  editCenterService,
+  getCenterService,
+  ICenter,
+  isCenterExists
+} from '@renderer/services/center-service'
 
 import React, { createContext, useState, useEffect, useContext } from 'react'
+import { useAuth } from './auth-context'
+import { AxiosResponse } from 'axios'
+import { getFromLocalStorage, saveToLocalStorage } from '@renderer/utils/localStorage'
 
 interface CenterContextData {
   loading: boolean
   center: object | null
-  createCenter: (data: ICenter) => Promise<void>
+  createCenter: (data: ICenter, createdBy: string) => Promise<AxiosResponse>
+  centerExistsContext: (userId: string) => Promise<boolean>
   editCenterContext: (centerId: string, data: ICenter) => Promise<void>
 }
 
@@ -15,25 +25,32 @@ export const CenterContext = createContext<CenterContextData>({} as CenterContex
 export const CenterProvider: React.FC = ({ children }) => {
   const [center, setCenter] = useState<object | null>(null)
   const [loading, setLoading] = useState(true)
-
-  // Persistência do usuário e token no local storage
+  const { user } = useAuth()
+  // Persistência do centro no local storage
   useEffect(() => {
     async function loadStorageData(): Promise<void> {
       const storagedCenter = localStorage.getItem('center')
       if (storagedCenter) {
         setCenter(JSON.parse(storagedCenter))
+      } else if (user) {
+        try {
+          const response = await getCenterService(user?._id)
+          setCenter(response.data)
+          localStorage.setItem('center', JSON.stringify(response.data))
+        } catch (error) {
+          console.log('Erro ao carregar centro do backend:', error)
+        }
       }
-      //ToDo colocar função de colocar centro no login
       setLoading(false)
     }
     loadStorageData()
-  }, [])
+  }, [user])
 
-  async function createCenter(data: ICenter) {
+  async function createCenter(data: ICenter): Promise<AxiosResponse> {
     try {
-      const response = await createCenterService(data)
+      const response = await createCenterService(data, user?._id)
       setCenter(response?.data)
-      localStorage.setItem('center', JSON.stringify(response?.data))
+      saveToLocalStorage('center', response?.data)
       return response
     } catch (error) {
       console.log('Erro ao criar centro no contexto: ', error)
@@ -44,21 +61,38 @@ export const CenterProvider: React.FC = ({ children }) => {
   async function editCenterContext(centerId: string, data: ICenter): Promise<void> {
     try {
       const response = await editCenterService(centerId, data)
-      setCenter(response?.data)
-      localStorage.removeItem('center')
-      localStorage.setItem('center', JSON.stringify(response?.data))
+      setCenter(response.data)
+      saveToLocalStorage('center', response.data)
     } catch (error) {
       console.log('Erro ao editar centro no contexto: ', error)
       throw error
     }
   }
 
+  async function centerExistsContext(userId: string): Promise<boolean> {
+    const cachedCenter = getFromLocalStorage('center')
+    if (cachedCenter) {
+      setCenter(cachedCenter)
+      return true
+    }
+
+    const { isExists, response } = await isCenterExists(userId)
+    if (isExists) {
+      saveToLocalStorage('center', response?.data)
+      setCenter(response?.data)
+    }
+    return isExists
+  }
+
   return (
-    <CenterContext.Provider value={{ center, createCenter, loading, editCenterContext }}>
+    <CenterContext.Provider
+      value={{ center, createCenter, loading, editCenterContext, centerExistsContext }}
+    >
       {children}
     </CenterContext.Provider>
   )
 }
+
 export function useCenter(): CenterContextData {
   const context = useContext(CenterContext)
   return context
