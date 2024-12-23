@@ -6,18 +6,20 @@ import { getAllPaymentsService } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
 import { Search } from 'lucide-react'
 import { HeaderMain } from '@renderer/components/HeaderMain'
+import { useCenter } from '@renderer/contexts/center-context'
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
   const [payments, setPayments] = useState<object[]>([]) // Lista de pagamentos
   const [searchQuery, setSearchQuery] = useState<string>('') // Filtro de busca
   const [filteredPayments, setFilteredPayments] = useState<object[]>([]) // Resultados filtrados
+  const { center } = useCenter()
 
   // Obtém todos os pagamentos
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data } = await getAllPaymentsService() // Chamada ao serviço para listar pagamentos
+        const { data } = await getAllPaymentsService(center?._id) // Chamada ao serviço para listar pagamentos
         setPayments(data)
         setFilteredPayments(data)
       } catch (error) {

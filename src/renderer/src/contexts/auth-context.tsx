@@ -65,9 +65,11 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   // Função para logout
   const logout = (): void => {
+    localStorage.removeItem('center')
+    
     localStorage.removeItem('user')
     localStorage.removeItem('token')
-    localStorage.removeItem('center')
+ 
     delete apiMananger.defaults.headers.common['Authorization']
     setUser(null)
   }

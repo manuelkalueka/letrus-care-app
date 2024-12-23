@@ -22,9 +22,9 @@ export async function createPaymentService(data: IPayment): Promise<void> {
   }
 }
 
-export async function getAllPaymentsService() {
+export async function getAllPaymentsService(centerId: string) {
   try {
-    const result = await apiMananger.get('/payments/all')
+    const result = await apiMananger.get(`/payments/all/${centerId}`)
     return result
   } catch (error) {
     console.log('Erro ao buscar pagamentos: ', error)
