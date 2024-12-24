@@ -1,6 +1,7 @@
+import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
-export interface ICourse extends Document {
+export interface ICourse {
   name: string
   description: string
   startDate: Date
@@ -20,7 +21,7 @@ export async function createCourse(data: ICourse): Promise<void> {
   }
 }
 
-export const getOneCourseService = async (courseId: string) => {
+export const getOneCourseService = async (courseId: string): Promise<AxiosResponse> => {
   try {
     const { data } = await apiMananger.get(`/courses/${courseId}`)
     return data
@@ -30,7 +31,7 @@ export const getOneCourseService = async (courseId: string) => {
   }
 }
 
-export async function getCoursesService(centerId: string) {
+export async function getCoursesService(centerId: string): Promise<AxiosResponse> {
   try {
     const { data } = await apiMananger.get(`/courses/all/${centerId}`)
     return data
@@ -40,7 +41,7 @@ export async function getCoursesService(centerId: string) {
   }
 }
 
-export const editCourse = async (courseId: string, data: ICourse) => {
+export const editCourse = async (courseId: string, data: ICourse): Promise<void> => {
   try {
     await apiMananger.put(`/courses/edit/${courseId}`, data)
   } catch (error) {

@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 interface IGrade {
@@ -14,7 +15,7 @@ export async function createGrade(data: IGrade): Promise<void> {
   }
 }
 
-export async function getGradesService(centerId: string) {
+export async function getGradesService(centerId: string): Promise<AxiosResponse> {
   try {
     const { data } = await apiMananger.get(`/grades/all/${centerId}`)
     return data
@@ -24,7 +25,7 @@ export async function getGradesService(centerId: string) {
   }
 }
 
-export async function getGradeService(gradeId: string) {
+export async function getGradeService(gradeId: string): Promise<AxiosResponse> {
   try {
     const { data } = await apiMananger.get(`/grades/${gradeId}`)
     return data
@@ -34,7 +35,7 @@ export async function getGradeService(gradeId: string) {
   }
 }
 
-export async function editGradeService(gradeId: string, data: IGrade) {
+export async function editGradeService(gradeId: string, data: IGrade): Promise<void> {
   try {
     await apiMananger.put(`/grades/edit/${gradeId}`, data)
   } catch (error) {

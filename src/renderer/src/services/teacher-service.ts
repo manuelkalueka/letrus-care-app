@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 interface ITeacher {
@@ -23,7 +24,7 @@ export async function createTeacher(data: ITeacher): Promise<number> {
   }
 }
 
-export async function getTeachersService(centerId: string) {
+export async function getTeachersService(centerId: string): Promise<AxiosResponse> {
   try {
     const { data } = await apiMananger.get(`/teachers/all/${centerId}`)
     return data

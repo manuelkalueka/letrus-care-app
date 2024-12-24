@@ -115,13 +115,13 @@ export const SignupForm: React.FC = () => {
         className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.password?.message}</span>
-      <label className="text-gray-200" htmlFor="password">
+      <label className="text-gray-200" htmlFor="confPassword">
         Confirmar Senha
       </label>
       <input
         {...register('confPassword')}
         placeholder="Confirme sua senha"
-        id="password"
+        id="confPassword"
         autoComplete="current-password webauthn"
         type="password"
         className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"

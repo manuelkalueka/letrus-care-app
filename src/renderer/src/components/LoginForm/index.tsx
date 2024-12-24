@@ -48,7 +48,9 @@ export const LoginForm: React.FC = () => {
             const { data: centerData } = await getCenterService(userLoginData._id)
             saveToLocalStorage('center', centerData)
           }
+          console.log('Cai na navegação')
           navigate('/home')
+          console.log('Sai da navegação')
         } else {
           navigate('/centers/new')
         }
@@ -66,7 +68,7 @@ export const LoginForm: React.FC = () => {
       }
     }
   }
-
+  //Erro quando uso method Post
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">
       <label className="text-gray-200" htmlFor="username">

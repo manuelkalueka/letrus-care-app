@@ -1,28 +1,20 @@
 import React from 'react'
-import { RouterProvider } from 'react-router'
-import { appRouter } from './routes/app.routes'
-import { authRoutes } from './routes/auth.routes'
 import { AuthProvider, useAuth } from './contexts/auth-context'
 import { CenterProvider } from './contexts/center-context'
 import { LoaderComponent } from './components/Loader'
+import { Routes } from './Routes'
 
-const AppContent: React.FC = () => {
-  const { signed, loading } = useAuth()
+export const App: React.FC = () => {
+  const { loading } = useAuth()
 
   if (loading) {
     return <LoaderComponent />
   }
 
-  const router = signed ? appRouter : authRoutes
-
-  return <RouterProvider router={router} />
-}
-
-export const App: React.FC = () => {
   return (
     <AuthProvider>
       <CenterProvider>
-        <AppContent />
+        <Routes />
       </CenterProvider>
     </AuthProvider>
   )

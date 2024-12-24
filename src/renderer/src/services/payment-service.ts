@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 interface IPayment {
@@ -22,7 +23,7 @@ export async function createPaymentService(data: IPayment): Promise<void> {
   }
 }
 
-export async function getAllPaymentsService(centerId: string) {
+export async function getAllPaymentsService(centerId: string): Promise<AxiosResponse> {
   try {
     const result = await apiMananger.get(`/payments/all/${centerId}`)
     return result

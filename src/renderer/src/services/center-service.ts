@@ -11,7 +11,10 @@ export interface ICenter {
   createdBy?: string
 }
 
-export const createCenterService = async (data: ICenter, createdBy: string) => {
+export const createCenterService = async (
+  data: ICenter,
+  createdBy: string
+): Promise<AxiosResponse> => {
   try {
     const { address, documentCode, email, name, nif, phoneNumber } = data
 
@@ -54,7 +57,10 @@ export const isCenterExists = async (createdBy: string): Promise<centerFunctionP
   }
 }
 
-export const editCenterService = async (centerId: string, data: ICenter) => {
+export const editCenterService = async (
+  centerId: string,
+  data: ICenter
+): Promise<AxiosResponse> => {
   try {
     const response = await apiMananger.put(`/centers/edit/${centerId}`, data)
     return response.data

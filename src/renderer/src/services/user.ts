@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface IAuth {
@@ -20,7 +21,10 @@ export const signupService = async (data: IAuth): Promise<number | undefined> =>
   }
 }
 
-export const loginService = async ({ username, password }: IAuth) => {
+export const loginService = async ({
+  username,
+  password
+}: IAuth): Promise<AxiosResponse | undefined> => {
   try {
     const response = await apiMananger.post('/users/login', {
       username,

@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 interface IEnrollment {
@@ -60,7 +61,7 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
   }
 }
 
-export const getEnrollmentsService = async (centerId: string) => {
+export const getEnrollmentsService = async (centerId: string): Promise<AxiosResponse> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/all/${centerId}`)
     return data
@@ -70,7 +71,7 @@ export const getEnrollmentsService = async (centerId: string) => {
   }
 }
 
-export const getOneEnrollmentService = async (enrollmentId: string) => {
+export const getOneEnrollmentService = async (enrollmentId: string): Promise<AxiosResponse> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/${enrollmentId}`)
     return data
@@ -80,7 +81,7 @@ export const getOneEnrollmentService = async (enrollmentId: string) => {
   }
 }
 
-export const getEnrollmentByStudentService = async (studentId: string) => {
+export const getEnrollmentByStudentService = async (studentId: string): Promise<AxiosResponse> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/student/${studentId}`)
     return data
@@ -90,7 +91,7 @@ export const getEnrollmentByStudentService = async (studentId: string) => {
   }
 }
 
-export const editEnrollment = async (enrollmentId: string, data: IEnrollment) => {
+export const editEnrollment = async (enrollmentId: string, data: IEnrollment): Promise<void> => {
   try {
     await apiMananger.put(`/enrollments/edit/${enrollmentId}`, data)
   } catch (error) {
