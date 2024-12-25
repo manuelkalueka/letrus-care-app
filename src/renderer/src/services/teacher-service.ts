@@ -26,6 +26,8 @@ export async function createTeacher(data: ITeacher): Promise<number> {
 
 export async function getTeachersService(centerId: string): Promise<AxiosResponse> {
   try {
+    console.log('Sou o centro ID: ', centerId)
+
     const { data } = await apiMananger.get(`/teachers/all/${centerId}`)
     return data
   } catch (error) {

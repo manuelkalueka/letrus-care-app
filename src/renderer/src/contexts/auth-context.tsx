@@ -38,16 +38,18 @@ export const AuthProvider: React.FC = ({ children }) => {
     try {
       const response = await loginService({ password, username })
 
-      const { user, token } = response
-      setUser(user)
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('token', token)
-      apiMananger.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      const { data } = response
+      setUser(data?.user)
+      localStorage.setItem('user', JSON.stringify(data?.user))
+      localStorage.setItem('token', data?.token)
+      apiMananger.defaults.headers.common['Authorization'] = `Bearer ${data?.token}`
 
       return response?.data
     } catch (error) {
       console.log('Erro no login em contexto ', error)
       throw error
+    } finally {
+      setLoading(false)
     }
   }
 

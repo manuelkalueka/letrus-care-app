@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { LogoLectrus } from '../LogoLectrus'
 import { Menu, Search, UserRound, School } from 'lucide-react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
 
@@ -37,27 +37,27 @@ const Dropdown: React.FC = () => {
           aria-labelledby="options-menu"
         >
           <div className="py-1" role="none">
-            <a
-              href="/courses"
+            <Link
+              to="/courses"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
               Cursos
-            </a>
-            <a
-              href="/grades"
+            </Link>
+            <Link
+              to="/grades"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
               Níveis
-            </a>
-            <a
-              href="/teachers"
+            </Link>
+            <Link
+              to="/teachers"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
               Professores
-            </a>
+            </Link>
           </div>
         </div>
       )}
@@ -104,21 +104,22 @@ const DropdownUser: React.FC = () => {
           aria-labelledby="options-menu"
         >
           <div className="py-1" role="none">
-            <a
-              href="/profile"
+            <Link
+              to="/profile"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
               Perfil
-            </a>
-            <a
-              href="/#"
+            </Link>
+            <Link
+              to="/#"
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all"
               role="menuitem"
             >
               Configurações
-            </a>
-            <a
+            </Link>
+            <Link
+              to={'#'}
               className="text-zinc-100 block px-4 py-2 text-sm hover:bg-zinc-900 hover:transition-all cursor-pointer"
               role="menuitem"
               onClick={() => {
@@ -126,7 +127,7 @@ const DropdownUser: React.FC = () => {
               }}
             >
               Sair
-            </a>
+            </Link>
           </div>
         </div>
       )}

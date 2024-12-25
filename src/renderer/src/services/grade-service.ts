@@ -17,6 +17,8 @@ export async function createGrade(data: IGrade): Promise<void> {
 
 export async function getGradesService(centerId: string): Promise<AxiosResponse> {
   try {
+    console.log('Sou o centro ID: ', centerId)
+
     const { data } = await apiMananger.get(`/grades/all/${centerId}`)
     return data
   } catch (error) {

@@ -31,7 +31,7 @@ export const loginService = async ({
       password
     })
 
-    return response.data
+    return response
   } catch (error) {
     console.log(error)
   }

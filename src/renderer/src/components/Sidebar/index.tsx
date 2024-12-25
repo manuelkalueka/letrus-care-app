@@ -23,7 +23,7 @@ export const Sidebar: React.FC = () => {
   return (
     <div className="bg-transparent flex flex-col justify-between h-full gap-3 p-3 border-r border-zinc-700 w-[216px]">
       <ul className="flex flex-col gap-4">
-        {renderMenuItem(<Home />, 'Home', '/')}
+        {renderMenuItem(<Home />, 'Home', '/home')}
         {renderMenuItem(<NotebookPen />, 'Inscrição', '/enrollment')}
         {renderMenuItem(<HandCoins />, 'Pagamentos', '/payments')}
         {renderMenuItem(<BookOpenCheck />, 'Aulas e Presenças', '/attendances')}

@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import { useAuth } from '@renderer/contexts/auth-context'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useCenter } from '@renderer/contexts/center-context'
 import { getCenterService } from '@renderer/services/center-service'
 import { getFromLocalStorage, saveToLocalStorage } from '@renderer/utils/localStorage'
@@ -95,9 +95,9 @@ export const LoginForm: React.FC = () => {
         className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
       />
       <span className="text-red-500">{errors.password?.message}</span>
-      <a href="/forget-password" target="_self" className="text-orange-600 mb-5 w-[53%]">
+      <Link to="#" target="_self" className="text-orange-600 mb-5 w-[63%] max-md:w-[53%]">
         Esqueci minha senha
-      </a>
+      </Link>
       <button
         type="submit"
         className="bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"

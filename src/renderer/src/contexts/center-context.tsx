@@ -61,8 +61,8 @@ export const CenterProvider: React.FC = ({ children }) => {
   async function editCenterContext(centerId: string, data: ICenter): Promise<void> {
     try {
       const response = await editCenterService(centerId, data)
-      setCenter(response.data)
-      saveToLocalStorage('center', response.data)
+      setCenter(response)
+      saveToLocalStorage('center', center)
     } catch (error) {
       console.log('Erro ao editar centro no contexto: ', error)
       throw error

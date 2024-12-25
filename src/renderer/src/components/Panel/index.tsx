@@ -11,7 +11,6 @@ import { useAuth } from '@renderer/contexts/auth-context'
 import { getGradesService } from '@renderer/services/grade-service'
 import { getCoursesService } from '@renderer/services/course-service'
 import { useNavigate } from 'react-router'
-import { NewPaymentScreen } from '@renderer/screens/NewPaymentScreen'
 
 const schema = yup
   .object({
@@ -71,7 +70,7 @@ export const Panel: React.FC = () => {
   useEffect(() => {
     async function getCourses(): Promise<void> {
       const data = await getCoursesService(center?._id)
-      setCourses(data)
+      setCourses(Object(data))
     }
 
     getCourses()
@@ -82,7 +81,7 @@ export const Panel: React.FC = () => {
   useEffect(() => {
     async function getGrades(): Promise<void> {
       const data = await getGradesService(center?._id)
-      setGrades(data)
+      setGrades(Object(data))
     }
 
     getGrades()
@@ -107,7 +106,7 @@ export const Panel: React.FC = () => {
       } = data
       const parents = { father, mother }
       const name = { fullName, surname }
-      const newStudent = await createEnrollment({
+      await createEnrollment({
         parents,
         address,
         birthDate,

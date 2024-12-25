@@ -2,21 +2,22 @@ import React from 'react'
 import { LogoLectrus } from '@renderer/components/LogoLectrus'
 import { SignupForm } from '@renderer/components/SignupForm'
 import { ChevronRight, CornerUpRight } from 'lucide-react'
+import { Link } from 'react-router'
 
 export const SignupScreen: React.FC = () => {
   return (
     <div className="flex w-full h-dvh bg-zinc-800">
       <div className="h-full w-[70%] bg-orange-700 bg-pattern bg-no-repeat bg-center bg-cover"></div>
       <div className="h-full flex justify-center flex-1">
-        <section className="my-[15%] px-[15%] max-w-full w-full max-h-full text-zinc-100">
+        <section className="my-[8%] px-[15%] max-w-full w-full max-h-full text-zinc-100">
           <LogoLectrus sizeFont="text-3xl" sizeImage={40} />
-          <h2 className="font-bold text-gray-200 text-2xl mt-16 mb-12 max-md:mt-12 max-md:mb-8">
+          <h2 className="font-bold text-gray-200 text-2xl w-full mt-5 mb-6 max-md:mt-12 max-md:mb-8">
             Cadastre-se gratuitamente
           </h2>
           <SignupForm />
-          <div className="w-full h-[2px] bg-gray-700 mb-6 mt-16 max-md:mt-12"></div>
-          <a
-            href="/login"
+          <div className="w-full h-[2px] bg-gray-700 mb-3 mt-5 max-md:mt-12"></div>
+          <Link
+            to="/login"
             className="flex items-center justify-between my-5 py-[4%] px-[6%] text-zinc-300 bg-zinc-700 rounded-md hover:brightness-110"
           >
             <div className="flex flex-row">
@@ -27,7 +28,7 @@ export const SignupScreen: React.FC = () => {
               </section>
             </div>
             <ChevronRight />
-          </a>
+          </Link>
         </section>
       </div>
     </div>

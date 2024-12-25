@@ -63,6 +63,7 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
 
 export const getEnrollmentsService = async (centerId: string): Promise<AxiosResponse> => {
   try {
+    console.log('Sou o centro ID: ', centerId)
     const { data } = await apiMananger.get(`/enrollments/all/${centerId}`)
     return data
   } catch (error) {

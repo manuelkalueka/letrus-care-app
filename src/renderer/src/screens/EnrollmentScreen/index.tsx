@@ -107,7 +107,7 @@ const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
   useEffect(() => {
     async function getCourses(): Promise<void> {
       const data = await getCoursesService(center?._id)
-      setCourses(data)
+      setCourses(Object(data))
     }
 
     getCourses()
@@ -118,7 +118,7 @@ const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
   useEffect(() => {
     async function getGrades(): Promise<void> {
       const data = await getGradesService(center?._id)
-      setGrades(data)
+      setGrades(Object(data))
     }
 
     getGrades()

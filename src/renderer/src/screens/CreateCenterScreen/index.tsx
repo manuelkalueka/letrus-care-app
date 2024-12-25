@@ -55,7 +55,7 @@ export const CreateCenterScreen: React.FC = () => {
           },
           timerProgressBar: true // Ativa a barra de progresso
         })
-        navigate('/')
+        navigate('/home')
       }
     } catch (error) {
       Swal.fire({
