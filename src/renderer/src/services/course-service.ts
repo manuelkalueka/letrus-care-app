@@ -33,7 +33,6 @@ export const getOneCourseService = async (courseId: string): Promise<AxiosRespon
 
 export async function getCoursesService(centerId: string): Promise<AxiosResponse> {
   try {
-    console.log('Sou o centro ID: ', centerId)
     const { data } = await apiMananger.get(`/courses/all/${centerId}`)
     return data
   } catch (error) {

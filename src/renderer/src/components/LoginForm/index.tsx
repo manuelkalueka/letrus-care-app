@@ -48,9 +48,7 @@ export const LoginForm: React.FC = () => {
             const { data: centerData } = await getCenterService(userLoginData._id)
             saveToLocalStorage('center', centerData)
           }
-          console.log('Cai na navegação')
           navigate('/home')
-          console.log('Sai da navegação')
         } else {
           navigate('/centers/new')
         }
@@ -58,7 +56,7 @@ export const LoginForm: React.FC = () => {
     } catch (error) {
       if (error?.response?.status === 404) {
         navigate('/centers/new')
-      } else if (error?.response || error?.request) {
+      } else {
         MySwal.fire({
           title: 'Erro',
           text: 'Verifique os dados de acesso',

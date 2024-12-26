@@ -18,6 +18,8 @@ import { getCoursesService } from '@renderer/services/course-service'
 import { getGradesService } from '@renderer/services/grade-service'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
 
 const schema = yup
   .object({
@@ -437,9 +439,15 @@ export const EnrollmentScreen: React.FC = () => {
                             >
                               <Eye />
                             </button>
-                            <button className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125">
-                              <DownloadCloud />
-                            </button>
+                            <PDFDownloadLink
+                              document={<EnrollmentPDF enrollment={row} />}
+                              fileName={`comprovativo-inscricao-${row?.studentId?.name.surname}-${Date.now()}.pdf`}
+                            >
+                              <button className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125">
+                                <DownloadCloud />
+                              </button>
+                            </PDFDownloadLink>
+
                             <button
                               onClick={() => handleEdit(row?._id)}
                               className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"

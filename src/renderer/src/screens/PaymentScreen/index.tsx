@@ -10,17 +10,17 @@ import { useCenter } from '@renderer/contexts/center-context'
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
-  const [payments, setPayments] = useState<object[]>([]) // Lista de pagamentos
-  const [searchQuery, setSearchQuery] = useState<string>('') // Filtro de busca
+  // const [payments, setPayments] = useState<object[]>([]) // Lista de pagamentos
+  // const [searchQuery, setSearchQuery] = useState<string>('') // Filtro de busca
   const [filteredPayments, setFilteredPayments] = useState<object[]>([]) // Resultados filtrados
   const { center } = useCenter()
 
   // Obtém todos os pagamentos
   useEffect(() => {
-    const fetchPayments = async () => {
+    const fetchPayments = async (): Promise<void> => {
       try {
         const { data } = await getAllPaymentsService(center?._id) // Chamada ao serviço para listar pagamentos
-        setPayments(data)
+        // setPayments(data)
         setFilteredPayments(data)
       } catch (error) {
         console.error('Erro ao obter pagamentos:', error)
@@ -29,20 +29,20 @@ export const PaymentScreen: React.FC = () => {
     fetchPayments()
   }, [])
 
-  // Função de filtro
-  const handleSearch = (query: string) => {
-    setSearchQuery(query)
-    if (query) {
-      const results = payments.filter(
-        (payment: object | null) =>
-          payment?.studentName.toLowerCase().includes(query.toLowerCase()) ||
-          payment?.studentCode.toString().includes(query)
-      )
-      setFilteredPayments(results)
-    } else {
-      setFilteredPayments(payments)
-    }
-  }
+  // // Função de filtro
+  // const handleSearch = (query: string) => {
+  //   setSearchQuery(query)
+  //   if (query) {
+  //     const results = payments.filter(
+  //       (payment: object | null) =>
+  //         payment?.studentName.toLowerCase().includes(query.toLowerCase()) ||
+  //         payment?.studentCode.toString().includes(query)
+  //     )
+  //     setFilteredPayments(results)
+  //   } else {
+  //     setFilteredPayments(payments)
+  //   }
+  // }
 
   return (
     <div className="flex flex-col h-screen">
@@ -73,8 +73,6 @@ export const PaymentScreen: React.FC = () => {
               <input
                 type="text"
                 placeholder="Buscar por aluno ou código..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
                 className="flex-1 p-2 rounded-md border border-gray-400 bg-zinc-300 text-gray-700 placeholder:text-gray-700"
               />
             </div>
@@ -100,8 +98,12 @@ export const PaymentScreen: React.FC = () => {
                         key={index}
                         className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
                       >
-                        <td className="py-3 px-4">{payment?.studentName}</td>
-                        <td className="py-3 px-4">{payment?.studentCode}</td>
+                        <td className="py-3 px-4">
+                          {payment?.enrollmentId?.studentId?.name?.surname}
+                        </td>
+                        <td className="py-3 px-4">
+                          {payment?.enrollmentId?.studentId?.studentCode}
+                        </td>
                         <td className="py-3 px-4">{formateCurrency(payment?.amount)}</td>
                         <td className="py-3 px-4">{payment?.paymentMonthReference}</td>
                         <td className="py-3 px-4">{payment?.paymentYearReference}</td>

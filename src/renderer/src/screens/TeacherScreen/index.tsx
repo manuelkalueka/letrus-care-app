@@ -109,7 +109,7 @@ export const TeacherScreen: React.FC = () => {
     useEffect(() => {
       async function getCourses(): Promise<void> {
         const data = await getCoursesService(center?._id)
-        setCourses(data)
+        setCourses(Object(data))
       }
 
       getCourses()

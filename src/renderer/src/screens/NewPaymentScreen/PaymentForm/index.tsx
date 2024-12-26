@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
 import { getMonths, getYearsInterval } from '@renderer/utils/date'
+import { useNavigate } from 'react-router'
 
 const schemaPayment = yup
   .object({
@@ -44,17 +45,17 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
 
   const { user } = useAuth()
   const { center } = useCenter()
+  const navigate = useNavigate()
 
   const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
   const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
-    console.log('Dados submetidos:', data)
     try {
       await createPaymentService(data)
       Swal.fire({
         position: 'bottom-end',
         icon: 'success',
-        title: 'Pagamento Efeito com sucesso, baixe o comprovativo!!',
+        title: 'Sucesso, baixe o comprovativo!!',
         showConfirmButton: false,
         timer: 2000,
         customClass: {
@@ -64,6 +65,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         },
         timerProgressBar: true
       })
+      navigate('/payments')
     } catch (error) {
       const errorMessage = error?.response?.data?.message || 'Erro inesperado'
       Swal.fire({

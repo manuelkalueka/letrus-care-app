@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: letrus-care-app
+productName: letrus care
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: letrus-care-app
+  executableName: letrus care
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
