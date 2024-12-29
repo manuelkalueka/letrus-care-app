@@ -441,7 +441,7 @@ export const EnrollmentScreen: React.FC = () => {
                             </button>
                             <PDFDownloadLink
                               document={<EnrollmentPDF enrollment={row} />}
-                              fileName={`comprovativo-inscricao-${row?.studentId?.name.surname}-${Date.now()}.pdf`}
+                              fileName={`comprovativo-inscricao-${row?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`}
                             >
                               <button className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125">
                                 <DownloadCloud />

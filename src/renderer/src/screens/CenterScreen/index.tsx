@@ -7,6 +7,7 @@ import { CircleHelp } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
+import Logo from '../../assets/logo-vector.png'
 
 import * as yup from 'yup'
 
@@ -83,18 +84,28 @@ export const CenterScreen: React.FC = () => {
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <h2 className="text-3xl text-zinc-400">{center?.name.toLocaleUpperCase()}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-6">
-              <label htmlFor="center-name">
-                Nome <span className="text-orange-700">*</span>
-              </label>
-              <input
-                id="center-name"
-                defaultValue={center?.name}
-                {...register('name')}
-                placeholder="Ex.: Centro ABC"
-                type="text"
-                className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-              />
-              <span className="text-red-500">{errors.name?.message}</span>
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-10/12">
+                  <label htmlFor="center-name">
+                    Nome <span className="text-orange-700">*</span>
+                  </label>
+                  <input
+                    id="center-name"
+                    defaultValue={center?.name}
+                    {...register('name')}
+                    placeholder="Ex.: Centro ABC"
+                    type="text"
+                    className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0 border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+                  />
+                  <span className="text-red-500">{errors.name?.message}</span>
+                </div>
+                <div className="flex flex-col border shadow-shape border-zinc-700 h-24 bg-transparent rounded-md">
+                  <img src={Logo} alt="Logo do Centro" className="w-full h-full" />
+                  <button type="button" className="flex-1 rounded-md bg-orange-700 p-[2px] m-2">
+                    Carregar
+                  </button>
+                </div>
+              </div>
               <label htmlFor="center-address">
                 Endereço <span className="text-orange-700">*</span>
               </label>
