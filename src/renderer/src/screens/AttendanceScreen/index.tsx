@@ -1,9 +1,21 @@
+import React from 'react'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
-import React from 'react'
+
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+
+import { ClassroomCarousel } from './ClassroomCarousel'
 
 export const AttendanceScreen: React.FC = () => {
+  const classrooms = [
+    { name: 'Matemática - 8ª Série', teacher: 'Professor João', schedule: 'Seg e Qua - 14:00' },
+    { name: 'Física - 9ª Série', teacher: 'Professora Ana', schedule: 'Ter e Qui - 10:00' },
+    { name: 'Matemática - 8ª Série', teacher: 'Professor João', schedule: 'Seg e Qua - 14:00' },
+    { name: 'Física - 9ª Série', teacher: 'Professora Ana', schedule: 'Ter e Qui - 10:00' }
+  ]
+
   return (
     <div>
       <div className="flex flex-col h-screen">
@@ -19,10 +31,9 @@ export const AttendanceScreen: React.FC = () => {
                 <p>Níveis Disponíveis no (a) {center?.name}</p>
               </article> */}
 
-              {/* Botão para adicionar novo dado  ToDo alinhar a directa*/}
-              <button className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end">
-                Criar Novo Nível
-              </button>
+              <div className="container p-6">
+                <ClassroomCarousel classrooms={classrooms} />
+              </div>
             </div>
             <Footer />
           </div>
