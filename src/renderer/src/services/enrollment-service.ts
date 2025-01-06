@@ -61,10 +61,12 @@ export const createEnrollment = async (data: IEnrollment): Promise<void> => {
   }
 }
 
-export const getEnrollmentsService = async (centerId: string): Promise<AxiosResponse> => {
+export const getEnrollmentsService = async (
+  centerId: string,
+  page: number
+): Promise<AxiosResponse> => {
   try {
-
-    const { data } = await apiMananger.get(`/enrollments/all/${centerId}`)
+    const { data } = await apiMananger.get(`/enrollments/all/${centerId}?page=${page}`)
     return data
   } catch (error) {
     console.log('Erro ao buscar inscrições: ', error)

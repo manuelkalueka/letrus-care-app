@@ -11,6 +11,7 @@ interface IClass {
   classLimit?: number
   userId: string
   schedule: string
+  grade: string
 }
 
 export const getClassesService = async (centerId: string): Promise<AxiosResponse> => {
@@ -19,6 +20,7 @@ export const getClassesService = async (centerId: string): Promise<AxiosResponse
 }
 
 export const createClassService = async (classData: IClass): Promise<AxiosResponse> => {
+  console.log('Vendo a classe: ', classData.grade)
   try {
     const { data } = await apiMananger.post('/classes/new', classData)
     return data

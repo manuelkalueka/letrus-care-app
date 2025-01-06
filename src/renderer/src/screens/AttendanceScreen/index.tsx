@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
@@ -7,14 +7,33 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 import { ClassroomCarousel } from './ClassroomCarousel'
+import { getClassesService } from '@renderer/services/class-service'
+import { useCenter } from '@renderer/contexts/center-context'
+import { Plus } from 'lucide-react'
+import { Modal } from '@renderer/components/Modal'
+import { FormCreateClass } from './ClassroomCarousel/FormCreateClass'
 
 export const AttendanceScreen: React.FC = () => {
-  const classrooms = [
-    { name: 'Matemática - 8ª Série', teacher: 'Professor João', schedule: 'Seg e Qua - 14:00' },
-    { name: 'Física - 9ª Série', teacher: 'Professora Ana', schedule: 'Ter e Qui - 10:00' },
-    { name: 'Matemática - 8ª Série', teacher: 'Professor João', schedule: 'Seg e Qua - 14:00' },
-    { name: 'Física - 9ª Série', teacher: 'Professora Ana', schedule: 'Ter e Qui - 10:00' }
-  ]
+  const { center } = useCenter()
+  const [classes, setClasses] = useState<[]>([])
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const closeModal = (): void => {
+    setIsModalOpen(false)
+    handleModalClose()
+  }
+
+  async function getClass(): Promise<void> {
+    const tempClasses = await getClassesService(center?._id)
+    setClasses(Object(tempClasses))
+  }
+  useEffect(() => {
+    getClass()
+  }, [center?._id])
+
+  const handleModalClose = async () => {
+    await getClass()
+  }
 
   return (
     <div>
@@ -26,19 +45,41 @@ export const AttendanceScreen: React.FC = () => {
           <Sidebar />
           <div className="flex flex-col flex-1 overflow-auto pt-4">
             <div className="flex flex-col flex-1 w-11/12 mx-auto">
-              <h2 className="text-3xl text-zinc-400">Turmas e Presenças</h2>
-              {/* <article className="text-zinc-600 mt-3">
-                <p>Níveis Disponíveis no (a) {center?.name}</p>
-              </article> */}
-
-              <div className="container p-6">
-                <ClassroomCarousel classrooms={classrooms} />
+              <h2 className="text-3xl text-zinc-400">Turmas</h2>
+              <div
+                className="bg-orange-700 text-zinc-100 text-lg rounded shadow hover:shadow-lg cursor-pointer flex p-1 items-center justify-center self-end"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <p>
+                  <Plus />
+                </p>
+                <p>Nova Turma</p>
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Manhã</h3>
+                <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'morning')} />
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Tarde</h3>
+                <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'moon')} />
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Noite</h3>
+                <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'evening')} />
               </div>
             </div>
             <Footer />
           </div>
         </div>
       </div>
+      {/* Modal para criar nova turma */}
+      {isModalOpen && (
+        <Modal onClose={() => closeModal()} isOpen={isModalOpen}>
+          <h2 className="text-3xl">Criar Nova Turma</h2>
+          <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
+          <FormCreateClass onClose={() => closeModal()} />
+        </Modal>
+      )}
     </div>
   )
 }

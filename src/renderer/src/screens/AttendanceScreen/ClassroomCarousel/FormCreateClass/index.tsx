@@ -75,6 +75,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
+      console.warn("Dados no front: ", data);
       await createClassService(data)
       Swal.fire({
         position: 'bottom-end',

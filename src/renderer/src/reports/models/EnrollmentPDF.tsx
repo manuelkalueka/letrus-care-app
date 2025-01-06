@@ -43,7 +43,7 @@ export const EnrollmentPDF: React.FC<{ enrollment: object }> = ({ enrollment }) 
               </Text>
               <Text style={styles.lineSpace}>
                 <Text style={styles.label}>Idade: </Text>
-                {getAge() > 2 ? `${getAge()} anos` : `${getAge()} ano`}
+                {getAge() >= 2 ? `${getAge()} anos` : `${getAge()} ano`}
               </Text>
             </View>
             <View>

@@ -1,21 +1,16 @@
-import React, { useState } from 'react'
+import { MoreVertical } from 'lucide-react'
+import React from 'react'
 import Slider from 'react-slick'
-import { Plus } from 'lucide-react' // Ícone para o botão
-import { Modal } from '@renderer/components/Modal' // Importa o componente do modal
 
-import { FormCreateClass } from './../FormCreateClass' // Importa o formulário para criar nova turma
-
-export const ClassroomCarousel: React.FC<{ classrooms: object[] }> = ({ classrooms }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const closeModal = () => setIsModalOpen(false)
-
+export const ClassroomCarousel: React.FC<{
+  classrooms: object[]
+}> = ({ classrooms }) => {
   const settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: classrooms.length > 1 ? 4 : 1,
     slidesToScroll: 1,
-    adaptiveHeight: true,
     responsive: [
       {
         breakpoint: 768,
@@ -27,36 +22,51 @@ export const ClassroomCarousel: React.FC<{ classrooms: object[] }> = ({ classroo
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Turmas</h2>
-      <Slider {...settings}>
-        {/* Botão para adicionar nova turma */}
-        <div
-          className="flex items-center justify-center bg-gray-100 p-6 rounded shadow hover:shadow-lg cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <Plus size={32} />
-          <p>Nova Turma</p>
-        </div>
-
-        {/* Listagem das turmas */}
-        {classrooms.map((classroom, index) => (
-          <div key={index} className="flex flex-col bg-white p-4 rounded shadow hover:shadow-lg">
-            <h3 className="text-lg font-semibold">{classroom?.name}</h3>
-            <p>{classroom?.teacher}</p>
-            <p>{classroom?.schedule}</p>
+    <Slider {...settings}>
+      {/* Listagem das turmas */}
+      {classrooms.map((classroom, index) => (
+        <>
+          <div
+            key={index}
+            className="flex justify-between bg-zinc-600 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[229px] mx-1 rounded shadow hover:shadow-lg"
+          >
+            <main>
+              <h3 className="text-lg border-b">{classroom?.className}</h3>
+              <p>
+                <span className="font-semibold">Professor: </span>
+                [MKAL Dev]
+              </p>
+              <p>
+                <span className="font-semibold">Horário: </span>
+                {classroom?.schedule}
+              </p>
+              <p>
+                <span className="font-semibold">Periodo: </span>
+                {classroom?.period}
+              </p>
+              <p>
+                <span className="font-semibold">Nível: </span>
+                {classroom?.grade?.grade}
+              </p>
+              <p>
+                <span className="font-semibold">Curso: </span>
+                {classroom?.course?.name}
+              </p>
+            </main>
+            <section>
+              <button
+                type="button"
+                className="text-orange-300 bg-transparent active:opacity-70 transition-opacity"
+                onClick={() => {
+                  alert('Clicando o botão de opções')
+                }}
+              >
+                <MoreVertical />
+              </button>
+            </section>
           </div>
-        ))}
-      </Slider>
-
-      {/* Modal para criar nova turma */}
-      {isModalOpen && (
-        <Modal onClose={() => closeModal()} isOpen={isModalOpen}>
-          <h2 className="text-3xl">Criar Nova Turma</h2>
-          <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
-          <FormCreateClass onClose={() => closeModal()} />
-        </Modal>
-      )}
-    </div>
+        </>
+      ))}
+    </Slider>
   )
 }

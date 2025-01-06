@@ -20,6 +20,7 @@ import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
+import Pagination from '@renderer/components/Pagination'
 
 const schema = yup
   .object({
@@ -309,15 +310,6 @@ export const EnrollmentScreen: React.FC = () => {
 
   const [enrollments, setEnrolments] = useState<Array<object> | null>(null)
 
-  useEffect(() => {
-    async function getEnrollments(): Promise<void> {
-      const data = await getEnrollmentsService(center?._id)
-      setEnrolments(data)
-    }
-
-    getEnrollments()
-  }, [])
-
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [enrollmentInfo, setEnrollmentInfo] = useState<object | null>(null)
@@ -352,6 +344,19 @@ export const EnrollmentScreen: React.FC = () => {
       //ToDo, atualizar a lista depois de eliminar
     }
   }
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  const fetchEnrollments = async (page: number): Promise<void> => {
+    const data = await getEnrollmentsService(center?._id, page)
+    setEnrolments(Object(data?.enrollments))
+    setTotalPages(data?.totalEnrollments)
+  }
+
+  useEffect(() => {
+    fetchEnrollments(currentPage)
+  }, [currentPage])
 
   return (
     <div className="flex flex-col h-screen">
@@ -460,6 +465,11 @@ export const EnrollmentScreen: React.FC = () => {
                     ))}
                 </tbody>
               </table>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
               <div>
