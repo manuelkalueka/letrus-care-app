@@ -31,9 +31,9 @@ export const getOneCourseService = async (courseId: string): Promise<AxiosRespon
   }
 }
 
-export async function getCoursesService(centerId: string): Promise<AxiosResponse> {
+export async function getCoursesService(centerId: string, page:number): Promise<AxiosResponse> {
   try {
-    const { data } = await apiMananger.get(`/courses/all/${centerId}`)
+    const { data } = await apiMananger.get(`/courses/all/${centerId}?page=${page}`)
     return data
   } catch (error) {
     console.log('Erro ao buscar cursos', error)

@@ -7,27 +7,33 @@ import { formateCurrency } from '@renderer/utils/format'
 import { Search } from 'lucide-react'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { useCenter } from '@renderer/contexts/center-context'
+import Pagination from '@renderer/components/Pagination'
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
   // const [payments, setPayments] = useState<object[]>([]) // Lista de pagamentos
   // const [searchQuery, setSearchQuery] = useState<string>('') // Filtro de busca
-  const [filteredPayments, setFilteredPayments] = useState<object[]>([]) // Resultados filtrados
+  const [filteredPayments, setFilteredPayments] = useState<object[]>([])
   const { center } = useCenter()
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  const fetchPayments = async (page: number): Promise<void> => {
+    try {
+      const { data } = await getAllPaymentsService(center?._id, page)
+      // setPayments(data)
+      setFilteredPayments(Object(data?.payments))
+      setTotalPages(data?.totalPayments)
+    } catch (error) {
+      console.error('Erro ao obter pagamentos:', error)
+    }
+  }
 
   // Obtém todos os pagamentos
   useEffect(() => {
-    const fetchPayments = async (): Promise<void> => {
-      try {
-        const { data } = await getAllPaymentsService(center?._id) // Chamada ao serviço para listar pagamentos
-        // setPayments(data)
-        setFilteredPayments(data)
-      } catch (error) {
-        console.error('Erro ao obter pagamentos:', error)
-      }
-    }
-    fetchPayments()
-  }, [])
+    fetchPayments(currentPage)
+  }, [currentPage])
 
   // // Função de filtro
   // const handleSearch = (query: string) => {
@@ -137,6 +143,11 @@ export const PaymentScreen: React.FC = () => {
                   )}
                 </tbody>
               </table>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
           <Footer />

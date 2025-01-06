@@ -15,6 +15,7 @@ import { formatDate } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
+import Pagination from '@renderer/components/Pagination'
 
 export const TeacherScreen: React.FC = () => {
   const { center } = useCenter()
@@ -32,15 +33,19 @@ export const TeacherScreen: React.FC = () => {
   const handleEdit = (id: string) => {}
 
   const [teachers, setTeachers] = useState<[] | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
   useEffect(() => {
-    async function getTeachers(): Promise<void> {
-      const data = await getTeachersService(center?._id)
-      setTeachers(data)
+    async function getTeachers(page: number): Promise<void> {
+      const data = await getTeachersService(center?._id, page)
+      setTeachers(Object(data?.teachers))
+      setTotalPages(data?.totalTeachers)
       setIsLoaderTeacherList(false)
     }
 
-    getTeachers()
-  }, [isEditModalOpen, isModalOpen])
+    getTeachers(currentPage)
+  }, [isEditModalOpen, isModalOpen, currentPage])
 
   const schema = yup
     .object({
@@ -225,113 +230,120 @@ export const TeacherScreen: React.FC = () => {
   const TEACHER_STATUS = ['activo', 'inactivo']
   const [isLoaderTeacherList, setIsLoaderTeacherList] = useState<boolean>(true)
 
-  return isLoaderTeacherList ? (
-    <LoaderComponent />
-  ) : (
+  return (
     <div className="flex flex-col h-screen">
       {/* Header */}
       <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col flex-1 overflow-auto pt-4">
-          <div className="flex flex-col flex-1 w-11/12 mx-auto">
-            <h2 className="text-3xl text-zinc-400">Professores</h2>
-            <article className="text-zinc-600 mt-3">
-              <p>Professores Qualificados no (a) {center?.name}</p>
-            </article>
+        {isLoaderTeacherList ? (
+          <LoaderComponent />
+        ) : (
+          <div className="flex flex-col flex-1 overflow-auto pt-4">
+            <div className="flex flex-col flex-1 w-11/12 mx-auto">
+              <h2 className="text-3xl text-zinc-400">Professores</h2>
+              <article className="text-zinc-600 mt-3">
+                <p>Professores Qualificados no (a) {center?.name}</p>
+              </article>
 
-            {/* Botão para adicionar novo dado  ToDo alinhar a directa*/}
-            <button
-              onClick={openModal}
-              className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
-            >
-              Novo Professor
-            </button>
-            {/* Tabela */}
-            <div className="overflow-x-auto mt-6">
-              <table className="min-w-full border-collapse block md:table">
-                <thead className="block md:table-header-group">
-                  <tr className="block border border-zinc-700 md:table-row absolute -top-full md:top-auto -left-full md:left-auto md:relative">
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Código
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Nome Completo
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Cursos Leccionados
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Data de Contrato
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Status
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Acções
-                    </th>
-                  </tr>
-                </thead>
+              {/* Botão para adicionar novo dado  ToDo alinhar a directa*/}
+              <button
+                onClick={openModal}
+                className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
+              >
+                Novo Professor
+              </button>
+              {/* Tabela */}
+              <div className="overflow-x-auto mt-6">
+                <table className="min-w-full border-collapse block md:table">
+                  <thead className="block md:table-header-group">
+                    <tr className="block border border-zinc-700 md:table-row absolute -top-full md:top-auto -left-full md:left-auto md:relative">
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Código
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Nome Completo
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Cursos Leccionados
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Data de Contrato
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Status
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Acções
+                      </th>
+                    </tr>
+                  </thead>
 
-                <tbody className="block md:table-row-group">
-                  {teachers &&
-                    teachers.map((row, index) => (
-                      <tr
-                        key={index}
-                        className="bg-zinc-800 border border-zinc-700 block md:table-row"
-                      >
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.teacherCode}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.fullName}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          <select className="bg-transparent border-none outline-none">
-                            {row?.courses?.map((course, index) => (
-                              <option key={index} className="bg-zinc-800">
-                                {course?.name}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {formatDate(row?.hireDate)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {row?.status === 'active'
-                            ? TEACHER_STATUS[0]
-                            : row?.status === 'inactive' && TEACHER_STATUS[1]}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {/* Botões para Ações */}
-                          <div className="flex items-center justify-evenly gap-1">
-                            <button
-                              className="bg-zinc-500 text-zinc-100 px-2 py-1 rounded hover:brightness-125"
-                              onClick={() => handleEdit(row?._id)}
-                            >
-                              Ver
-                            </button>
-                            <button
-                              className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
-                              onClick={() => handleEdit(row?._id)}
-                            >
-                              Editar
-                            </button>
-                            <button className="bg-red-600 text-white px-2 py-1 rounded hover:brightness-125">
-                              Eliminar
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                  <tbody className="block md:table-row-group">
+                    {teachers &&
+                      teachers.map((row, index) => (
+                        <tr
+                          key={index}
+                          className="bg-zinc-800 border border-zinc-700 block md:table-row"
+                        >
+                          <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                            {row?.teacherCode}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                            {row?.fullName}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            <select className="bg-transparent border-none outline-none">
+                              {row?.courses?.map((course, index) => (
+                                <option key={index} className="bg-zinc-800">
+                                  {course?.name}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            {formatDate(row?.hireDate)}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            {row?.status === 'active'
+                              ? TEACHER_STATUS[0]
+                              : row?.status === 'inactive' && TEACHER_STATUS[1]}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            {/* Botões para Ações */}
+                            <div className="flex items-center justify-evenly gap-1">
+                              <button
+                                className="bg-zinc-500 text-zinc-100 px-2 py-1 rounded hover:brightness-125"
+                                onClick={() => handleEdit(row?._id)}
+                              >
+                                Ver
+                              </button>
+                              <button
+                                className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
+                                onClick={() => handleEdit(row?._id)}
+                              >
+                                Editar
+                              </button>
+                              <button className="bg-red-600 text-white px-2 py-1 rounded hover:brightness-125">
+                                Eliminar
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        )}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>

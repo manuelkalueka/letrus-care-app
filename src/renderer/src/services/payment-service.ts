@@ -23,9 +23,12 @@ export async function createPaymentService(data: IPayment): Promise<void> {
   }
 }
 
-export async function getAllPaymentsService(centerId: string): Promise<AxiosResponse> {
+export async function getAllPaymentsService(
+  centerId: string,
+  page: number
+): Promise<AxiosResponse> {
   try {
-    const result = await apiMananger.get(`/payments/all/${centerId}`)
+    const result = await apiMananger.get(`/payments/all/${centerId}?page=${page}`)
     return result
   } catch (error) {
     console.log('Erro ao buscar pagamentos: ', error)

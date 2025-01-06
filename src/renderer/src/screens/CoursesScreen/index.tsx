@@ -20,6 +20,7 @@ import { LoaderComponent } from '@renderer/components/Loader'
 import { Rings } from 'react-loader-spinner'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
+import Pagination from '@renderer/components/Pagination'
 
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
@@ -390,137 +391,148 @@ export const CoursesScreen: React.FC = () => {
     )
   }
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
   useEffect(() => {
-    async function getCourses(): Promise<void> {
-      const data = await getCoursesService(center?._id)
-      setCourses(data)
+    async function getCourses(page: number): Promise<void> {
+      const data = await getCoursesService(center?._id, page)
+      setCourses(Object(data?.courses))
+      setTotalPages(data?.totalCourses)
       setIsLoaderCourseList(false)
     }
 
-    getCourses()
-  }, [isEditModalOpen, isModalOpen])
+    getCourses(currentPage)
+  }, [isEditModalOpen, isModalOpen, currentPage])
 
   const COURSE_STATUS = ['activo', 'inactivo']
   //Tela Principal
-  return isLoaderCourseList ? (
-    <LoaderComponent />
-  ) : (
+  return (
     <div className="flex flex-col h-screen">
       {/* Header */}
       <HeaderMain />
 
       <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col flex-1 overflow-auto pt-4">
-          <div className="flex flex-col flex-1 w-11/12 mx-auto">
-            <h2 className="text-3xl text-zinc-400">Cursos</h2>
-            <article className="text-zinc-600 mt-3">
-              <p>Cursos de Excelência no (a) {center?.name}</p>
-            </article>
+        {isLoaderCourseList ? (
+          <LoaderComponent />
+        ) : (
+          <div className="flex flex-col flex-1 overflow-auto pt-4">
+            <div className="flex flex-col flex-1 w-11/12 mx-auto">
+              <h2 className="text-3xl text-zinc-400">Cursos</h2>
+              <article className="text-zinc-600 mt-3">
+                <p>Cursos de Excelência no (a) {center?.name}</p>
+              </article>
 
-            {/* Botão para adicionar novo dado */}
-            <button
-              onClick={openModal}
-              className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
-            >
-              Criar Novo Curso
-            </button>
-            {/* Tabela */}
-            <div className="overflow-x-auto mt-6">
-              <table className="min-w-full border-collapse block md:table">
-                <thead className="block md:table-header-group">
-                  <tr className="block border border-zinc-700 md:table-row absolute -top-full md:top-auto -left-full md:left-auto md:relative">
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Nome
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Modalidade
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Data de Ínicio
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Data de Termino
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Propina (Kz)
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Multa (Kz)
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Status
-                    </th>
-                    <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                      Acções
-                    </th>
-                  </tr>
-                </thead>
+              {/* Botão para adicionar novo dado */}
+              <button
+                onClick={openModal}
+                className="bg-orange-700 text-white px-4 py-2 rounded hover:brightness-110 transition-all mt-4 self-end"
+              >
+                Criar Novo Curso
+              </button>
+              {/* Tabela */}
+              <div className="overflow-x-auto mt-6">
+                <table className="min-w-full border-collapse block md:table">
+                  <thead className="block md:table-header-group">
+                    <tr className="block border border-zinc-700 md:table-row absolute -top-full md:top-auto -left-full md:left-auto md:relative">
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Nome
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Modalidade
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Data de Ínicio
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Data de Termino
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Propina (Kz)
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Multa (Kz)
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Status
+                      </th>
+                      <th className="bg-orange-800 text-white p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        Acções
+                      </th>
+                    </tr>
+                  </thead>
 
-                <tbody className="block md:table-row-group">
-                  {courses &&
-                    courses.map((row, index) => (
-                      <tr
-                        key={index}
-                        className="bg-zinc-800 border border-zinc-700 block md:table-row"
-                      >
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.name}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {row?.courseType == 'on_home' ? 'Domiciliar' : 'Centro'}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {formatDate(row?.startDate)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {formatDate(row?.endDate)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
-                          {formateCurrency(row?.fee)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
-                          {formateCurrency(row?.feeFine)}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {row?.status === 'active'
-                            ? COURSE_STATUS[0]
-                            : row?.status === 'inactive' && COURSE_STATUS[1]}
-                        </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
-                          {/* Botões para Ações */}
-                          <div className="flex items-center justify-evenly gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleEdit(row?._id)}
-                              className="bg-zinc-200 text-zinc-600 px-2 py-1 rounded hover:brightness-125"
-                            >
-                              Ver
-                            </button>
-                            <button
-                              type="submit"
-                              onClick={() => handleEdit(row?._id)}
-                              className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
-                            >
-                              Editar
-                            </button>
-                            <button
-                              type="submit"
-                              onClick={() => handleDelete(row?._id)}
-                              className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
-                            >
-                              Eliminar
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                  <tbody className="block md:table-row-group">
+                    {courses &&
+                      courses.map((row, index) => (
+                        <tr
+                          key={index}
+                          className="bg-zinc-800 border border-zinc-700 block md:table-row"
+                        >
+                          <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                            {row?.name}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                            {row?.courseType == 'on_home' ? 'Domiciliar' : 'Centro'}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            {formatDate(row?.startDate)}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            {formatDate(row?.endDate)}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
+                            {formateCurrency(row?.fee)}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-right block md:table-cell">
+                            {formateCurrency(row?.feeFine)}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                            {row?.status === 'active'
+                              ? COURSE_STATUS[0]
+                              : row?.status === 'inactive' && COURSE_STATUS[1]}
+                          </td>
+                          <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
+                            {/* Botões para Ações */}
+                            <div className="flex items-center justify-evenly gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleEdit(row?._id)}
+                                className="bg-zinc-200 text-zinc-600 px-2 py-1 rounded hover:brightness-125"
+                              >
+                                Ver
+                              </button>
+                              <button
+                                type="submit"
+                                onClick={() => handleEdit(row?._id)}
+                                className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
+                              >
+                                Editar
+                              </button>
+                              <button
+                                type="submit"
+                                onClick={() => handleDelete(row?._id)}
+                                className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        )}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
