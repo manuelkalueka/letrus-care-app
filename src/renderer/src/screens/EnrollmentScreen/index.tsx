@@ -18,8 +18,8 @@ import { getCoursesService } from '@renderer/services/course-service'
 import { getGradesService } from '@renderer/services/grade-service'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
-import { PDFDownloadLink } from '@react-pdf/renderer'
-import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
+// import { PDFDownloadLink } from '@react-pdf/renderer'
+// import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
 import Pagination from '@renderer/components/Pagination'
 
 const schema = yup
@@ -338,11 +338,19 @@ export const EnrollmentScreen: React.FC = () => {
     }
   }
   const handleDelete = async (id: string): Promise<void> => {
-    const ispermitted = confirm('Tens a Certeza, ToDo Personalizar o Confirm')
-    if (ispermitted) {
-      // await deleteCourseService(id)
-      //ToDo, atualizar a lista depois de eliminar
-    }
+    Swal.fire({
+      title: 'Tens a certeza?',
+      text: 'Esta acção não pode ser revertida!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, apagar!',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // await deleteCourseService(id)
+        fetchEnrollments(currentPage)
+      }
+    })
   }
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -363,7 +371,7 @@ export const EnrollmentScreen: React.FC = () => {
       {/* Header */}
       <HeaderMain />
 
-      <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
+      <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
@@ -444,14 +452,14 @@ export const EnrollmentScreen: React.FC = () => {
                             >
                               <Eye />
                             </button>
-                            <PDFDownloadLink
+                            {/* <PDFDownloadLink
                               document={<EnrollmentPDF enrollment={row} />}
                               fileName={`comprovativo-inscricao-${row?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`}
-                            >
-                              <button className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125">
-                                <DownloadCloud />
-                              </button>
-                            </PDFDownloadLink>
+                            > */}
+                            <button className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125">
+                              <DownloadCloud />
+                            </button>
+                            {/* </PDFDownloadLink> */}
 
                             <button
                               onClick={() => handleEdit(row?._id)}

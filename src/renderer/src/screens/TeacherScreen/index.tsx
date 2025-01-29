@@ -235,7 +235,7 @@ export const TeacherScreen: React.FC = () => {
       {/* Header */}
       <HeaderMain />
 
-      <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
+      <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         {isLoaderTeacherList ? (
           <LoaderComponent />

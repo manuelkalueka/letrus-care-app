@@ -8,8 +8,8 @@ import Swal from 'sweetalert2'
 import { useCenter } from '@renderer/contexts/center-context'
 
 import { useAuth } from '@renderer/contexts/auth-context'
-import { getGradesService } from '@renderer/services/grade-service'
-import { getCoursesService } from '@renderer/services/course-service'
+import { getGradesServiceAll } from '@renderer/services/grade-service'
+import { getCoursesAll } from '@renderer/services/course-service'
 import { useNavigate } from 'react-router'
 
 const schema = yup
@@ -69,7 +69,7 @@ export const Panel: React.FC = () => {
 
   useEffect(() => {
     async function getCourses(): Promise<void> {
-      const data = await getCoursesService(center?._id)
+      const data = await getCoursesAll(center?._id)
       setCourses(Object(data))
     }
 
@@ -80,7 +80,7 @@ export const Panel: React.FC = () => {
 
   useEffect(() => {
     async function getGrades(): Promise<void> {
-      const data = await getGradesService(center?._id)
+      const data = await getGradesServiceAll(center?._id)
       setGrades(Object(data))
     }
 

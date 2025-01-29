@@ -412,7 +412,7 @@ export const CoursesScreen: React.FC = () => {
       {/* Header */}
       <HeaderMain />
 
-      <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
+      <div className="flex justify-center flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         {isLoaderCourseList ? (
           <LoaderComponent />

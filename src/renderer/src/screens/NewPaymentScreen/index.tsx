@@ -85,7 +85,7 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
       {/* Header */}
       <HeaderMain />
 
-      <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
+      <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
           <div className="flex flex-col w-11/12 mx-auto">

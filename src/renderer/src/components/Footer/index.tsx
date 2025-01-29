@@ -9,9 +9,9 @@ export const DateTimeDisplay: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(formatDateWithTime(new Date()))
-    }, 1000) // Atualiza a cada segundo
+    }, 1000)
 
-    return (): void => clearInterval(interval) // Limpa o intervalo ao desmontar o componente
+    return (): void => clearInterval(interval)
   }, [])
 
   return <p>Data: {currentTime} </p>

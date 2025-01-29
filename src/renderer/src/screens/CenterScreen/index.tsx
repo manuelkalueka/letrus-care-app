@@ -78,7 +78,7 @@ export const CenterScreen: React.FC = () => {
     <div className="flex flex-col h-screen">
       {/* Header */}
       <HeaderMain />
-      <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
+      <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">

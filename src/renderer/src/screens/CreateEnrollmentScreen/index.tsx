@@ -8,7 +8,7 @@ export const CreateEnrollmentScreen: React.FC = () => {
     <div className="flex flex-col h-screen">
       {/* Header */}
       <HeaderMain />
-      <div className="flex flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
+      <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
           <div className="w-11/12 mx-auto">

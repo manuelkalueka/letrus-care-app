@@ -17,7 +17,17 @@ export async function createGrade(data: IGrade): Promise<void> {
 
 export async function getGradesService(centerId: string, page: number): Promise<AxiosResponse> {
   try {
-    const { data } = await apiMananger.get(`/grades/all/${centerId}?page=${page}`)
+    const { data } = await apiMananger.get(`/grades/all/paginated/${centerId}?page=${page}`)
+    return data
+  } catch (error) {
+    console.log('Erro ao buscar níveis', error)
+    throw error
+  }
+}
+
+export async function getGradesServiceAll(centerId: string): Promise<AxiosResponse> {
+  try {
+    const { data } = await apiMananger.get(`/grades/all/${centerId}`)
     return data
   } catch (error) {
     console.log('Erro ao buscar níveis', error)
