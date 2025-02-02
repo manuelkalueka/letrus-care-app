@@ -14,7 +14,7 @@ export const DateTimeDisplay: React.FC = () => {
     return (): void => clearInterval(interval)
   }, [])
 
-  return <p>Data: {currentTime} </p>
+  return <p>{currentTime} </p>
 }
 
 export const Footer: React.FC = () => {

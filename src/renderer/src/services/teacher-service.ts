@@ -26,7 +26,17 @@ export async function createTeacher(data: ITeacher): Promise<number> {
 
 export async function getTeachersService(centerId: string, page: number): Promise<AxiosResponse> {
   try {
-    const { data } = await apiMananger.get(`/teachers/all/${centerId}?page=${page}`)
+    const { data } = await apiMananger.get(`/teachers/all/paginated/${centerId}?page=${page}`)
+    return data
+  } catch (error) {
+    console.log('Erro ao buscar professores', error)
+    throw error
+  }
+}
+
+export async function getTeachersServiceAll(centerId: string): Promise<AxiosResponse> {
+  try {
+    const { data } = await apiMananger.get(`/teachers/all/${centerId}`)
     return data
   } catch (error) {
     console.log('Erro ao buscar professores', error)

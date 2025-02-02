@@ -14,13 +14,15 @@ import withReactContent from 'sweetalert2-react-content'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { getCoursesService } from '@renderer/services/course-service'
-import { getGradesService } from '@renderer/services/grade-service'
+import { getCoursesAll } from '@renderer/services/course-service'
+import { getGradesServiceAll } from '@renderer/services/grade-service'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
-// import { PDFDownloadLink } from '@react-pdf/renderer'
-// import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
+import { pdf } from '@react-pdf/renderer'
+
+import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
 import Pagination from '@renderer/components/Pagination'
+import { ContentLoader } from '@renderer/components/ContentLoader'
 
 const schema = yup
   .object({
@@ -109,7 +111,7 @@ const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
 
   useEffect(() => {
     async function getCourses(): Promise<void> {
-      const data = await getCoursesService(center?._id)
+      const data = await getCoursesAll(center?._id)
       setCourses(Object(data))
     }
 
@@ -120,7 +122,7 @@ const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
 
   useEffect(() => {
     async function getGrades(): Promise<void> {
-      const data = await getGradesService(center?._id)
+      const data = await getGradesServiceAll(center?._id)
       setGrades(Object(data))
     }
 
@@ -308,7 +310,7 @@ export const EnrollmentScreen: React.FC = () => {
   const { center } = useCenter()
   const ENROLLMENT_STATUS = ['Inscrito', 'Completa', 'Cancelado']
 
-  const [enrollments, setEnrolments] = useState<Array<object> | null>(null)
+  const [enrollments, setEnrollments] = useState<Array<object> | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -358,13 +360,38 @@ export const EnrollmentScreen: React.FC = () => {
 
   const fetchEnrollments = async (page: number): Promise<void> => {
     const data = await getEnrollmentsService(center?._id, page)
-    setEnrolments(Object(data?.enrollments))
+    setEnrollments(Object(data?.enrollments))
     setTotalPages(data?.totalEnrollments)
   }
 
   useEffect(() => {
-    fetchEnrollments(currentPage)
-  }, [currentPage])
+    if (center?._id) fetchEnrollments(currentPage)
+  }, [center?._id, currentPage])
+
+  const [selectedEnrollment, setSelectedEnrollment] = useState<object | null>(null)
+
+  const handleDownloadPDF = (enrollment: object) => {
+    setSelectedEnrollment(enrollment)
+  }
+
+  useEffect(() => {
+    if (selectedEnrollment) {
+      const generatePDF = async () => {
+        const blob = await pdf(<EnrollmentPDF enrollment={selectedEnrollment} />).toBlob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `comprovativo-inscricao-${selectedEnrollment?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        setSelectedEnrollment(null)
+      }
+
+      generatePDF()
+    }
+  }, [selectedEnrollment])
 
   return (
     <div className="flex flex-col h-screen">
@@ -415,7 +442,7 @@ export const EnrollmentScreen: React.FC = () => {
                 </thead>
 
                 <tbody className="block md:table-row-group">
-                  {enrollments &&
+                  {enrollments ? (
                     enrollments.map((row, index) => (
                       <tr
                         key={index}
@@ -441,7 +468,7 @@ export const EnrollmentScreen: React.FC = () => {
                             ? ENROLLMENT_STATUS[0]
                             : row?.status === 'completed'
                               ? ENROLLMENT_STATUS[1]
-                              : ENROLLMENT_STATUS.pop()}
+                              : ENROLLMENT_STATUS[2]}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {/* Botões para Ações */}
@@ -452,14 +479,12 @@ export const EnrollmentScreen: React.FC = () => {
                             >
                               <Eye />
                             </button>
-                            {/* <PDFDownloadLink
-                              document={<EnrollmentPDF enrollment={row} />}
-                              fileName={`comprovativo-inscricao-${row?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`}
-                            > */}
-                            <button className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125">
+                            <button
+                              onClick={() => handleDownloadPDF(row)}
+                              className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
+                            >
                               <DownloadCloud />
                             </button>
-                            {/* </PDFDownloadLink> */}
 
                             <button
                               onClick={() => handleEdit(row?._id)}
@@ -470,7 +495,14 @@ export const EnrollmentScreen: React.FC = () => {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td rowSpan={7}>
+                        <ContentLoader />
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
               <Pagination
@@ -479,6 +511,16 @@ export const EnrollmentScreen: React.FC = () => {
                 onPageChange={setCurrentPage}
               />
             </div>
+            {/* {selectedEnrollment && (
+              <ReactPDF.PDFDownloadLink
+                id="pdf-download-link"
+                document={<EnrollmentPDF enrollment={selectedEnrollment} />}
+                fileName={`comprovativo-inscricao-${selectedEnrollment?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`}
+                style={{ display: 'none' }}
+              >
+                Download PDF
+              </ReactPDF.PDFDownloadLink>
+            )} */}
             <Modal isOpen={isModalOpen} onClose={closeModal}>
               <div>
                 <h2 className="text-3xl">Editar Inscrição</h2>

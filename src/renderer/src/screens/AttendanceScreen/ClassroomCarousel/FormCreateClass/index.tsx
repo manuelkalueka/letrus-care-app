@@ -4,9 +4,9 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getTeachersService } from '@renderer/services/teacher-service'
-import { getGradesService } from '@renderer/services/grade-service'
-import { getCoursesService } from '@renderer/services/course-service'
+import { getTeachersService, getTeachersServiceAll } from '@renderer/services/teacher-service'
+import { getGradesServiceAll } from '@renderer/services/grade-service'
+import { getCoursesAll } from '@renderer/services/course-service'
 import { createClassService } from '@renderer/services/class-service'
 import Swal from 'sweetalert2'
 
@@ -40,17 +40,17 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
 
   useEffect(() => {
     const fetchTeachers = async (): Promise<void> => {
-      const data = await getTeachersService(center?._id)
+      const data = await getTeachersServiceAll(center?._id)
       setTeachers(Object(data))
       if (data) setSelectedTeachers([data[0]._id]) // Seleccionar o primeiro professor
     }
     const fetchGrades = async (): Promise<void> => {
-      const data = await getGradesService(center?._id)
+      const data = await getGradesServiceAll(center?._id)
       setGrades(Object(data))
       if (data) setSelectedGrade(data[0]._id) // Seleccionar o primeiro nível
     }
     const fetchCourses = async (): Promise<void> => {
-      const data = await getCoursesService(center?._id)
+      const data = await getCoursesAll(center?._id)
       setCourses(Object(data))
       if (data) setSelectedCourse(data[0]._id) // Seleccionar o primeiro curso
     }
@@ -75,7 +75,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      console.warn("Dados no front: ", data);
+      console.warn('Dados no front: ', data)
       await createClassService(data)
       Swal.fire({
         position: 'bottom-end',

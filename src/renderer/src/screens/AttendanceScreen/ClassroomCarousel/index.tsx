@@ -1,5 +1,5 @@
 import { MoreVertical } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import Slider from 'react-slick'
 
 export const ClassroomCarousel: React.FC<{
@@ -20,16 +20,61 @@ export const ClassroomCarousel: React.FC<{
       }
     ]
   }
+  const [showMenu, setShowMenu] = useState<boolean>(false)
+
+  const DropDownMenu: React.FC = () => {
+    return (
+      <div className="absolute right-0 top-0 bg-white shadow-lg rounded-md z-10">
+        <ul>
+          <li>
+            <button type="button" className="flex items-center p-2 hover:bg-gray-100 w-full">
+              <span className="mr-2">
+                <MoreVertical />
+              </span>
+              <span>Adicionar Aluno</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" className="flex items-center p-2 hover:bg-gray-100 w-full">
+              <span className="mr-2">
+                <MoreVertical />
+              </span>
+              <span>Editar Turma</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" className="flex items-center p-2 hover:bg-gray-100 w-full">
+              <span className="mr-2">
+                <MoreVertical />
+              </span>
+              <span>Cancelar</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    )
+  }
 
   return (
     <Slider {...settings}>
       {classrooms.map((classroom) => (
         <div
           key={classroom?._id}
-          className="flex justify-between bg-zinc-600 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[229px] mx-1 rounded shadow hover:shadow-lg"
+          className="relative flex bg-zinc-800 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[229px] mx-1 rounded shadow hover:shadow-lg"
         >
+          <section className="flex justify-between">
+            <h3 className="text-lg border-b w-10/12">{classroom?.className}</h3>
+
+            <button
+              type="button"
+              className=" text-orange-300 bg-transparent active:opacity-70 transition-opacity"
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              <MoreVertical />
+            </button>
+            {showMenu && <DropDownMenu />}
+          </section>
           <main>
-            <h3 className="text-lg border-b">{classroom?.className}</h3>
             <p>
               <span className="font-semibold">Professor: </span>
               [MKAL Dev]
@@ -51,17 +96,6 @@ export const ClassroomCarousel: React.FC<{
               {classroom?.course?.name}
             </p>
           </main>
-          <section>
-            <button
-              type="button"
-              className="text-orange-300 bg-transparent active:opacity-70 transition-opacity"
-              onClick={() => {
-                alert('Clicando o botão de opções')
-              }}
-            >
-              <MoreVertical />
-            </button>
-          </section>
         </div>
       ))}
     </Slider>

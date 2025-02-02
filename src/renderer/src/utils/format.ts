@@ -29,8 +29,17 @@ function getHour(date: Date): string {
   return hora
 }
 
-function formatDateWithTime(date: Date) {
-  return moment(date).locale('pt').format('MMMM Do YYYY, h:mm:ss a')
+function formatDateWithTime(date: Date | string): string {
+  const dataNormalized = new Date(date)
+  const dataFullString = `${dataNormalized.toLocaleString('pt', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })} ${dataNormalized.toLocaleTimeString('pt')}`
+
+  return dataFullString
+  // return moment(date).locale('pt-br').format('LLLL')
 }
 
 function formateCurrency(value): string {
