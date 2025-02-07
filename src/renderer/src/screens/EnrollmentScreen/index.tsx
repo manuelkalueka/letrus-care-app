@@ -23,6 +23,7 @@ import { pdf } from '@react-pdf/renderer'
 import { EnrollmentPDF } from '@renderer/reports/models/EnrollmentPDF'
 import Pagination from '@renderer/components/Pagination'
 import { ContentLoader } from '@renderer/components/ContentLoader'
+import { TailSpin } from 'react-loader-spinner'
 
 const schema = yup
   .object({
@@ -369,6 +370,7 @@ export const EnrollmentScreen: React.FC = () => {
   }, [center?._id, currentPage])
 
   const [selectedEnrollment, setSelectedEnrollment] = useState<object | null>(null)
+  const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false)
 
   const handleDownloadPDF = (enrollment: object) => {
     setSelectedEnrollment(enrollment)
@@ -376,7 +378,9 @@ export const EnrollmentScreen: React.FC = () => {
 
   useEffect(() => {
     if (selectedEnrollment) {
-      const generatePDF = async () => {
+      const generatePDF = async (): Promise<void> => {
+        setIsLoadingPDF(true)
+
         const blob = await pdf(<EnrollmentPDF enrollment={selectedEnrollment} />).toBlob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -387,6 +391,7 @@ export const EnrollmentScreen: React.FC = () => {
         document.body.removeChild(a)
         URL.revokeObjectURL(url)
         setSelectedEnrollment(null)
+        setIsLoadingPDF(false)
       }
 
       generatePDF()
@@ -473,17 +478,21 @@ export const EnrollmentScreen: React.FC = () => {
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {/* Botões para Ações */}
                           <div className="flex items-center justify-evenly gap-1">
-                            <button
+                            {/* <button
                               onClick={() => handleDelete(row?._id)}
                               className="bg-zinc-500 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               <Eye />
-                            </button>
+                            </button> */}
                             <button
                               onClick={() => handleDownloadPDF(row)}
                               className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
                             >
-                              <DownloadCloud />
+                              {isLoadingPDF ? (
+                                <TailSpin width={20} height={20} color="#c2410c " />
+                              ) : (
+                                <DownloadCloud />
+                              )}
                             </button>
 
                             <button

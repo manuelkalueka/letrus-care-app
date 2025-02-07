@@ -55,8 +55,7 @@ export const Panel: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    reset
+    formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
@@ -106,7 +105,7 @@ export const Panel: React.FC = () => {
       } = data
       const parents = { father, mother }
       const name = { fullName, surname }
-      await createEnrollment({
+      const { data: enrollment } = await createEnrollment({
         parents,
         address,
         birthDate,
@@ -134,8 +133,7 @@ export const Panel: React.FC = () => {
       })
       //Limpa o Form
       // reset()
-      // ToDo chamar o componente <NewPaymentScreen resultStudent ={newStudent}/>
-      navigate('/enrollment')
+      await navigate('/payments/new', { state: { enrollment } });
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',

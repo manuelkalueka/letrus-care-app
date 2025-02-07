@@ -4,11 +4,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
-import { searchStudentService } from '@renderer/services/student'
+import { getStudentById, searchStudentService } from '@renderer/services/student'
 import { ArrowRight, BookUser, GraduationCap, ShieldCheck } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { PaymentForm } from './PaymentForm'
+import { useLocation } from 'react-router'
 
 // Validação com yup
 const schemaStudentSearch = yup
@@ -26,12 +27,13 @@ interface NewPaymentScreenProps {
 }
 
 export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
-  const [resultList, setResultList] = useState<[] | null>(null)
-  const [results, setResults] = useState<object | null>(null) // Armazenar resultados da pesquisa
-
+  const location = useLocation()
+  const enrollmentFromState = location.state?.enrollment || null
   const { center } = useCenter()
 
-  const [isSelected, setIsSelected] = useState(false) // Estado para controle da seleção do estudante padrão
+  const [resultList, setResultList] = useState<[] | null>(null)
+  const [results, setResults] = useState<object | null>(null)
+  const [isSelected, setIsSelected] = useState(false)
 
   // Hook do formulário de busca do estudante
   const {
@@ -46,12 +48,26 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
 
   const studentSearch = watchSearch('studentSearch') // Observa mudanças no campo de busca
 
+  useEffect(() => {
+    async function getStudentInEnrollment(id: string): Promise<void> {
+      const studentFromState = await getStudentById(id)
+      if (studentFromState) {
+        setResults(studentFromState)
+        const tmpStudent = [Object(studentFromState)]
+        setResultList(tmpStudent as [])
+        setIsSelected(true)
+      }
+    }
+
+    getStudentInEnrollment(enrollmentFromState?.studentId)
+  }, [])
+
   // Função para buscar dados da API
   const fetchResults = async (query: string) => {
     if (query) {
       try {
         const response = await searchStudentService(center?._id, query)
-        setResultList(response) // Armazena os resultados vindos da API
+        setResultList(Object(response))
       } catch (error) {
         console.error('Erro ao buscar dados:', error)
         setResultList(null)
@@ -76,8 +92,8 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
   }
 
   function selectedStudentForPayment(student: object | null): void {
-    setIsSelected(true)
     setResults(student)
+    setIsSelected(true)
   }
 
   return (
@@ -149,7 +165,7 @@ export const NewPaymentScreen: React.FC<NewPaymentScreenProps> = (props) => {
                     </p>
                   </div>
                 ))}
-              {!!resultList === false && (
+              {!!resultList && (
                 <div className="flex items-center gap-2">
                   <p>Estudante não encontrado!</p>
                 </div>

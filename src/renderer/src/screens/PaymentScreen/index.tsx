@@ -105,7 +105,9 @@ export const PaymentScreen: React.FC = () => {
                         className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
                       >
                         <td className="py-3 px-4">
-                          {payment?.enrollmentId?.studentId?.name?.surname}
+                          {payment?.enrollmentId?.studentId?.name?.surname
+                            ? payment?.enrollmentId?.studentId?.name?.surname
+                            : payment?.enrollmentId?.studentId?.name?.fullName?.split(' ')?.pop()}
                         </td>
                         <td className="py-3 px-4">
                           {payment?.enrollmentId?.studentId?.studentCode}
