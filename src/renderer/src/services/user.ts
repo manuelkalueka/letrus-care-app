@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface IAuth {
+  _id?: string
   username: string
   password: string
   role?: string

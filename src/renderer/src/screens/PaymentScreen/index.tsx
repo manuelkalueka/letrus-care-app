@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { Footer } from '@renderer/components/Footer'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useNavigate } from 'react-router'
-import { getAllPaymentsService } from '@renderer/services/payment-service'
+import {
+  getAllPaymentsService,
+  getPaymentService,
+  IPayment
+} from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
-import { Search } from 'lucide-react'
+import { DownloadCloud, Search } from 'lucide-react'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { useCenter } from '@renderer/contexts/center-context'
 import Pagination from '@renderer/components/Pagination'
+import { pdf } from '@react-pdf/renderer'
+import { PaymentPDF } from '@renderer/reports/models/PaymentPDF'
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
@@ -49,6 +55,42 @@ export const PaymentScreen: React.FC = () => {
   //     setFilteredPayments(payments)
   //   }
   // }
+
+  const [selectedPayment, setSelectedPayment] = useState<object | null>(null)
+
+  const handleDownloadPDF = async (payment: IPayment): Promise<void> => {
+    const tmpPayment: React.SetStateAction<IPayment | null> = await getPaymentService(
+      payment?._id as string
+    )
+
+    setSelectedPayment(tmpPayment)
+  }
+
+  useEffect(() => {
+    if (selectedPayment) {
+      const generatePDF = async (): Promise<void> => {
+        const blob = await pdf(<PaymentPDF payment={selectedPayment} />).toBlob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `recibo-pagamento-${
+          selectedPayment?.payment?.enrollmentId?.studentId?.name?.surname
+            ? selectedPayment?.payment?.enrollmentId?.studentId?.name?.surname?.toLowerCase()
+            : selectedPayment?.payment?.enrollmentId?.studentId?.name?.fullName
+                ?.split(' ')
+                ?.pop()
+                ?.toLowerCase()
+        }-${Date.now()}.pdf`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        setSelectedPayment(null)
+      }
+
+      generatePDF()
+    }
+  }, [selectedPayment])
 
   return (
     <div className="flex flex-col h-screen">
@@ -128,10 +170,10 @@ export const PaymentScreen: React.FC = () => {
                         </td>
                         <td className="py-3 px-4">
                           <button
-                            onClick={() => navigate(`/payments/${payment?.id}`)}
-                            className="text-blue-600 hover:underline"
+                            onClick={() => handleDownloadPDF(payment)}
+                            className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
                           >
-                            Ver Detalhes
+                            <DownloadCloud />
                           </button>
                         </td>
                       </tr>

@@ -13,7 +13,7 @@ import { getFromLocalStorage, saveToLocalStorage } from '@renderer/utils/localSt
 
 interface CenterContextData {
   loading: boolean
-  center: object | null
+  center: ICenter | null
   createCenter: (data: ICenter, createdBy: string) => Promise<AxiosResponse>
   centerExistsContext: (userId: string) => Promise<boolean>
   editCenterContext: (centerId: string, data: ICenter) => Promise<void>

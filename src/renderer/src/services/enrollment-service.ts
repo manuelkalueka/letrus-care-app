@@ -18,6 +18,11 @@ interface IEnrollment {
   image_file?: File
 }
 
+interface IResponse {
+  enrollments: IEnrollment
+  totalEnrollments: number
+}
+
 export const createEnrollment = async (data: IEnrollment): Promise<AxiosResponse> => {
   const {
     name,
@@ -63,13 +68,11 @@ export const createEnrollment = async (data: IEnrollment): Promise<AxiosResponse
   }
 }
 
-export const getEnrollmentsService = async (
-  centerId: string,
-  page: number
-): Promise<AxiosResponse> => {
+export const getEnrollmentsService = async (centerId: string, page: number): Promise<IResponse> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/all/${centerId}?page=${page}`)
-    return data
+    const typeData: IResponse = data
+    return typeData
   } catch (error) {
     console.log('Erro ao buscar inscrições: ', error)
     throw error

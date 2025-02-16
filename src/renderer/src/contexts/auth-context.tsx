@@ -1,12 +1,16 @@
 import apiMananger from '@renderer/services/api'
 import { IAuth, loginService, signupService } from '@renderer/services/user'
 import React, { createContext, useState, useEffect, useContext } from 'react'
+interface IResponse {
+  token: string
+  user: IAuth
+}
 
 interface AuthContextData {
   signed: boolean
   loading: boolean
-  user: object | null
-  login: (data: IAuth) => Promise<object | null>
+  user: IAuth | null
+  login: (data: IAuth) => Promise<IResponse | null>
   signup: (data: IAuth) => Promise<number | undefined>
   logout: () => void
 }
@@ -15,7 +19,7 @@ interface AuthContextData {
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<object | null>(null)
+  const [user, setUser] = useState<IAuth | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Persistência do usuário e token no local storage
@@ -34,17 +38,19 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [])
 
   // Função para login
-  const login = async ({ password, username }: IAuth): Promise<object | null> => {
+  const login = async ({ password, username }: IAuth): Promise<IResponse | null> => {
     try {
       const response = await loginService({ password, username })
+      if (response) {
+        const typedData: IResponse = response.data
+        setUser(typedData.user)
+        localStorage.setItem('user', JSON.stringify(typedData.user))
+        localStorage.setItem('token', typedData.token)
+        apiMananger.defaults.headers.common['Authorization'] = `Bearer ${typedData.token}`
 
-      const { data } = response
-      setUser(data?.user)
-      localStorage.setItem('user', JSON.stringify(data?.user))
-      localStorage.setItem('token', data?.token)
-      apiMananger.defaults.headers.common['Authorization'] = `Bearer ${data?.token}`
-
-      return response?.data
+        return typedData
+      }
+      return null
     } catch (error) {
       console.log('Erro no login em contexto ', error)
       throw error

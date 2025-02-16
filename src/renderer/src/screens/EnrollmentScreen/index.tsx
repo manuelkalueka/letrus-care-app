@@ -361,8 +361,8 @@ export const EnrollmentScreen: React.FC = () => {
 
   const fetchEnrollments = async (page: number): Promise<void> => {
     const data = await getEnrollmentsService(center?._id, page)
-    setEnrollments(Object(data?.enrollments))
-    setTotalPages(data?.totalEnrollments)
+    setEnrollments(Object(data.enrollments))
+    setTotalPages(data.totalEnrollments)
   }
 
   useEffect(() => {
@@ -385,7 +385,9 @@ export const EnrollmentScreen: React.FC = () => {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `comprovativo-inscricao-${selectedEnrollment?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`
+        a.download = `comprovativo-inscricao-${selectedEnrollment?.studentId?.name?.surname
+          ? selectedEnrollment?.studentId?.name?.surname?.toLowerCase()
+          : selectedEnrollment?.studentId?.name?.fullName?.toLowerCase()?.split(' ')?.pop()}-${Date.now()}.pdf`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
@@ -520,16 +522,6 @@ export const EnrollmentScreen: React.FC = () => {
                 onPageChange={setCurrentPage}
               />
             </div>
-            {/* {selectedEnrollment && (
-              <ReactPDF.PDFDownloadLink
-                id="pdf-download-link"
-                document={<EnrollmentPDF enrollment={selectedEnrollment} />}
-                fileName={`comprovativo-inscricao-${selectedEnrollment?.studentId?.name.surname.toLowerCase()}-${Date.now()}.pdf`}
-                style={{ display: 'none' }}
-              >
-                Download PDF
-              </ReactPDF.PDFDownloadLink>
-            )} */}
             <Modal isOpen={isModalOpen} onClose={closeModal}>
               <div>
                 <h2 className="text-3xl">Editar Inscrição</h2>

@@ -10,6 +10,7 @@ import Swal from 'sweetalert2'
 import * as yup from 'yup'
 import { getMonths, getYearsInterval } from '@renderer/utils/date'
 import { useNavigate } from 'react-router'
+import { differenceInMonths } from 'date-fns'
 
 const schemaPayment = yup
   .object({
@@ -35,7 +36,7 @@ interface PaymentFormProps {
 }
 export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   // Hook do formulário de pagamento
-  const { register, handleSubmit, setValue } = useForm<FormPaymentData>({
+  const { register, handleSubmit, setValue, watch } = useForm<FormPaymentData>({
     resolver: yupResolver(schemaPayment)
   })
 
@@ -50,6 +51,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
     try {
+      console.log(data)
       await createPaymentService(data)
       Swal.fire({
         position: 'bottom-end',
@@ -90,24 +92,40 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     getEnrollmentByStudent(props.resultsInForm?._id)
   }, [props.resultsInForm])
 
+  const [lateFee, setLateFee] = useState<number>(0) // Estado para armazenar multa calculada
+
+  const paymentMonth = watch('paymentMonthReference')
+  const paymentYear = watch('paymentYearReference')
+
   useEffect(() => {
-    const totalAmount = Number(
-      enrollmentByStudent?.courseId?.fee + enrollmentByStudent?.courseId?.feeFine
-    )
-    setValue('amount', totalAmount)
+    //melhorar para ter multa quando o aluno vai pagar meses muitos anteriores, sem nenhum pagamento ainda
+    async function calculateAmount(): Promise<void> {
+      if (enrollmentByStudent) {
+        // const results = await getStudentPaymentsService(enrollmentByStudent?._id)
+        // const dueDate = results ? new Date(results[results?.length - 1]?.dueDate) : new Date()
+        const dueDate = new Date()
+        const currentReferenceDate = new Date(Number(paymentYear), monthsList.indexOf(paymentMonth))
+        const monthsDiference = differenceInMonths(dueDate, currentReferenceDate)
+        console.log(
+          'Data de expiração: ',
+          dueDate,
+          '\nData actual: ',
+          currentReferenceDate,
+          '\nDiferença: ',
+          monthsDiference
+        )
+        const lateFeeRate = enrollmentByStudent?.courseId?.feeFine || 0
+        const calculatedLateFee = monthsDiference > 1 ? monthsDiference * lateFeeRate : 0
 
-    if (enrollmentByStudent?._id) {
-      setValue('enrollmentId', enrollmentByStudent?._id)
+        setLateFee(calculatedLateFee)
+        const totalAmount = Number(enrollmentByStudent?.courseId?.fee) + calculatedLateFee
+        setValue('amount', totalAmount)
+        setValue('enrollmentId', enrollmentByStudent?._id)
+      }
     }
-  }, [enrollmentByStudent, setValue])
 
-  // Limpa Todos os Campos
-  // function resetStatesAndFields(): void {
-  //   setIsSelected(false)
-  //   setResults(null)
-  //   setEnrollmentByStudent(null)
-  //   resetSearch()
-  // }
+    calculateAmount()
+  }, [enrollmentByStudent, paymentMonth, paymentYear, setValue])
 
   return (
     <>
@@ -185,7 +203,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           />
           <label className="text-zinc-300">Multa</label>
           <input
-            value={formateCurrency(enrollmentByStudent?.courseId?.feeFine)}
+            value={formateCurrency(lateFee)}
             disabled
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
             placeholder="Exemplo: 150.00"
@@ -243,7 +261,9 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           </button>
           <button
             type="reset"
-            // onClick={resetStatesAndFields}
+            onClick={() => {
+              navigate('/payments')
+            }}
             className="bg-red-600 text-white rounded-md py-2 mt-4 hover:bg-red-700 transition-all p-2"
           >
             Cancelar

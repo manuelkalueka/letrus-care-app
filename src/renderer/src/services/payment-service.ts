@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
-interface IPayment {
+export interface IPayment {
+  _id?: string
   enrollmentId: string
   amount: number
   paymentDate?: Date
@@ -32,6 +33,28 @@ export async function getAllPaymentsService(
     return result
   } catch (error) {
     console.log('Erro ao buscar pagamentos: ', error)
+    throw error
+  }
+}
+
+export async function getStudentPaymentsService(enrollmentId: string): Promise<IPayment[]> {
+  try {
+    const { data: results } = await apiMananger.get(`/payments/student/${enrollmentId}`)
+    const typedResults: IPayment[] = results
+    return typedResults
+  } catch (error) {
+    console.log('Erro ao buscar pagamentos do estudante: ', error)
+    throw error
+  }
+}
+
+export async function getPaymentService(id: string): Promise<IPayment> {
+  try {
+    const { data: result } = await apiMananger.get(`/payments/${id}`)
+    const typedResult: IPayment = result
+    return typedResult
+  } catch (error) {
+    console.log('Erro ao buscar pagamento: ', error)
     throw error
   }
 }
