@@ -13,6 +13,12 @@ export interface IPayment {
   paymentMethod?: 'Dinheiro' | 'Multicaixa Express' | 'Transferência Bancária (ATM)'
   centerId: string
   userId: string
+  lateFee: number
+}
+
+export interface IPaymentReceipt {
+  receiptNumber: string
+  paymentId: string
 }
 
 export async function createPaymentService(data: IPayment): Promise<void> {
@@ -48,10 +54,12 @@ export async function getStudentPaymentsService(enrollmentId: string): Promise<I
   }
 }
 
-export async function getPaymentService(id: string): Promise<IPayment> {
+export async function getPaymentService(
+  id: string
+): Promise<{ payment: IPayment; receipt: IPaymentReceipt }> {
   try {
     const { data: result } = await apiMananger.get(`/payments/${id}`)
-    const typedResult: IPayment = result
+    const typedResult: { payment: IPayment; receipt: IPaymentReceipt } = result
     return typedResult
   } catch (error) {
     console.log('Erro ao buscar pagamento: ', error)

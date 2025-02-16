@@ -9,6 +9,7 @@ export interface ICenter {
   email?: string
   documentCode?: string
   createdBy?: string
+  year_school:string
 }
 
 export const createCenterService = async (

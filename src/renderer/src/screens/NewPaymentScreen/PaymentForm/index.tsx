@@ -16,6 +16,7 @@ const schemaPayment = yup
   .object({
     enrollmentId: yup.string().required(),
     amount: yup.number().required(),
+    lateFee: yup.number().required(),
     paymentMonthReference: yup.string().required(),
     paymentYearReference: yup.number().required(),
     paymentMethod: yup
@@ -51,7 +52,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
     try {
-      console.log(data)
       await createPaymentService(data)
       Swal.fire({
         position: 'bottom-end',
@@ -92,7 +92,8 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     getEnrollmentByStudent(props.resultsInForm?._id)
   }, [props.resultsInForm])
 
-  const [lateFee, setLateFee] = useState<number>(0) // Estado para armazenar multa calculada
+  const [lateFee, setLateFee] = useState<number>(0)
+  const [amount, setAmount] = useState<number>(0)
 
   const paymentMonth = watch('paymentMonthReference')
   const paymentYear = watch('paymentYearReference')
@@ -106,21 +107,18 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         const dueDate = new Date()
         const currentReferenceDate = new Date(Number(paymentYear), monthsList.indexOf(paymentMonth))
         const monthsDiference = differenceInMonths(dueDate, currentReferenceDate)
-        console.log(
-          'Data de expiração: ',
-          dueDate,
-          '\nData actual: ',
-          currentReferenceDate,
-          '\nDiferença: ',
-          monthsDiference
-        )
+
         const lateFeeRate = enrollmentByStudent?.courseId?.feeFine || 0
         const calculatedLateFee = monthsDiference > 1 ? monthsDiference * lateFeeRate : 0
 
         setLateFee(calculatedLateFee)
         const totalAmount = Number(enrollmentByStudent?.courseId?.fee) + calculatedLateFee
-        setValue('amount', totalAmount)
+
+        setAmount(totalAmount)
+
+        setValue('lateFee', calculatedLateFee)
         setValue('enrollmentId', enrollmentByStudent?._id)
+        setValue('amount', totalAmount)
       }
     }
 
@@ -204,16 +202,18 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           <label className="text-zinc-300">Multa</label>
           <input
             value={formateCurrency(lateFee)}
-            disabled
+            {...register('lateFee')}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
             placeholder="Exemplo: 150.00"
+            disabled
           />
           <label className="text-zinc-300">Valor a Pagar</label>
           <input
-            disabled
+            value={formateCurrency(amount)}
             {...register('amount')}
             className="w-full h-12 p-3 bg-zinc-950 rounded-md border-gray-700 text-gray-100"
             placeholder="Exemplo: 150.00"
+            disabled
           />
 
           {/* Método de Pagamento */}

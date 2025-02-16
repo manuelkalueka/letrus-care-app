@@ -1,76 +1,82 @@
 import React from 'react'
-import { Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Text, View, StyleSheet } from '@react-pdf/renderer'
+import { formateCurrency } from '@renderer/utils/format'
 
 const TableHeader: React.FC = () => {
   return (
     <View style={styles.tableRowStyle} fixed>
       <View style={styles.firstTableColHeaderStyle}>
-        <Text style={styles.tableCellHeaderStyle}>Column</Text>
+        <Text style={styles.tableCellHeaderStyle}>Ano Lectivo</Text>
       </View>
 
       <View style={styles.tableColHeaderStyle}>
-        <Text style={styles.tableCellHeaderStyle}>Column</Text>
+        <Text style={styles.tableCellHeaderStyle}>Serviço</Text>
       </View>
 
       <View style={styles.tableColHeaderStyle}>
-        <Text style={styles.tableCellHeaderStyle}>Column</Text>
+        <Text style={styles.tableCellHeaderStyle}>Descrição</Text>
       </View>
 
       <View style={styles.tableColHeaderStyle}>
-        <Text style={styles.tableCellHeaderStyle}>Column</Text>
+        <Text style={styles.tableCellHeaderStyle}>Valor (Kz)</Text>
       </View>
 
       <View style={styles.tableColHeaderStyle}>
-        <Text style={styles.tableCellHeaderStyle}>Column</Text>
+        <Text style={styles.tableCellHeaderStyle}>Estado</Text>
       </View>
     </View>
   )
 }
-const TableRow: React.FC = () => {
+const TableRow: React.FC<{ row: RowsProps }> = ({ row }) => {
+  const STATUS = ['Pago', 'Pendente', 'Atrasado']
   return (
     <View style={styles.tableRowStyle}>
       <View style={styles.firstTableColStyle}>
-        <Text style={styles.tableCellStyle}>Element</Text>
+        <Text style={styles.tableCellStyle}>{row.year}</Text>
       </View>
-
-      <View style={styles.tableColStyle}>
-        <Text style={styles.tableCellStyle}>Element</Text>
+      <View style={styles.firstTableColStyle}>
+        <Text style={styles.tableCellStyle}>{row.service}</Text>
       </View>
-
-      <View style={styles.tableColStyle}>
-        <Text style={styles.tableCellStyle}>Element</Text>
+      <View style={styles.firstTableColStyle}>
+        <Text style={styles.tableCellStyle}>{row.description}</Text>
       </View>
-
-      <View style={styles.tableColStyle}>
-        <Text style={styles.tableCellStyle}>Element</Text>
+      <View style={styles.firstTableColStyle}>
+        <Text style={styles.tableCellStyle}>{formateCurrency(row?.amount)} </Text>
       </View>
-
-      <View style={styles.tableColStyle}>
-        <Text style={styles.tableCellStyle}>Element</Text>
+      <View style={styles.firstTableColStyle}>
+        <Text style={styles.tableCellStyle}>
+          {row.status === 'paid' ? STATUS[0] : row.status === 'pending' ? STATUS[1] : STATUS[2]}
+        </Text>
       </View>
     </View>
   )
 }
 
-const TableDocument: React.FC = () => {
+interface RowsProps {
+  year: string
+  service: string
+  description: string
+  amount: number
+  status: string
+}
+export const TablePaymentDetails: React.FC<{ rows: RowsProps[] }> = ({ rows }) => {
   return (
-      <Page style={styles.pageStyle} size="A4" orientation="portrait">
-        <View style={styles.tableStyle}>
-          <TableHeader />
-          <TableRow />
-          <TableRow />
-          <TableRow />
-          <TableRow />
-          <TableRow />
-        </View>
-      </Page>
+    <>
+      <View style={styles.tableStyle}>
+        <TableHeader />
+        {rows.map((row, index) => (
+          <TableRow row={row} key={index} />
+        ))}
+      </View>
+    </>
   )
 }
+
 const styles = StyleSheet.create({
   pageStyle: {
-    paddingTop: 16,
-    paddingHorizontal: 40,
-    paddingBottom: 56
+    paddingTop: 14,
+    paddingHorizontal: 30,
+    paddingBottom: 46
   },
   tableStyle: {
     display: 'flex',
@@ -114,14 +120,12 @@ const styles = StyleSheet.create({
   tableCellHeaderStyle: {
     textAlign: 'center',
     margin: 4,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold'
   },
   tableCellStyle: {
     textAlign: 'center',
     margin: 5,
-    fontSize: 10
+    fontSize: 8
   }
 })
-
-export default TableDocument

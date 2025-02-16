@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router'
 import {
   getAllPaymentsService,
   getPaymentService,
-  IPayment
+  IPayment,
+  IPaymentReceipt
 } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
 import { DownloadCloud, Search } from 'lucide-react'
@@ -55,11 +56,14 @@ export const PaymentScreen: React.FC = () => {
   //     setFilteredPayments(payments)
   //   }
   // }
-
-  const [selectedPayment, setSelectedPayment] = useState<object | null>(null)
+  interface selectedPaymentProps {
+    payment: IPayment
+    receipt: IPaymentReceipt
+  }
+  const [selectedPayment, setSelectedPayment] = useState<selectedPaymentProps | null>(null)
 
   const handleDownloadPDF = async (payment: IPayment): Promise<void> => {
-    const tmpPayment: React.SetStateAction<IPayment | null> = await getPaymentService(
+    const tmpPayment: React.SetStateAction<selectedPaymentProps> = await getPaymentService(
       payment?._id as string
     )
 
@@ -69,7 +73,14 @@ export const PaymentScreen: React.FC = () => {
   useEffect(() => {
     if (selectedPayment) {
       const generatePDF = async (): Promise<void> => {
-        const blob = await pdf(<PaymentPDF payment={selectedPayment} />).toBlob()
+        const blob = await pdf(
+          <PaymentPDF
+            selectedPayment={{
+              payment: selectedPayment?.payment,
+              receipt: selectedPayment?.receipt
+            }}
+          />
+        ).toBlob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url

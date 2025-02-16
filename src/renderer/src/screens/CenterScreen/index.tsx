@@ -106,18 +106,37 @@ export const CenterScreen: React.FC = () => {
                   </button>
                 </div>
               </div>
-              <label htmlFor="center-address">
-                Endereço <span className="text-orange-700">*</span>
-              </label>
-              <input
-                id="center-address"
-                defaultValue={center?.address}
-                {...register('address')}
-                placeholder="Endereço do Centro"
-                type="text"
-                className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-              />
-              {errors.address && <span className="text-red-500">{errors.address?.message}</span>}
+              <div className="flex items-center gap-12 justify-between my-4">
+                <div className="flex flex-col gap-4 w-1/2">
+                  <label htmlFor="center-address">
+                    Endereço <span className="text-orange-700">*</span>
+                  </label>
+                  <input
+                    id="center-address"
+                    defaultValue={center?.address}
+                    {...register('address')}
+                    placeholder="Endereço do Centro"
+                    type="text"
+                    className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+                  />
+                  {errors.address && (
+                    <span className="text-red-500">{errors.address?.message}</span>
+                  )}
+                </div>
+                <div className="flex flex-col gap-4 w-1/2">
+                  <label htmlFor="year-school">
+                    Ano Lectivo <span className="text-orange-700">*</span>
+                  </label>
+                  <input
+                    disabled
+                    id="year-school"
+                    defaultValue={center?.year_school}
+                    placeholder="Ano Lectivo"
+                    type="text"
+                    className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+                  />
+                </div>
+              </div>
 
               <div className="flex items-center gap-12 justify-between my-4">
                 <div className="flex flex-col gap-4 w-1/2">
