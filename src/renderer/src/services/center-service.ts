@@ -18,7 +18,7 @@ export const createCenterService = async (
   createdBy: string
 ): Promise<AxiosResponse> => {
   try {
-    const { address, documentCode, email, name, nif, phoneNumber } = data
+    const { address, documentCode, email, name, nif, phoneNumber, year_school } = data
 
     const response = await apiMananger.post('/centers/new', {
       address,
@@ -27,7 +27,8 @@ export const createCenterService = async (
       email,
       name,
       nif,
-      phoneNumber
+      phoneNumber,
+      year_school
     })
     return response
   } catch (error) {

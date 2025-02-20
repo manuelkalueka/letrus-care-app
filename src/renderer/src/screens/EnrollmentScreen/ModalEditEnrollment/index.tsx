@@ -1,4 +1,3 @@
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useCenter } from '@renderer/contexts/center-context'
 import { ICourse, getCoursesAll } from '@renderer/services/course-service'
 import { editEnrollment, IEnrollment } from '@renderer/services/enrollment-service'
@@ -8,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const schema = yup
   .object({
@@ -39,7 +39,7 @@ const schema = yup
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
     grade: yup.string().required('Seleciona um nível'),
-    course: yup.string().required('Seleciona um curso disponível'),
+    courseId: yup.string().required('Seleciona um curso disponível'),
     doc_file: yup.mixed().nullable(),
     image_file: yup.mixed().nullable(),
     userId: yup.string().required(),
@@ -64,12 +64,12 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<FormData>()
+  } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   const onSubmit = async (data: FormData): Promise<void> => {
     console.log(data)
     try {
-      await editEnrollment(enrollmentInfo?._id as string, data)
+      await editEnrollment(enrollmentInfo?._id as string, data, enrollmentInfo?.studentId?._id)
       Swal.fire({
         position: 'bottom-end',
         icon: 'success',
@@ -110,7 +110,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
   useEffect(() => {
     async function getGrades(): Promise<void> {
       const data = await getGradesServiceAll(center?._id as string)
-      setGrades(Object(data))
+      setGrades(data)
     }
 
     getGrades()
@@ -213,12 +213,12 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.address && <span className="text-red-500">{errors.address?.message}</span>}
-        <label htmlFor="course">
+        <label htmlFor="courseId">
           Curso <span className="text-orange-700">*</span>
         </label>
         <select
-          id="course"
-          {...register('course')}
+          id="courseId"
+          {...register('courseId')}
           className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
           defaultValue={enrollmentInfo?.courseId?._id}
         >
@@ -228,7 +228,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
             </option>
           ))}
         </select>
-        {errors.course && <span className="text-red-500">{errors.course?.message}</span>}
+        {errors.courseId && <span className="text-red-500">{errors.courseId?.message}</span>}
         <label htmlFor="grade">
           Nível <span className="text-orange-700">*</span>
         </label>

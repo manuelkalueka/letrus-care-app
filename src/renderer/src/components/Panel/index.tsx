@@ -42,7 +42,7 @@ const schema = yup
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
     grade: yup.string().required('Seleciona um nível'),
-    course: yup.string().required('Seleciona um curso disponível'),
+    courseId: yup.string().required('Seleciona um curso disponível'),
     doc_file: yup.mixed().nullable(),
     image_file: yup.mixed().nullable(),
     userId: yup.string().required(),
@@ -99,7 +99,7 @@ export const Panel: React.FC = () => {
         surname,
         phoneNumber,
         email,
-        course,
+        courseId,
         userId,
         centerId
       } = data
@@ -115,7 +115,7 @@ export const Panel: React.FC = () => {
         email,
         name,
         centerId,
-        courseId: course,
+        courseId,
         userId
       })
       Swal.fire({
@@ -270,12 +270,12 @@ export const Panel: React.FC = () => {
       <>
         <div className="flex items-center gap-12 justify-between">
           <div className="flex flex-col gap-4 w-1/2">
-            <label htmlFor="course">
+            <label htmlFor="courseId">
               Curso <span className="text-orange-700">*</span>
             </label>
             <select
-              id="course"
-              {...register('course')}
+              id="courseId"
+              {...register('courseId')}
               className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             >
               {courses?.map((course, index) => (
@@ -284,7 +284,7 @@ export const Panel: React.FC = () => {
                 </option>
               ))}
             </select>
-            {errors.course && <span className="text-red-500">{errors.course?.message}</span>}
+            {errors.courseId && <span className="text-red-500">{errors.courseId?.message}</span>}
             <label htmlFor="grade">
               Nível Inicial <span className="text-orange-700">*</span>
             </label>

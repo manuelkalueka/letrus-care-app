@@ -56,10 +56,17 @@ export const LoginForm: React.FC = () => {
     } catch (error) {
       if (error?.response?.status === 404) {
         navigate('/centers/new')
+      } else if (error?.response?.status === 401) {
+        MySwal.fire({
+          title: 'Erro',
+          text: `${error?.response?.data?.error}`,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
       } else {
         MySwal.fire({
           title: 'Erro',
-          text: 'Verifique os dados de acesso',
+          text: `Erro Interno`,
           icon: 'error',
           confirmButtonText: 'OK'
         })

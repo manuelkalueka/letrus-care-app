@@ -26,10 +26,11 @@ export async function getGradesService(centerId: string, page: number): Promise<
   }
 }
 
-export async function getGradesServiceAll(centerId: string): Promise<AxiosResponse> {
+export async function getGradesServiceAll(centerId: string): Promise<IGrade[]> {
   try {
     const { data } = await apiMananger.get(`/grades/all/${centerId}`)
-    return data
+    const typeData: IGrade[] = data
+    return typeData
   } catch (error) {
     console.log('Erro ao buscar níveis', error)
     throw error

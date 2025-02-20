@@ -6,10 +6,12 @@ import * as yup from 'yup'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router'
 import { useCenter } from '@renderer/contexts/center-context'
+import { Info } from 'lucide-react'
 
 const schema = yup
   .object({
     name: yup.string().required('Preecha o Nome do Centro'),
+    year_school: yup.string().required('Ano lectivo Obrigatório'),
     address: yup.string().required('Preecha o endereço do centro'),
     phoneNumber: yup.string().required('Preecha o Telefone'),
     email: yup.string().email('Email Inválido'),
@@ -31,9 +33,10 @@ export const CreateCenterScreen: React.FC = () => {
   })
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      const { address, documentCode, email, name, nif, phoneNumber } = data
+      const { address, documentCode, email, name, nif, phoneNumber, year_school } = data
       const { status } = await createCenter({
         address,
+        year_school,
         documentCode,
         email,
         name,
@@ -84,7 +87,7 @@ export const CreateCenterScreen: React.FC = () => {
         <div className="p-8 rounded border border-zinc-800 mt-6">
           <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-2">
             <div className="flex items-center justify-between gap-8">
-              <article className="flex flex-col flex-1 justify-center">
+              <article className="flex flex-col flex-1 justify-center gap-3">
                 <label htmlFor="center-name">
                   Nome <span className="text-orange-700">*</span>
                 </label>
@@ -97,9 +100,12 @@ export const CreateCenterScreen: React.FC = () => {
                 />
                 {/* {errors.name && <span className="text-red-500">{errors.name?.message}</span>} */}
               </article>
-              <article className="flex flex-col flex-1 justify-center">
+              <article className="flex flex-col flex-1 justify-center gap-3">
                 <label htmlFor="center-code">
-                  Código do Centro <span className="text-orange-700">*</span>
+                  Código do Centro{' '}
+                  <span className="text-orange-700" title="atenção não poderá alterar esse código">
+                    <Info size={18} className="inline" />
+                  </span>
                 </label>
                 <input
                   id="center-code"
@@ -122,17 +128,42 @@ export const CreateCenterScreen: React.FC = () => {
               className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
             />
             {errors.address && <span className="text-red-500">{errors.address?.message}</span>}
-            <label htmlFor="center-nif">
-              NIF <span className="text-orange-700">*</span>
-            </label>
-            <input
-              id="center-nif"
-              {...register('nif')}
-              placeholder="número de contribuinte"
-              type="text"
-              className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-            />
-            {errors.nif && <span className="text-red-500">{errors.nif?.message}</span>}
+            <div className="flex items-center justify-between gap-8">
+              <article className="flex flex-col flex-1 justify-center gap-3">
+                <label htmlFor="center-nif">
+                  NIF{' '}
+                  <span className="text-orange-700" title="atenção não poderá alterar esse código">
+                    <Info size={18} className="inline" />
+                  </span>
+                </label>
+                <input
+                  id="center-nif"
+                  {...register('nif')}
+                  placeholder="número de contribuinte"
+                  type="text"
+                  className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+                />
+                {errors.nif && <span className="text-red-500">{errors.nif?.message}</span>}
+              </article>
+              <article className="flex flex-col flex-1 justify-center gap-3">
+                <label htmlFor="year_school">
+                  Ano Lectivo Actual{' '}
+                  <span className="text-orange-700" title="atenção não poderá alterar facilmente">
+                    <Info size={18} className="inline" />
+                  </span>
+                </label>
+                <input
+                  id="year_school"
+                  {...register('year_school')}
+                  placeholder="Ano Lectivo"
+                  type="text"
+                  className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+                />
+                {errors.year_school && (
+                  <span className="text-red-500">{errors.year_school?.message}</span>
+                )}
+              </article>
+            </div>
             <label htmlFor="center-phone">
               Telefone <span className="text-orange-700">*</span>
             </label>

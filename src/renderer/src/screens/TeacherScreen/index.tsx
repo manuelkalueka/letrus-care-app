@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Rings } from 'react-loader-spinner'
 import { useAuth } from '@renderer/contexts/auth-context'
-import { getCoursesService } from '@renderer/services/course-service'
+import { getCoursesAll, getCoursesService, ICourse } from '@renderer/services/course-service'
 import { formatDate } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
 import { Footer } from '@renderer/components/Footer'
@@ -109,12 +109,12 @@ export const TeacherScreen: React.FC = () => {
       }
     }
 
-    const [courses, setCourses] = useState<Array<object> | null>(null)
+    const [courses, setCourses] = useState<ICourse[] | null>(null)
 
     useEffect(() => {
       async function getCourses(): Promise<void> {
-        const data = await getCoursesAll(center?._id)
-        setCourses(Object(data))
+        const data = await getCoursesAll(center?._id as string)
+        setCourses(data)
       }
 
       getCourses()

@@ -82,7 +82,7 @@ export const EnrollmentScreen: React.FC = () => {
 
   useEffect(() => {
     if (center?._id as string) fetchEnrollments(currentPage)
-  }, [center?._id as string, currentPage])
+  }, [center?._id as string, currentPage, isModalOpen])
 
   const [selectedEnrollment, setSelectedEnrollment] = useState<object | null>(null)
   const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false)

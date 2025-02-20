@@ -6,6 +6,8 @@ export interface IEnrollmentForApply {
   courseId: string
   grade: string
   name: { fullName: string; surname?: string }
+  fullName: string
+  surname?: string
   birthDate: Date
   gender: 'masculino' | 'feminino' | string
   parents: { father: string; mother: string }
@@ -114,10 +116,35 @@ export const getEnrollmentByStudentService = async (studentId: string): Promise<
 
 export const editEnrollment = async (
   enrollmentId: string,
-  data: IEnrollmentForApply
+  data: IEnrollmentForApply,
+  studentId: string
 ): Promise<void> => {
   try {
-    await apiMananger.put(`/enrollments/edit/${enrollmentId}`, data)
+    const {
+      fullName,
+      surname,
+      birthDate,
+      gender,
+      address,
+      phoneNumber,
+      email,
+      parents,
+      courseId,
+      grade
+    } = data
+    await apiMananger.put(`/students/edit/${studentId}`, {
+      name: { fullName, surname },
+      birthDate,
+      gender,
+      address,
+      phoneNumber,
+      email,
+      parents
+    })
+    await apiMananger.put(`/enrollments/edit/${enrollmentId}`, {
+      courseId,
+      grade
+    })
   } catch (error) {
     console.log('Erro ao editar inscrições: ', error)
     throw error

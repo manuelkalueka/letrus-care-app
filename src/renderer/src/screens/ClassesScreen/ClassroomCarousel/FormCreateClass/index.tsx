@@ -4,7 +4,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getTeachersService, getTeachersServiceAll } from '@renderer/services/teacher-service'
+import { getTeachersServiceAll } from '@renderer/services/teacher-service'
 import { getGradesServiceAll } from '@renderer/services/grade-service'
 import { getCoursesAll } from '@renderer/services/course-service'
 import { createClassService } from '@renderer/services/class-service'
@@ -75,7 +75,6 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      console.warn('Dados no front: ', data)
       await createClassService(data)
       Swal.fire({
         position: 'bottom-end',
