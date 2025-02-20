@@ -65,7 +65,7 @@ export const ClassroomCarousel: React.FC<{
         <div
           key={classroom?._id}
           className="relative flex bg-zinc-800 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[229px] mx-1 rounded shadow hover:shadow-lg"
-          onClick={() => {
+          onDoubleClick={() => {
             navigate(`/classes/show/${classroom._id}`, {
               state: { class: classroom }
             })
@@ -89,8 +89,8 @@ export const ClassroomCarousel: React.FC<{
               [MKAL Dev]
             </p>
             <p>
-              <span className="font-semibold">Horário: </span>
-              {classroom?.schedule}
+              <span className="font-semibold">Modalidade: </span>
+              {classroom?.course?.courseType === 'on_home' ? 'Domiclio' : 'Centro'}
             </p>
             <p>
               <span className="font-semibold">Periodo: </span>

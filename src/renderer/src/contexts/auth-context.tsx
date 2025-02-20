@@ -1,6 +1,6 @@
 import apiMananger from '@renderer/services/api'
 import { IAuth, loginService, signupService } from '@renderer/services/user'
-import React, { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react'
 interface IResponse {
   token: string
   user: IAuth
@@ -18,7 +18,7 @@ interface AuthContextData {
 // Criação do contexto
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<IAuth | null>(null)
   const [loading, setLoading] = useState(true)
 

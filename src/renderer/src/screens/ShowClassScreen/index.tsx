@@ -8,6 +8,7 @@ import { useLocation } from 'react-router'
 export const ShowClassScreen: React.FC = () => {
   const [classRoom, setClassRoom] = useState<IClass>({} as IClass)
   const location = useLocation()
+  console.log(location.state?.class)
   useEffect(() => {
     setClassRoom(location.state?.class)
   }, [location.state])

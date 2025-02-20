@@ -21,7 +21,6 @@ export const getClassesService = async (centerId: string): Promise<IClass[]> => 
 }
 
 export const createClassService = async (classData: IClass): Promise<IClass> => {
-  console.log('Vendo a classe: ', classData.grade)
   try {
     const { data } = await apiMananger.post('/classes/new', classData)
     const typedData: IClass = data

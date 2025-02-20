@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface ICourse {
+  _id?: string
   name: string
   description: string
   startDate: Date
@@ -41,10 +42,11 @@ export async function getCoursesService(centerId: string, page: number): Promise
   }
 }
 
-export async function getCoursesAll(centerId: string): Promise<AxiosResponse> {
+export async function getCoursesAll(centerId: string): Promise<ICourse[]> {
   try {
     const { data } = await apiMananger.get(`/courses/all/${centerId}`)
-    return data
+    const typeData: ICourse[] = data
+    return typeData
   } catch (error) {
     console.log('Erro ao buscar cursos', error)
     throw error

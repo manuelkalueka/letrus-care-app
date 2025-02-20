@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
-interface IGrade {
+export interface IGrade {
+  _id?: string
   grade: string
   centerId: string
 }

@@ -1,13 +1,13 @@
 import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
-interface IEnrollment {
+export interface IEnrollmentForApply {
   studentId?: string
   courseId: string
-  grade: string | string
+  grade: string
   name: { fullName: string; surname?: string }
   birthDate: Date
-  gender: 'masculino' | 'feminino'
+  gender: 'masculino' | 'feminino' | string
   parents: { father: string; mother: string }
   address: string
   phoneNumber: string
@@ -18,12 +18,25 @@ interface IEnrollment {
   image_file?: File
 }
 
+export interface IEnrollment {
+  _id?: string
+  studentId: string
+  courseId: string
+  enrollmentDate: Date
+  status: 'enrolled' | 'completed' | 'dropped' | string
+  centerId: string
+  grade: string
+  doc_file: string
+  image_file: string
+  userId: string
+}
+
 interface IResponse {
   enrollments: IEnrollment
   totalEnrollments: number
 }
 
-export const createEnrollment = async (data: IEnrollment): Promise<AxiosResponse> => {
+export const createEnrollment = async (data: IEnrollmentForApply): Promise<AxiosResponse> => {
   const {
     name,
     birthDate,
@@ -99,7 +112,10 @@ export const getEnrollmentByStudentService = async (studentId: string): Promise<
   }
 }
 
-export const editEnrollment = async (enrollmentId: string, data: IEnrollment): Promise<void> => {
+export const editEnrollment = async (
+  enrollmentId: string,
+  data: IEnrollmentForApply
+): Promise<void> => {
   try {
     await apiMananger.put(`/enrollments/edit/${enrollmentId}`, data)
   } catch (error) {

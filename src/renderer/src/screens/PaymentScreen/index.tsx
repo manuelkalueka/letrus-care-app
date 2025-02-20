@@ -167,26 +167,26 @@ export const PaymentScreen: React.FC = () => {
             </div>
 
             {/* Tabela de Pagamentos */}
-            <div className="overflow-x-auto mt-4 bg-zinc-100 shadow-md rounded-lg">
-              <table className="w-full text-sm text-left text-gray-700">
-                <thead className="text-xs uppercase bg-zinc-300 text-zinc-600">
-                  <tr>
-                    <th className="py-3 px-4 text-center">Aluno</th>
-                    <th className="py-3 px-4 text-center">Código</th>
-                    <th className="py-3 px-4 text-center">Valor</th>
-                    <th className="py-3 px-4 text-center">Mês</th>
-                    <th className="py-3 px-4 text-center">Ano</th>
-                    <th className="py-3 px-4 text-center">Data de Pagamento</th>
-                    <th className="py-3 px-4 text-center">Estado</th>
-                    <th className="py-3 px-4 text-center">Acções</th>
+            <div className="overflow-x-auto mt-4 shadow-md">
+              <table className="w-full text-sm text-center">
+                <thead className="text-xs uppercase">
+                  <tr className=" text-white font-bold bg-orange-800">
+                    <th className="py-3 px-4">Aluno</th>
+                    <th className="py-3 px-4">Código</th>
+                    <th className="py-3 px-4">Valor</th>
+                    <th className="py-3 px-4">Mês</th>
+                    <th className="py-3 px-4">Ano</th>
+                    <th className="py-3 px-4">Data de Pagamento</th>
+                    <th className="py-3 px-4">Estado</th>
+                    <th className="py-3 px-4">Acções</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="select-none">
                   {filteredPayments?.length > 0 ? (
                     filteredPayments.map((payment, index) => (
                       <tr
                         key={index}
-                        className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
+                        className={`border-b ${index % 2 === 0 ? 'bg-zinc-800' : 'bg-zinc-800'} text-white border-zinc-600`}
                       >
                         <td className="py-3 px-4 text-center">
                           {payment.enrollmentId?.studentId?.name?.surname
@@ -207,7 +207,7 @@ export const PaymentScreen: React.FC = () => {
                         <td
                           className={`py-3 px-4 text-center ${
                             payment?.status === 'paid'
-                              ? 'text-green-600'
+                              ? 'text-green-500'
                               : payment?.status === 'pending'
                                 ? 'text-orange-600'
                                 : 'text-red-600'
@@ -230,8 +230,8 @@ export const PaymentScreen: React.FC = () => {
                       </tr>
                     ))
                   ) : (
-                    <tr>
-                      <td colSpan={7} className="py-3 px-4 text-center">
+                    <tr className="bg-zinc-800 text-white">
+                      <td colSpan={8} className="py-3 px-4 text-center">
                         Nenhum pagamento encontrado.
                       </td>
                     </tr>

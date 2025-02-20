@@ -1,7 +1,7 @@
 import apiMananger from './api'
 
 export interface IStudent {
-  _id: string
+  _id?: string
   name: { fullName: string; surname?: string }
   birthDate: Date
   gender: 'masculino' | 'feminino' | string
