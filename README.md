@@ -16,12 +16,12 @@
 ## 🛠️ **Tecnologias Utilizadas**
 
 | Tecnologia          | Aplicação                                         |
-|---------------------|---------------------------------------------------|
+| ------------------- | ------------------------------------------------- |
 | **Electron**        | Construção de aplicações desktop multiplataforma. |
-| **Vite**            | Ferramenta de desenvolvimento rápida e leve.     |
+| **Vite**            | Ferramenta de desenvolvimento rápida e leve.      |
 | **React.js**        | Criação da interface do utilizador (frontend).    |
 | **React Hook Form** | Gestão e validação de formulários.                |
-| **Yup**             | Validação de dados de formulários.               |
+| **Yup**             | Validação de dados de formulários.                |
 | **TypeScript**      | Tipagem estática para maior segurança e robustez. |
 | **TailwindCSS**     | Estilização moderna e responsiva.                 |
 
@@ -82,3 +82,4 @@ Envie suas alterações:
 Abra um **pull request** para revisão.
 
 
+```

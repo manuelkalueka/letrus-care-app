@@ -68,7 +68,7 @@ export const Panel: React.FC = () => {
 
   useEffect(() => {
     async function getCourses(): Promise<void> {
-      const data = await getCoursesAll(center?._id)
+      const data = await getCoursesAll(center?._id as string)
       setCourses(Object(data))
     }
 
@@ -79,7 +79,7 @@ export const Panel: React.FC = () => {
 
   useEffect(() => {
     async function getGrades(): Promise<void> {
-      const data = await getGradesServiceAll(center?._id)
+      const data = await getGradesServiceAll(center?._id as string)
       setGrades(Object(data))
     }
 
@@ -133,7 +133,7 @@ export const Panel: React.FC = () => {
       })
       //Limpa o Form
       // reset()
-      await navigate('/payments/new', { state: { enrollment } });
+      await navigate('/payments/new', { state: { enrollment } })
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',
@@ -192,7 +192,7 @@ export const Panel: React.FC = () => {
           placeholder="Nome Completo do Aluno"
           autoComplete="fullName webauthn"
           type="text"
-          className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
         />
         {errors.fullName && <span className="text-red-500">{errors.fullName?.message}</span>}
         <label htmlFor="surname">Alcunha</label>
@@ -214,7 +214,7 @@ export const Panel: React.FC = () => {
           placeholder="Nasceu em"
           autoComplete="bday-day"
           type="date"
-          className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
+          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
           required
         />
         {errors.birthDate && <span className="text-red-500">{errors.birthDate?.message}</span>}

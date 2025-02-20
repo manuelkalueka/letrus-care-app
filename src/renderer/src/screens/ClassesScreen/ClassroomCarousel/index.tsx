@@ -1,9 +1,11 @@
+import { IClass } from '@renderer/services/class-service'
 import { MoreVertical } from 'lucide-react'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router'
 import Slider from 'react-slick'
 
 export const ClassroomCarousel: React.FC<{
-  classrooms: object[]
+  classrooms: IClass[]
 }> = ({ classrooms }) => {
   const settings = {
     dots: false,
@@ -55,12 +57,19 @@ export const ClassroomCarousel: React.FC<{
     )
   }
 
+  const PERIOD = ['Manhã', 'Tarde', 'Noite']
+  const navigate = useNavigate()
   return (
     <Slider {...settings}>
       {classrooms.map((classroom) => (
         <div
           key={classroom?._id}
           className="relative flex bg-zinc-800 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[229px] mx-1 rounded shadow hover:shadow-lg"
+          onClick={() => {
+            navigate(`/classes/show/${classroom._id}`, {
+              state: { class: classroom }
+            })
+          }}
         >
           <section className="flex justify-between">
             <h3 className="text-lg border-b w-10/12">{classroom?.className}</h3>
@@ -85,7 +94,11 @@ export const ClassroomCarousel: React.FC<{
             </p>
             <p>
               <span className="font-semibold">Periodo: </span>
-              {classroom?.period}
+              {classroom?.period === 'moon'
+                ? PERIOD[1]
+                : classroom?.period === 'morning'
+                  ? PERIOD[0]
+                  : PERIOD[2]}
             </p>
             <p>
               <span className="font-semibold">Nível: </span>

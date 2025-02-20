@@ -6,7 +6,7 @@ import {
   isCenterExists
 } from '@renderer/services/center-service'
 
-import React, { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react'
 import { useAuth } from './auth-context'
 import { AxiosResponse } from 'axios'
 import { getFromLocalStorage, saveToLocalStorage } from '@renderer/utils/localStorage'
@@ -22,8 +22,8 @@ interface CenterContextData {
 // Criação do contexto
 export const CenterContext = createContext<CenterContextData>({} as CenterContextData)
 
-export const CenterProvider: React.FC = ({ children }) => {
-  const [center, setCenter] = useState<object | null>(null)
+export const CenterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [center, setCenter] = useState<ICenter | null>(null)
   const [loading, setLoading] = useState(true)
   const { user } = useAuth()
   // Persistência do centro no local storage
@@ -34,7 +34,7 @@ export const CenterProvider: React.FC = ({ children }) => {
         setCenter(JSON.parse(storagedCenter))
       } else if (user) {
         try {
-          const response = await getCenterService(user?._id)
+          const response = await getCenterService(user?._id as string)
           setCenter(response.data)
           localStorage.setItem('center', JSON.stringify(response.data))
         } catch (error) {
@@ -48,7 +48,7 @@ export const CenterProvider: React.FC = ({ children }) => {
 
   async function createCenter(data: ICenter): Promise<AxiosResponse> {
     try {
-      const response = await createCenterService(data, user?._id)
+      const response = await createCenterService(data, user?._id as string)
       setCenter(response?.data)
       saveToLocalStorage('center', response?.data)
       return response
@@ -72,7 +72,7 @@ export const CenterProvider: React.FC = ({ children }) => {
   async function centerExistsContext(userId: string): Promise<boolean> {
     const cachedCenter = getFromLocalStorage('center')
     if (cachedCenter) {
-      setCenter(cachedCenter)
+      setCenter(cachedCenter as ICenter)
       return true
     }
 

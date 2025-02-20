@@ -1,10 +1,10 @@
 import { BellDot, BookOpenCheck, CircleHelp, HandCoins, Home, NotebookPen } from 'lucide-react'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { NavLink } from 'react-router'
 
 export const Sidebar: React.FC = () => {
   // Função para renderizar um item da sidebar com NavLink
-  const renderMenuItem = (icon: React.ReactNode, label: string, path: string) => (
+  const renderMenuItem = (icon: React.ReactNode, label: string, path: string): ReactElement => (
     <li className="flex items-center relative gap-4 w-full h-12 px-3 rounded transition-all text-gray-300 text-sm hover:bg-zinc-700">
       <NavLink
         to={path}
@@ -26,7 +26,7 @@ export const Sidebar: React.FC = () => {
         {renderMenuItem(<Home />, 'Home', '/home')}
         {renderMenuItem(<NotebookPen />, 'Inscrição', '/enrollment')}
         {renderMenuItem(<HandCoins />, 'Pagamentos', '/payments')}
-        {renderMenuItem(<BookOpenCheck />, 'Aulas e Presenças', '/attendances')}
+        {renderMenuItem(<BookOpenCheck />, 'Aulas e Presenças', '/classes')}
       </ul>
       <ul className="flex flex-col gap-4">
         {renderMenuItem(<BellDot />, 'Notificações', '/notifications')}

@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface ICenter {
+  _id?: string
   name: string
   address: string
   nif?: string
@@ -9,7 +10,7 @@ export interface ICenter {
   email?: string
   documentCode?: string
   createdBy?: string
-  year_school:string
+  year_school: string
 }
 
 export const createCenterService = async (
@@ -58,13 +59,11 @@ export const isCenterExists = async (createdBy: string): Promise<centerFunctionP
   }
 }
 
-export const editCenterService = async (
-  centerId: string,
-  data: ICenter
-): Promise<AxiosResponse> => {
+export const editCenterService = async (centerId: string, data: ICenter): Promise<ICenter> => {
   try {
     const response = await apiMananger.put(`/centers/edit/${centerId}`, data)
-    return response.data
+    const typedResponse: ICenter = response.data
+    return typedResponse
   } catch (error) {
     console.log('Erro editar centro ', error)
 

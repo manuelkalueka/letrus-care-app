@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Navigate, Route, Routes as WrapperRoutes } from 'react-router'
 import { HomeScreen } from '@renderer/screens/HomeScreen'
-import { AttendanceScreen } from '@renderer/screens/AttendanceScreen'
+import { ClassesScreen } from '@renderer/screens/ClassesScreen'
 import { EnrollmentScreen } from '@renderer/screens/EnrollmentScreen'
 import { HelpScreen } from '@renderer/screens/HelpScreen'
 import { NotificationScreen } from '@renderer/screens/NotificationScreen'
@@ -18,6 +18,7 @@ import { LoginScreen } from '@renderer/screens/LoginScreen'
 import { SignupScreen } from '@renderer/screens/SignupScreen'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { getFromLocalStorage } from '@renderer/utils/localStorage'
+import { ShowClassScreen } from '@renderer/screens/ShowClassScreen'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signed } = useAuth()
@@ -60,10 +61,18 @@ export const Routes: React.FC = () => {
         </Route>
 
         <Route
-          path="/attendances"
+          path="/classes"
           element={
             <ProtectedRoute>
-              <AttendanceScreen />
+              <ClassesScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/classes/show/:iclass"
+          element={
+            <ProtectedRoute>
+              <ShowClassScreen />
             </ProtectedRoute>
           }
         />

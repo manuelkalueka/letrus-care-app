@@ -6,21 +6,36 @@ import {
   getAllPaymentsService,
   getPaymentService,
   IPayment,
-  IPaymentReceipt
+  IPaymentReceipt,
+  searchPaymentsService
 } from '@renderer/services/payment-service'
-import { formateCurrency } from '@renderer/utils/format'
-import { DownloadCloud, Search } from 'lucide-react'
+import { formateCurrency, formatNormaleDate } from '@renderer/utils/format'
+import { DownloadCloud, Filter, Search } from 'lucide-react'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { useCenter } from '@renderer/contexts/center-context'
 import Pagination from '@renderer/components/Pagination'
 import { pdf } from '@react-pdf/renderer'
 import { PaymentPDF } from '@renderer/reports/models/PaymentPDF'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+
+const schemaStudentSearch = yup
+  .object({
+    studentSearch: yup.string().required('Preencha o campo para pesquisar um aluno')
+  })
+  .required()
+
+type FormSearchData = yup.InferType<typeof schemaStudentSearch>
 
 export const PaymentScreen: React.FC = () => {
   const navigate = useNavigate()
-  // const [payments, setPayments] = useState<object[]>([]) // Lista de pagamentos
-  // const [searchQuery, setSearchQuery] = useState<string>('') // Filtro de busca
-  const [filteredPayments, setFilteredPayments] = useState<object[]>([])
+
+  const { register, watch } = useForm<FormSearchData>({
+    resolver: yupResolver(schemaStudentSearch)
+  })
+
+  const [filteredPayments, setFilteredPayments] = useState<IPayment[]>([])
   const { center } = useCenter()
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -28,10 +43,9 @@ export const PaymentScreen: React.FC = () => {
 
   const fetchPayments = async (page: number): Promise<void> => {
     try {
-      const { data } = await getAllPaymentsService(center?._id, page)
-      // setPayments(data)
-      setFilteredPayments(Object(data?.payments))
-      setTotalPages(data?.totalPayments)
+      const data = await getAllPaymentsService(center?._id as string, page)
+      setFilteredPayments(data.payments)
+      setTotalPages(data.totalPayments)
     } catch (error) {
       console.error('Erro ao obter pagamentos:', error)
     }
@@ -42,20 +56,6 @@ export const PaymentScreen: React.FC = () => {
     fetchPayments(currentPage)
   }, [currentPage])
 
-  // // Função de filtro
-  // const handleSearch = (query: string) => {
-  //   setSearchQuery(query)
-  //   if (query) {
-  //     const results = payments.filter(
-  //       (payment: object | null) =>
-  //         payment?.studentName.toLowerCase().includes(query.toLowerCase()) ||
-  //         payment?.studentCode.toString().includes(query)
-  //     )
-  //     setFilteredPayments(results)
-  //   } else {
-  //     setFilteredPayments(payments)
-  //   }
-  // }
   interface selectedPaymentProps {
     payment: IPayment
     receipt: IPaymentReceipt
@@ -103,6 +103,32 @@ export const PaymentScreen: React.FC = () => {
     }
   }, [selectedPayment])
 
+  const STATUS = ['Pago', 'Pendente', 'Atrasado']
+
+  const studentSearch = watch('studentSearch')
+
+  const fetchSearchedPayments = async (query: string): Promise<void> => {
+    if (!query) {
+      fetchPayments(currentPage)
+      return
+    }
+
+    try {
+      const payments = await searchPaymentsService(center?._id as string, query)
+      setFilteredPayments(payments)
+    } catch (error) {
+      console.error('Erro ao buscar pagamentos:', error)
+    }
+  }
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchSearchedPayments(studentSearch)
+    }, 500)
+
+    return (): void => clearTimeout(delayDebounceFn)
+  }, [studentSearch])
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
@@ -112,7 +138,6 @@ export const PaymentScreen: React.FC = () => {
         <Sidebar />
         <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
-            {/* Título e Botão */}
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-3xl text-zinc-400">Pagamentos</h2>
@@ -130,9 +155,14 @@ export const PaymentScreen: React.FC = () => {
             <div className="flex items-center gap-3 mt-6">
               <Search className="text-zinc-500" />
               <input
+                {...register('studentSearch')}
                 type="text"
                 placeholder="Buscar por aluno ou código..."
                 className="flex-1 p-2 rounded-md border border-gray-400 bg-zinc-300 text-gray-700 placeholder:text-gray-700"
+              />
+              <Filter
+                className="text-zinc-500 cursor-pointer hover:opacity-90 transition-opacity"
+                xlinkTitle="filtrar por"
               />
             </div>
 
@@ -141,35 +171,41 @@ export const PaymentScreen: React.FC = () => {
               <table className="w-full text-sm text-left text-gray-700">
                 <thead className="text-xs uppercase bg-zinc-300 text-zinc-600">
                   <tr>
-                    <th className="py-3 px-4">Aluno</th>
-                    <th className="py-3 px-4">Código</th>
-                    <th className="py-3 px-4">Valor</th>
-                    <th className="py-3 px-4">Mês</th>
-                    <th className="py-3 px-4">Ano</th>
-                    <th className="py-3 px-4">Estado</th>
-                    <th className="py-3 px-4">Ações</th>
+                    <th className="py-3 px-4 text-center">Aluno</th>
+                    <th className="py-3 px-4 text-center">Código</th>
+                    <th className="py-3 px-4 text-center">Valor</th>
+                    <th className="py-3 px-4 text-center">Mês</th>
+                    <th className="py-3 px-4 text-center">Ano</th>
+                    <th className="py-3 px-4 text-center">Data de Pagamento</th>
+                    <th className="py-3 px-4 text-center">Estado</th>
+                    <th className="py-3 px-4 text-center">Acções</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredPayments.length > 0 ? (
-                    filteredPayments.map((payment: object | null, index: number) => (
+                  {filteredPayments?.length > 0 ? (
+                    filteredPayments.map((payment, index) => (
                       <tr
                         key={index}
                         className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
                       >
-                        <td className="py-3 px-4">
-                          {payment?.enrollmentId?.studentId?.name?.surname
-                            ? payment?.enrollmentId?.studentId?.name?.surname
-                            : payment?.enrollmentId?.studentId?.name?.fullName?.split(' ')?.pop()}
+                        <td className="py-3 px-4 text-center">
+                          {payment.enrollmentId?.studentId?.name?.surname
+                            ? payment.enrollmentId?.studentId?.name?.surname
+                            : payment.enrollmentId?.studentId?.name?.fullName?.split(' ')?.pop()}
                         </td>
-                        <td className="py-3 px-4">
-                          {payment?.enrollmentId?.studentId?.studentCode}
+                        <td className="py-3 px-4 text-center">
+                          {payment.enrollmentId?.studentId?.studentCode}
                         </td>
-                        <td className="py-3 px-4">{formateCurrency(payment?.amount)}</td>
-                        <td className="py-3 px-4">{payment?.paymentMonthReference}</td>
-                        <td className="py-3 px-4">{payment?.paymentYearReference}</td>
+                        <td className="py-3 px-4 text-center">
+                          {formateCurrency(payment?.amount)}
+                        </td>
+                        <td className="py-3 px-4 text-center">{payment?.paymentMonthReference}</td>
+                        <td className="py-3 px-4 text-center">{payment?.paymentYearReference}</td>
+                        <td className="py-3 px-4 text-center">
+                          {formatNormaleDate(payment.paymentDate as Date)}
+                        </td>
                         <td
-                          className={`py-3 px-4 ${
+                          className={`py-3 px-4 text-center ${
                             payment?.status === 'paid'
                               ? 'text-green-600'
                               : payment?.status === 'pending'
@@ -177,9 +213,13 @@ export const PaymentScreen: React.FC = () => {
                                 : 'text-red-600'
                           }`}
                         >
-                          {payment?.status}
+                          {payment.status === 'paid'
+                            ? STATUS[0]
+                            : payment.status === 'pending'
+                              ? STATUS[1]
+                              : STATUS[2]}
                         </td>
-                        <td className="py-3 px-4">
+                        <td className="py-3 px-4 text-center">
                           <button
                             onClick={() => handleDownloadPDF(payment)}
                             className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"

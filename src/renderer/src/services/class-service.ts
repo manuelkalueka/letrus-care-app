@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
-interface IClass {
+export interface IClass {
+  _id?: string
   course: string
   period: 'morning' | 'moon' | 'evening' | string
   students?: string[]
@@ -14,16 +14,18 @@ interface IClass {
   grade: string
 }
 
-export const getClassesService = async (centerId: string): Promise<AxiosResponse> => {
+export const getClassesService = async (centerId: string): Promise<IClass[]> => {
   const { data } = await apiMananger.get(`/classes/all/${centerId}`)
-  return data
+  const typedData: IClass[] = data
+  return typedData
 }
 
-export const createClassService = async (classData: IClass): Promise<AxiosResponse> => {
+export const createClassService = async (classData: IClass): Promise<IClass> => {
   console.log('Vendo a classe: ', classData.grade)
   try {
     const { data } = await apiMananger.post('/classes/new', classData)
-    return data
+    const typedData: IClass = data
+    return typedData
   } catch (error) {
     console.log(error)
     throw error

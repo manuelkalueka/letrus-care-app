@@ -54,9 +54,28 @@ function formatDateWithTimeNoWeekDay(date: Date | string): string {
   // return moment(date).locale('pt-br').format('LLLL')
 }
 
+function formatNormaleDate(date: Date | string): string {
+  const dataNormalized = new Date(date)
+  const dataFullString = `${dataNormalized.toLocaleString('pt', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+  })}`
+
+  return dataFullString
+}
+
 function formateCurrency(value): string {
   const newValue = new Intl.NumberFormat('pt', { style: 'currency', currency: 'AOA' }).format(value)
 
   return newValue
 }
-export { relativeTime, formatDate, getHour, formatDateWithTime, formateCurrency,formatDateWithTimeNoWeekDay }
+export {
+  relativeTime,
+  formatDate,
+  getHour,
+  formatDateWithTime,
+  formateCurrency,
+  formatDateWithTimeNoWeekDay,
+  formatNormaleDate
+}

@@ -1,13 +1,28 @@
-import { AxiosResponse } from 'axios'
 import apiMananger from './api'
+
+export interface IStudent {
+  _id: string
+  name: { fullName: string; surname?: string }
+  birthDate: Date
+  gender: 'masculino' | 'feminino' | string
+  parents: { father: string; mother: string }
+  address: string
+  phoneNumber: string
+  email?: string
+  status: 'active' | 'inactive' | string
+  centerId: string
+  endStudiedDate: Date
+  studentCode: string
+}
 
 export const searchStudentService = async (
   centerId: string,
   query: string
-): Promise<AxiosResponse | null> => {
+): Promise<IStudent[] | null> => {
   try {
     const { data } = await apiMananger.get(`/students/search/${centerId}?query=${query}`)
-    return data
+    const typedData: IStudent[] = data
+    return typedData
   } catch (error) {
     if (error?.request?.status === 404) {
       return null
@@ -18,10 +33,11 @@ export const searchStudentService = async (
   }
 }
 
-export const getStudentById = async (id: string): Promise<AxiosResponse | null> => {
+export const getStudentById = async (id: string): Promise<IStudent | null> => {
   try {
     const { data } = await apiMananger.get(`/students/${id}`)
-    return data
+    const typedData: IStudent = data
+    return typedData
   } catch (error) {
     if (error?.request?.status === 404) {
       return null

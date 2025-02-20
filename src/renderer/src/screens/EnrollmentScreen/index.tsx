@@ -385,9 +385,11 @@ export const EnrollmentScreen: React.FC = () => {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `comprovativo-inscricao-${selectedEnrollment?.studentId?.name?.surname
-          ? selectedEnrollment?.studentId?.name?.surname?.toLowerCase()
-          : selectedEnrollment?.studentId?.name?.fullName?.toLowerCase()?.split(' ')?.pop()}-${Date.now()}.pdf`
+        a.download = `comprovativo-inscricao-${
+          selectedEnrollment?.studentId?.name?.surname
+            ? selectedEnrollment?.studentId?.name?.surname?.toLowerCase()
+            : selectedEnrollment?.studentId?.name?.fullName?.toLowerCase()?.split(' ')?.pop()
+        }-${Date.now()}.pdf`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)

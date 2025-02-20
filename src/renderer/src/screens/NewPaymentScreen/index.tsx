@@ -3,28 +3,28 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getStudentById, searchStudentService } from '@renderer/services/student'
+import { getStudentById, IStudent, searchStudentService } from '@renderer/services/student'
 import { ArrowRight, BookUser, GraduationCap, ShieldCheck } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { PaymentForm } from './PaymentForm'
 import { useLocation } from 'react-router'
 
-const schemaStudentSearch = yup
+export const schemaStudentSearch = yup
   .object({
     studentSearch: yup.string().required('Preencha o campo para pesquisar um aluno')
   })
   .required()
 
-type FormSearchData = yup.InferType<typeof schemaStudentSearch>
+export type FormSearchData = yup.InferType<typeof schemaStudentSearch>
 
 export const NewPaymentScreen: React.FC = () => {
   const location = useLocation()
   const enrollmentFromState = location.state?.enrollment || null
   const { center } = useCenter()
 
-  const [resultList, setResultList] = useState<[] | null>(null)
-  const [results, setResults] = useState<object | null>(null)
+  const [resultList, setResultList] = useState<IStudent[] | null>(null)
+  const [results, setResults] = useState<IStudent | null>(null)
   const [isSelected, setIsSelected] = useState(false)
 
   const {
@@ -45,8 +45,8 @@ export const NewPaymentScreen: React.FC = () => {
         const studentFromState = await getStudentById(id)
         if (studentFromState) {
           setResults(studentFromState)
-          const tmpStudent = [Object(studentFromState)]
-          setResultList(tmpStudent as [])
+          const tmpStudent = [studentFromState]
+          setResultList(tmpStudent)
           setIsSelected(true)
         }
       }
@@ -55,11 +55,11 @@ export const NewPaymentScreen: React.FC = () => {
     getStudentInEnrollment(enrollmentFromState?.studentId)
   }, [enrollmentFromState])
 
-  const fetchResults = async (query: string) => {
+  const fetchResults = async (query: string): Promise<void> => {
     if (query) {
       try {
-        const response = await searchStudentService(center?._id, query)
-        setResultList(Object(response))
+        const response = await searchStudentService(center?._id as string, query)
+        setResultList(response)
       } catch (error) {
         console.error('Erro ao buscar dados:', error)
         setResultList(null)
@@ -81,7 +81,7 @@ export const NewPaymentScreen: React.FC = () => {
     await fetchResults(data.studentSearch)
   }
 
-  function selectedStudentForPayment(student: object | null): void {
+  function selectedStudentForPayment(student: IStudent | null): void {
     setResults(student)
     setIsSelected(true)
   }
@@ -151,7 +151,7 @@ export const NewPaymentScreen: React.FC = () => {
                     </p>
                   </div>
                 ))}
-              {!!resultList == false && (
+              {(resultList?.length as number) === 0 && (
                 <div className="flex items-center gap-2">
                   <p>Estudante não encontrado!</p>
                 </div>

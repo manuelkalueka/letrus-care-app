@@ -154,7 +154,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
             disabled
           />
         </div>
-        Dados do Pagamento
         <h3 className="text-xl text-zinc-100 space-y-2">Detalhes do Pagamento</h3>
         <div className="flex flex-col gap-2">
           {/* Mês de Referência */}

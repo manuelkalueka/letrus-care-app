@@ -7,15 +7,15 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 import { ClassroomCarousel } from './ClassroomCarousel'
-import { getClassesService } from '@renderer/services/class-service'
+import { getClassesService, IClass } from '@renderer/services/class-service'
 import { useCenter } from '@renderer/contexts/center-context'
 import { Plus } from 'lucide-react'
 import { Modal } from '@renderer/components/Modal'
 import { FormCreateClass } from './ClassroomCarousel/FormCreateClass'
 
-export const AttendanceScreen: React.FC = () => {
+export const ClassesScreen: React.FC = () => {
   const { center } = useCenter()
-  const [classes, setClasses] = useState<[]>([])
+  const [classes, setClasses] = useState<IClass[] | null>([])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const closeModal = (): void => {
@@ -24,14 +24,14 @@ export const AttendanceScreen: React.FC = () => {
   }
 
   async function getClass(): Promise<void> {
-    const tempClasses = await getClassesService(center?._id)
-    setClasses(Object(tempClasses))
+    const tempClasses = await getClassesService(center?._id as string)
+    setClasses(tempClasses)
   }
   useEffect(() => {
     getClass()
   }, [center?._id])
 
-  const handleModalClose = async () => {
+  const handleModalClose = async (): Promise<void> => {
     await getClass()
   }
 
@@ -57,15 +57,21 @@ export const AttendanceScreen: React.FC = () => {
               </div>
               <div className="mt-3">
                 <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Manhã</h3>
-                <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'morning')} />
+                {classes && (
+                  <ClassroomCarousel classrooms={classes.filter((c) => c.period === 'morning')} />
+                )}
               </div>
               <div className="mt-3">
                 <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Tarde</h3>
-                <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'moon')} />
+                {classes && (
+                  <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'moon')} />
+                )}
               </div>
               <div className="mt-3">
                 <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Noite</h3>
-                <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'evening')} />
+                {classes && (
+                  <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'evening')} />
+                )}
               </div>
             </div>
             <Footer />

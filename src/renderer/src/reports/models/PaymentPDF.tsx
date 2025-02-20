@@ -1,7 +1,6 @@
+import React, { useEffect, useState } from 'react'
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer'
 import Logo from '../../assets/logo-vector.png'
-import { useEffect, useState } from 'react'
-import React from 'react'
 import { getFromLocalStorage } from '../../utils/localStorage'
 import { ICenter } from '@renderer/services/center-service'
 import { formatDateWithTimeNoWeekDay, formateCurrency } from '@renderer/utils/format'
@@ -51,7 +50,7 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
             <Text>Recibo Nº: {selectedPayment?.receipt.receiptNumber}</Text>
 
             <Text>
-              Data de Inscrição:{' '}
+              Data de Pagamento:{' '}
               {formatDateWithTimeNoWeekDay(selectedPayment?.payment?.paymentDate as Date)}
             </Text>
           </View>
@@ -153,15 +152,15 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
         >
           <Text>Processado por Letrus Care v1.0.0</Text>
         </View>
-        <View
+
+        <Text
           style={{
             alignSelf: 'flex-end',
             color: '#5f5f5f'
           }}
+          render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
           fixed
-        >
-          <Text>pag. 1/2</Text>
-        </View>
+        />
       </Page>
     </Document>
   )

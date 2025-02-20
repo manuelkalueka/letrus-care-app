@@ -29,14 +29,16 @@ export async function createPaymentService(data: IPayment): Promise<void> {
     throw error
   }
 }
+interface IResponse {
+  payments: IPayment[]
+  totalPayments: number
+}
 
-export async function getAllPaymentsService(
-  centerId: string,
-  page: number
-): Promise<AxiosResponse> {
+export async function getAllPaymentsService(centerId: string, page: number): Promise<IResponse> {
   try {
     const result = await apiMananger.get(`/payments/all/${centerId}?page=${page}`)
-    return result
+    const typedData: IResponse = result.data
+    return typedData
   } catch (error) {
     console.log('Erro ao buscar pagamentos: ', error)
     throw error
@@ -64,5 +66,18 @@ export async function getPaymentService(
   } catch (error) {
     console.log('Erro ao buscar pagamento: ', error)
     throw error
+  }
+}
+
+export const searchPaymentsService = async (
+  centerId: string,
+  query: string
+): Promise<IPayment[]> => {
+  try {
+    const { data } = await apiMananger.get(`/payments/search/${centerId}?query=${query}`)
+    const payments: IPayment[] = data
+    return payments
+  } catch (error) {
+    console.log('Erro ao pesquisar pagamentos: ', error)
   }
 }
