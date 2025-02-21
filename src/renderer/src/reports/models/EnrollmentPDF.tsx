@@ -1,8 +1,12 @@
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer'
 import { formatDateWithTime } from '@renderer/utils/format'
 import Logo from '../../assets/logo-vector.png'
+import { IEnrollment } from '@renderer/services/enrollment-service'
 
-export const EnrollmentPDF: React.FC<{ enrollment: object }> = ({ enrollment }) => {
+interface PDFProps {
+  enrollment: IEnrollment
+}
+export const EnrollmentPDF: React.FC<PDFProps> = ({ enrollment }) => {
   function getAge(): number {
     const anoActual = new Date().getFullYear()
     const anoNascimento = new Date(enrollment?.studentId?.birthDate).getFullYear()

@@ -11,7 +11,7 @@ function relativeTime(dateStr: string): string {
   return newDate
 }
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string | Date): string {
   const date = moment(dateStr)
   moment.locale('pt-PT')
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
 import { Modal } from '@renderer/components/Modal'
@@ -13,7 +12,8 @@ import {
   deleteCourseService,
   editCourse,
   getCoursesService,
-  getOneCourseService
+  getOneCourseService,
+  ICourse
 } from '@renderer/services/course-service'
 import { formatDate, formateCurrency } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
@@ -25,17 +25,17 @@ import Pagination from '@renderer/components/Pagination'
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
 
-  const [courseInfo, setCourseInfo] = useState<object | null>(null)
+  const [courseInfo, setCourseInfo] = useState<ICourse | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  const openModal = (): void => setIsModalOpen(true)
+  const closeModal = (): void => setIsModalOpen(false)
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const openEditModal = () => setIsEditModalOpen(true)
-  const closeEditModal = () => setIsEditModalOpen(false)
+  const openEditModal = (): void => setIsEditModalOpen(true)
+  const closeEditModal = (): void => setIsEditModalOpen(false)
 
-  const handleEdit = async (id: string) => {
+  const handleEdit = async (id: string): Promise<void> => {
     try {
       const data = await getOneCourseService(id) //busca curso na db
       setCourseInfo(data)
@@ -226,12 +226,12 @@ export const CoursesScreen: React.FC = () => {
       </form>
     )
   }
-  const [courses, setCourses] = useState<Array<object> | null>(null)
+  const [courses, setCourses] = useState<ICourse[] | null>(null)
   const [isLoaderCourseList, setIsLoaderCourseList] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   interface ModalEditCourseProps {
-    data: object | null
+    data: ICourse | null
     onClose: () => void
   }
 
@@ -396,8 +396,8 @@ export const CoursesScreen: React.FC = () => {
 
   useEffect(() => {
     async function getCourses(page: number): Promise<void> {
-      const data = await getCoursesService(center?._id, page)
-      setCourses(Object(data?.courses))
+      const data = await getCoursesService(center?._id as string, page)
+      setCourses(data?.courses)
       setTotalPages(data?.totalCourses)
       setIsLoaderCourseList(false)
     }
@@ -498,21 +498,21 @@ export const CoursesScreen: React.FC = () => {
                             <div className="flex items-center justify-evenly gap-1">
                               <button
                                 type="button"
-                                onClick={() => handleEdit(row?._id)}
+                                onClick={() => handleEdit(row?._id as string)}
                                 className="bg-zinc-200 text-zinc-600 px-2 py-1 rounded hover:brightness-125"
                               >
                                 Ver
                               </button>
                               <button
                                 type="submit"
-                                onClick={() => handleEdit(row?._id)}
+                                onClick={() => handleEdit(row?._id as string)}
                                 className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                               >
                                 Editar
                               </button>
                               <button
                                 type="submit"
-                                onClick={() => handleDelete(row?._id)}
+                                onClick={() => handleDelete(row?._id as string)}
                                 className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
                               >
                                 Eliminar

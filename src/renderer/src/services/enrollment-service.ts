@@ -6,16 +6,34 @@ export interface IEnrollmentForApply {
   courseId: string
   grade: string
   name: { fullName: string; surname?: string }
-  fullName: string
+  fullName?: string
   surname?: string
   birthDate: Date
   gender: 'masculino' | 'feminino' | string
   parents: { father: string; mother: string }
+  father?: string
+  mother?: string
   address: string
   phoneNumber: string
   email?: string
   centerId: string
   userId: string
+  doc_file?: File
+  image_file?: File
+}
+
+export interface IEnrollmentForEdit {
+  courseId: string
+  grade: string
+  fullName?: string
+  surname?: string
+  birthDate: Date
+  gender: 'masculino' | 'feminino' | string
+  father?: string
+  mother?: string
+  address: string
+  phoneNumber: string
+  email?: string
   doc_file?: File
   image_file?: File
 }
@@ -94,10 +112,11 @@ export const getEnrollmentsService = async (centerId: string, page: number): Pro
   }
 }
 
-export const getOneEnrollmentService = async (enrollmentId: string): Promise<AxiosResponse> => {
+export const getOneEnrollmentService = async (enrollmentId: string): Promise<IEnrollment> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/${enrollmentId}`)
-    return data
+    const typeData: IEnrollment = data
+    return typeData
   } catch (error) {
     console.log('Erro ao buscar inscrição: ', error)
     throw error
@@ -116,7 +135,7 @@ export const getEnrollmentByStudentService = async (studentId: string): Promise<
 
 export const editEnrollment = async (
   enrollmentId: string,
-  data: IEnrollmentForApply,
+  data: IEnrollmentForEdit,
   studentId: string
 ): Promise<void> => {
   try {
@@ -128,9 +147,10 @@ export const editEnrollment = async (
       address,
       phoneNumber,
       email,
-      parents,
       courseId,
-      grade
+      grade,
+      father,
+      mother
     } = data
     await apiMananger.put(`/students/edit/${studentId}`, {
       name: { fullName, surname },
@@ -139,7 +159,7 @@ export const editEnrollment = async (
       address,
       phoneNumber,
       email,
-      parents
+      parents: { father, mother }
     })
     await apiMananger.put(`/enrollments/edit/${enrollmentId}`, {
       courseId,

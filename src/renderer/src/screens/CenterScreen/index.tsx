@@ -37,7 +37,7 @@ export const CenterScreen: React.FC = () => {
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
       const { address, email, name, phoneNumber } = data
-      await editCenterContext(center?._id, {
+      await editCenterContext(center?._id as string, {
         address,
         email,
         name,

@@ -67,9 +67,37 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   const onSubmit = async (data: FormData): Promise<void> => {
-    console.log(data)
+    const {
+      fullName,
+      surname,
+      birthDate,
+      gender,
+      address,
+      phoneNumber,
+      email,
+      father,
+      mother,
+      courseId,
+      grade
+    } = data
     try {
-      await editEnrollment(enrollmentInfo?._id as string, data, enrollmentInfo?.studentId?._id)
+      await editEnrollment(
+        enrollmentInfo?._id as string,
+        {
+          fullName,
+          surname,
+          birthDate,
+          gender,
+          address,
+          phoneNumber,
+          email,
+          father,
+          mother,
+          courseId,
+          grade
+        },
+        enrollmentInfo?.studentId?._id
+      )
       Swal.fire({
         position: 'bottom-end',
         icon: 'success',

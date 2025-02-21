@@ -15,10 +15,10 @@ import {
   deleteGradeService,
   editGradeService,
   getGradeService,
-  getGradesService
+  getGradesService,
+  IGrade
 } from '@renderer/services/grade-service'
 import { formatDate } from '@renderer/utils/format'
-import { LoaderComponent } from '@renderer/components/Loader'
 import { Rings } from 'react-loader-spinner'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
@@ -28,18 +28,18 @@ import { ContentLoader } from '@renderer/components/ContentLoader'
 export const GradeScreen: React.FC = () => {
   const { center } = useCenter()
 
-  const [gradeInfo, setGradeInfo] = useState<object | null>(null)
+  const [gradeInfo, setGradeInfo] = useState<IGrade | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  const openModal = (): void => setIsModalOpen(true)
+  const closeModal = (): void => setIsModalOpen(false)
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const openEditModal = () => setIsEditModalOpen(true)
-  const closeEditModal = () => setIsEditModalOpen(false)
+  const openEditModal = (): void => setIsEditModalOpen(true)
+  const closeEditModal = (): void => setIsEditModalOpen(false)
 
-  const handleEdit = async (id: string) => {
+  const handleEdit = async (id: string): Promise<void> => {
     try {
       const data = await getGradeService(id)
       setGradeInfo(data)
@@ -153,15 +153,15 @@ export const GradeScreen: React.FC = () => {
     )
   }
 
-  const [grades, setGrades] = useState<Array<object> | null>(null)
+  const [grades, setGrades] = useState<IGrade[] | null>(null)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
     async function getGrades(page: number): Promise<void> {
-      const data = await getGradesService(center?._id, page)
-      setGrades(Object(data?.grades))
+      const data = await getGradesService(center?._id as string, page)
+      setGrades(data?.grades)
       setTotalPages(data?.totalGrades)
       setIsLoaderGradeList(false)
     }
@@ -170,7 +170,7 @@ export const GradeScreen: React.FC = () => {
   }, [isEditModalOpen, isModalOpen, currentPage])
 
   interface ModalEditGradeProps {
-    data: object | null
+    data: IGrade | null
     onClose: () => void
   }
 
@@ -186,7 +186,7 @@ export const GradeScreen: React.FC = () => {
     })
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
-        await editGradeService(gradeInfo?._id, data)
+        await editGradeService(gradeInfo?._id as string, data)
         onClose()
         Swal.fire({
           position: 'bottom-end',
@@ -287,19 +287,19 @@ export const GradeScreen: React.FC = () => {
                           {row?.grade}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                          {formatDate(row?.dateRecorded)}
+                          {formatDate(row?.dateRecorded as Date)}
                         </td>
                         <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
                           {/* Botões para Ações */}
                           <div className="flex items-center justify-evenly gap-1">
                             <button
-                              onClick={() => handleEdit(row?._id)}
+                              onClick={() => handleEdit(row?._id as string)}
                               className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               Editar
                             </button>
                             <button
-                              onClick={() => handleDelete(row?._id)}
+                              onClick={() => handleDelete(row?._id as string)}
                               className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               Deletar

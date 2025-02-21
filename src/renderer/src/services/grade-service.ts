@@ -1,10 +1,10 @@
-import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface IGrade {
   _id?: string
   grade: string
   centerId: string
+  dateRecorded?: Date
 }
 
 export async function createGrade(data: IGrade): Promise<void> {
@@ -16,10 +16,16 @@ export async function createGrade(data: IGrade): Promise<void> {
   }
 }
 
-export async function getGradesService(centerId: string, page: number): Promise<AxiosResponse> {
+type IResponse = {
+  grades: IGrade[]
+  totalGrades: number
+}
+
+export async function getGradesService(centerId: string, page: number): Promise<IResponse> {
   try {
     const { data } = await apiMananger.get(`/grades/all/paginated/${centerId}?page=${page}`)
-    return data
+    const typeData: IResponse = data
+    return typeData
   } catch (error) {
     console.log('Erro ao buscar níveis', error)
     throw error
@@ -37,9 +43,11 @@ export async function getGradesServiceAll(centerId: string): Promise<IGrade[]> {
   }
 }
 
-export async function getGradeService(gradeId: string): Promise<AxiosResponse> {
+export async function getGradeService(gradeId: string): Promise<IGrade> {
   try {
     const { data } = await apiMananger.get(`/grades/${gradeId}`)
+    const typeData: IGrade = data
+    return typeData
     return data
   } catch (error) {
     console.log('Erro ao buscar nível', error)

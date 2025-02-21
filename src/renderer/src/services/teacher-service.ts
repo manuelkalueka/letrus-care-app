@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
-interface ITeacher {
+export interface ITeacher {
+  _id?: string
   fullName: string
   birthDate: Date
   address: string
@@ -12,6 +13,7 @@ interface ITeacher {
   user: string
   courses: string[]
   teacherCode?: string
+  status: 'active' | 'inactive' | string
 }
 
 export async function createTeacher(data: ITeacher): Promise<number> {

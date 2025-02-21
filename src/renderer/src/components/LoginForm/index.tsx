@@ -37,15 +37,15 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      const { user: userLoginData } = await login(data)
+      const response = await login(data)
       if (!loading) {
-        const isExists = await centerExistsContext(userLoginData?._id)
+        const isExists = await centerExistsContext(response?.user?._id as string)
 
         if (isExists) {
           // Verificar se o centro já está no localStorage; se não, buscar e salvar.
           const storedCenter = getFromLocalStorage('center')
           if (!storedCenter) {
-            const { data: centerData } = await getCenterService(userLoginData._id)
+            const { data: centerData } = await getCenterService(response?.user._id as string)
             saveToLocalStorage('center', centerData)
           }
           navigate('/home')

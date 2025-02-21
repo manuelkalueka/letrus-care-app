@@ -26,7 +26,7 @@ export const EnrollmentScreen: React.FC = () => {
   const { center } = useCenter()
   const ENROLLMENT_STATUS = ['Inscrito', 'Completa', 'Cancelado']
 
-  const [enrollments, setEnrollments] = useState<Array<object> | null>(null)
+  const [enrollments, setEnrollments] = useState<IEnrollment[] | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -87,7 +87,7 @@ export const EnrollmentScreen: React.FC = () => {
   const [selectedEnrollment, setSelectedEnrollment] = useState<object | null>(null)
   const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false)
 
-  const handleDownloadPDF = (enrollment: object) => {
+  const handleDownloadPDF = (enrollment: IEnrollment): void => {
     setSelectedEnrollment(enrollment)
   }
 
@@ -215,7 +215,7 @@ export const EnrollmentScreen: React.FC = () => {
                             </button>
 
                             <button
-                              onClick={() => handleEdit(row?._id)}
+                              onClick={() => handleEdit(row?._id as string)}
                               className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               <PenSquare />

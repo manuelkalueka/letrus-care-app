@@ -31,7 +31,6 @@ export const NewPaymentScreen: React.FC = () => {
     register: registerSearch,
     handleSubmit: handleSubmitSearch,
     watch: watchSearch,
-    reset: resetSearch,
     formState: { errors: errorsSearch }
   } = useForm<FormSearchData>({
     resolver: yupResolver(schemaStudentSearch)
@@ -74,7 +73,7 @@ export const NewPaymentScreen: React.FC = () => {
       fetchResults(studentSearch)
     }, 500)
 
-    return () => clearTimeout(delayDebounceFn)
+    return (): void => clearTimeout(delayDebounceFn)
   }, [studentSearch])
 
   const onSubmit = async (data: FormSearchData): Promise<void> => {

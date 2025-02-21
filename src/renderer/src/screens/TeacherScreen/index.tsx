@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Modal } from '@renderer/components/Modal'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
-import { createTeacher, getTeachersService } from '@renderer/services/teacher-service'
+import { createTeacher, getTeachersService, ITeacher } from '@renderer/services/teacher-service'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Rings } from 'react-loader-spinner'
 import { useAuth } from '@renderer/contexts/auth-context'
-import { getCoursesAll, getCoursesService, ICourse } from '@renderer/services/course-service'
+import { getCoursesAll, ICourse } from '@renderer/services/course-service'
 import { formatDate } from '@renderer/utils/format'
 import { LoaderComponent } from '@renderer/components/Loader'
 import { Footer } from '@renderer/components/Footer'
@@ -23,16 +23,16 @@ export const TeacherScreen: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  const openModal = (): void => setIsModalOpen(true)
+  const closeModal = (): void => setIsModalOpen(false)
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const openEditModal = () => setIsEditModalOpen(true)
-  const closeEditModal = () => setIsEditModalOpen(false)
+  const openEditModal = (): void => setIsEditModalOpen(true)
+  const closeEditModal = (): void => setIsEditModalOpen(false)
 
   const handleEdit = (id: string) => {}
 
-  const [teachers, setTeachers] = useState<[] | null>(null)
+  const [teachers, setTeachers] = useState<ITeacher[] | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
@@ -303,7 +303,7 @@ export const TeacherScreen: React.FC = () => {
                             </select>
                           </td>
                           <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
-                            {formatDate(row?.hireDate)}
+                            {formatDate(row?.hireDate as Date)}
                           </td>
                           <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                             {row?.status === 'active'
@@ -315,13 +315,13 @@ export const TeacherScreen: React.FC = () => {
                             <div className="flex items-center justify-evenly gap-1">
                               <button
                                 className="bg-zinc-500 text-zinc-100 px-2 py-1 rounded hover:brightness-125"
-                                onClick={() => handleEdit(row?._id)}
+                                onClick={() => handleEdit(row?._id as string)}
                               >
                                 Ver
                               </button>
                               <button
                                 className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
-                                onClick={() => handleEdit(row?._id)}
+                                onClick={() => handleEdit(row?._id as string)}
                               >
                                 Editar
                               </button>

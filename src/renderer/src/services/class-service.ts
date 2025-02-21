@@ -1,8 +1,9 @@
 import apiMananger from './api'
+import { ICourse } from './course-service'
 
 export interface IClass {
   _id?: string
-  course: string
+  course: string | ICourse
   period: 'morning' | 'moon' | 'evening' | string
   students?: string[]
   teachers: string[]

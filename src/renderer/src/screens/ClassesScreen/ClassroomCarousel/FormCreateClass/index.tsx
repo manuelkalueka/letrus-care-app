@@ -4,9 +4,9 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getTeachersServiceAll } from '@renderer/services/teacher-service'
-import { getGradesServiceAll } from '@renderer/services/grade-service'
-import { getCoursesAll } from '@renderer/services/course-service'
+import { getTeachersServiceAll, ITeacher } from '@renderer/services/teacher-service'
+import { getGradesServiceAll, IGrade } from '@renderer/services/grade-service'
+import { getCoursesAll, ICourse } from '@renderer/services/course-service'
 import { createClassService } from '@renderer/services/class-service'
 import Swal from 'sweetalert2'
 
@@ -28,9 +28,9 @@ const classSchema = yup
 type FormData = yup.InferType<typeof classSchema>
 
 export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
-  const [teachers, setTeachers] = useState<object[] | null>(null)
-  const [grades, setGrades] = useState<object[] | null>(null)
-  const [courses, setCourses] = useState<object[] | null>(null)
+  const [teachers, setTeachers] = useState<ITeacher[] | null>(null)
+  const [grades, setGrades] = useState<IGrade[] | null>(null)
+  const [courses, setCourses] = useState<ICourse[] | null>(null)
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([])
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>()
   const [selectedCourse, setSelectedCourse] = useState<string | undefined>()
@@ -40,17 +40,17 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
 
   useEffect(() => {
     const fetchTeachers = async (): Promise<void> => {
-      const data = await getTeachersServiceAll(center?._id)
+      const data = await getTeachersServiceAll(center?._id as string)
       setTeachers(Object(data))
       if (data) setSelectedTeachers([data[0]._id]) // Seleccionar o primeiro professor
     }
     const fetchGrades = async (): Promise<void> => {
-      const data = await getGradesServiceAll(center?._id)
+      const data = await getGradesServiceAll(center?._id as string)
       setGrades(Object(data))
       if (data) setSelectedGrade(data[0]._id) // Seleccionar o primeiro nível
     }
     const fetchCourses = async (): Promise<void> => {
-      const data = await getCoursesAll(center?._id)
+      const data = await getCoursesAll(center?._id as string)
       setCourses(Object(data))
       if (data) setSelectedCourse(data[0]._id) // Seleccionar o primeiro curso
     }
@@ -135,7 +135,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
             defaultValue={selectedTeachers}
             className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
           >
-            {teachers?.map((teacher: object) => (
+            {teachers?.map((teacher) => (
               <option key={teacher?._id} value={teacher?._id}>
                 {teacher?.fullName}
               </option>
@@ -152,7 +152,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
             defaultValue={selectedGrade}
             className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
           >
-            {grades?.map((grade: object) => (
+            {grades?.map((grade) => (
               <option key={grade?._id} value={grade?._id}>
                 {grade?.grade}
               </option>
@@ -216,7 +216,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
               defaultValue={selectedCourse}
               className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
             >
-              {courses?.map((course: object) => (
+              {courses?.map((course) => (
                 <option key={course?._id} value={course?._id}>
                   {course?.name}
                 </option>
@@ -225,7 +225,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
           </div>
         </div>
         <div>
-          <input type="hidden" {...register('center')} value={center?._id} />
+          <input type="hidden" {...register('center')} value={center?._id as string} />
           <input type="hidden" {...register('userId')} value={user?._id} />
         </div>
 
