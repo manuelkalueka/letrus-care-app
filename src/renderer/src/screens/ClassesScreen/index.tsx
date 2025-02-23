@@ -7,7 +7,7 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 import { ClassroomCarousel } from './ClassroomCarousel'
-import { getClassesService, IClass } from '@renderer/services/class-service'
+import { getClassesService, IResponseClass } from '@renderer/services/class-service'
 import { useCenter } from '@renderer/contexts/center-context'
 import { Plus } from 'lucide-react'
 import { Modal } from '@renderer/components/Modal'
@@ -15,7 +15,7 @@ import { FormCreateClass } from './ClassroomCarousel/FormCreateClass'
 
 export const ClassesScreen: React.FC = () => {
   const { center } = useCenter()
-  const [classes, setClasses] = useState<IClass[] | null>([])
+  const [classes, setClasses] = useState<IResponseClass[] | null>([])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const closeModal = (): void => {

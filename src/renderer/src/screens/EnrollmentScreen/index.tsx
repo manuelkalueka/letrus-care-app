@@ -3,12 +3,13 @@ import { Sidebar } from '@renderer/components/Sidebar'
 import { useNavigate } from 'react-router'
 import { formatDate } from '@renderer/utils/format'
 import {
+  changeStatusService,
   getEnrollmentsService,
   getOneEnrollmentService,
   IEnrollment
 } from '@renderer/services/enrollment-service'
 import { useCenter } from '@renderer/contexts/center-context'
-import { DownloadCloud, PenSquare } from 'lucide-react'
+import { DownloadCloud, PenSquare, Trash } from 'lucide-react'
 import { Modal } from '@renderer/components/Modal'
 import Swal from 'sweetalert2'
 import { Footer } from '@renderer/components/Footer'
@@ -24,7 +25,7 @@ import { ModalEditEnrollment } from './ModalEditEnrollment'
 export const EnrollmentScreen: React.FC = () => {
   const navigate = useNavigate()
   const { center } = useCenter()
-  const ENROLLMENT_STATUS = ['Inscrito', 'Completa', 'Cancelado']
+  const ENROLLMENT_STATUS = ['Inscrito', 'Completa', 'Cancelada']
 
   const [enrollments, setEnrollments] = useState<IEnrollment[] | null>(null)
 
@@ -62,10 +63,13 @@ export const EnrollmentScreen: React.FC = () => {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, apagar!',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'bg-red-600',
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // await deleteCourseService(id)
+        await changeStatusService(id, 'dropped')
         fetchEnrollments(currentPage)
       }
     })
@@ -117,7 +121,7 @@ export const EnrollmentScreen: React.FC = () => {
     }
   }, [selectedEnrollment])
 
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">
@@ -188,7 +192,15 @@ export const EnrollmentScreen: React.FC = () => {
                         <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                           {formatDate(row?.enrollmentDate)}
                         </td>
-                        <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
+                        <td
+                          className={`p-2 md:border md:border-zinc-700 text-center block md:table-cell ${
+                            row?.status === 'completed'
+                              ? 'text-green-500'
+                              : row?.status === 'enrolled'
+                                ? 'text-orange-600'
+                                : 'text-red-500'
+                          }`}
+                        >
                           {row?.status === 'enrolled'
                             ? ENROLLMENT_STATUS[0]
                             : row?.status === 'completed'
@@ -220,6 +232,12 @@ export const EnrollmentScreen: React.FC = () => {
                               className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                             >
                               <PenSquare />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(row?._id as string)}
+                              className="bg-red-500 text-white px-2 py-1 rounded hover:brightness-125"
+                            >
+                              <Trash />
                             </button>
                           </div>
                         </td>

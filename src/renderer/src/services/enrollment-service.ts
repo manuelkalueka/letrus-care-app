@@ -170,3 +170,12 @@ export const editEnrollment = async (
     throw error
   }
 }
+
+export const changeStatusService = async (id: string, status: string): Promise<void> => {
+  try {
+    await apiMananger.patch(`/enrollments/status/${id}`, { status })
+  } catch (error) {
+    console.log('Erro ao alterar estado da inscrição: ', error)
+    throw error
+  }
+}

@@ -1,11 +1,11 @@
-import { IClass } from '@renderer/services/class-service'
+import { IResponseClass } from '@renderer/services/class-service'
 import { MoreVertical } from 'lucide-react'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 import Slider from 'react-slick'
 
 export const ClassroomCarousel: React.FC<{
-  classrooms: IClass[]
+  classrooms: IResponseClass[]
 }> = ({ classrooms }) => {
   const settings = {
     dots: false,

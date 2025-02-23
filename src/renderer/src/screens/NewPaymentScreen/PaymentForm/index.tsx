@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getEnrollmentByStudentService } from '@renderer/services/enrollment-service'
-import { createPaymentService } from '@renderer/services/payment-service'
+import {
+  changeStatusService,
+  getEnrollmentByStudentService,
+  IEnrollment
+} from '@renderer/services/enrollment-service'
+import { createPaymentService, getStudentPaymentsService } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
 import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
@@ -49,14 +53,20 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const navigate = useNavigate()
 
   const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
-  const [enrollmentByStudent, setEnrollmentByStudent] = useState<object | null>(null)
+  const [enrollmentByStudent, setEnrollmentByStudent] = useState<IEnrollment | null>(null)
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
     try {
+      //Se aluno for novo,completa o processo de inscrição
+      const results = await getStudentPaymentsService(enrollmentByStudent?._id as string)
+      if (results.length === 0) {
+        await changeStatusService(enrollmentByStudent?._id as string, 'completed')
+      }
+
       await createPaymentService(data)
       Swal.fire({
         position: 'bottom-end',
         icon: 'success',
-        title: 'Sucesso, baixe o comprovativo!!',
+        title: 'Sucesso, baixe o comprovativo.',
         showConfirmButton: false,
         timer: 2000,
         customClass: {
@@ -66,6 +76,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         },
         timerProgressBar: true
       })
+
       navigate('/payments')
     } catch (error) {
       const errorMessage = error?.response?.data?.message || 'Erro inesperado'
