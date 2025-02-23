@@ -18,11 +18,15 @@ interface PaymentPDFProps {
 export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
   const [center, setCenter] = useState<ICenter>({} as ICenter)
 
+  const [imageFromDB, setImageFromDB] = useState('')
   useEffect(() => {
     async function loadStorageData(): Promise<void> {
-      const storagedCenter = getFromLocalStorage('center')
+      const storagedCenter: ICenter = getFromLocalStorage('center') as ICenter
       if (storagedCenter) {
-        setCenter(storagedCenter as ICenter)
+        setCenter(storagedCenter)
+        if (storagedCenter?.fileData) {
+          setImageFromDB(storagedCenter.fileData)
+        }
       }
     }
     loadStorageData()
@@ -33,10 +37,10 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
       <Page size={'A5'} style={styles.page} orientation="landscape">
         <View style={styles.header}>
           <Image
-            src={Logo}
+            src={imageFromDB ? `data:${center?.fileType};base64,${imageFromDB}` : Logo}
             style={{
-              width: 25,
-              height: 25
+              width: 30,
+              height: 30
             }}
           />
           <Text style={styles.titleCenter}>{center.name}</Text>
@@ -88,7 +92,7 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
               </Text>
             </View>
           </View>
-          <View style={{ marginVertical: 4 }}>
+          <View style={{ marginVertical: 4, fontSize: 10 }}>
             <Text>Detalhes de Pagamento Descritos Abaixo: </Text>
           </View>
 
@@ -114,14 +118,14 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
           <TablePaymentMode
             rows={[
               {
-                year: center.year_school,
+                year: center.year_school as string,
                 paymentDate: new Date(selectedPayment.payment.paymentDate as Date),
                 paymentMode: selectedPayment.payment.paymentMethod as string,
                 amount: selectedPayment.payment.amount - selectedPayment.payment.lateFee,
                 status: selectedPayment.payment.status as string
               },
               {
-                year: center.year_school,
+                year: center.year_school as string,
                 paymentDate: new Date(selectedPayment.payment.paymentDate as Date),
                 paymentMode: selectedPayment.payment.paymentMethod as string,
                 amount: selectedPayment.payment.lateFee,
@@ -149,9 +153,8 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
             color: '#5f5f5f'
           }}
           fixed
-        >
-          <Text>Processado por Letrus Care v1.0.0</Text>
-        </View>
+        ></View>
+        <Text>Processado por Letrus Care v1.0.0</Text>
 
         <Text
           style={{
@@ -184,11 +187,11 @@ const styles = StyleSheet.create({
     fontWeight: 900
   },
   titleCenter: {
-    fontSize: 12,
+    fontSize: 11,
     textTransform: 'uppercase'
   },
   titleDocument: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 900,
     marginVertical: 8
   },

@@ -11,6 +11,8 @@ export interface ICenter {
   documentCode?: string
   createdBy?: string
   year_school?: string
+  fileData?: string
+  fileType?: string
 }
 
 export const createCenterService = async (
@@ -68,6 +70,20 @@ export const editCenterService = async (centerId: string, data: ICenter): Promis
   } catch (error) {
     console.log('Erro editar centro ', error)
 
+    throw error
+  }
+}
+
+export const upload_logoService = async (
+  centerId: string,
+  data: globalThis.FormData
+): Promise<ICenter> => {
+  try {
+    const response = await apiMananger.patch(`/centers/upload_logo/${centerId}`, data)
+    const typedResponse: ICenter = response.data
+    return typedResponse
+  } catch (error) {
+    console.log('Erro carregar imagem do centro ', error)
     throw error
   }
 }

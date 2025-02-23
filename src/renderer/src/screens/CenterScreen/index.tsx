@@ -4,7 +4,7 @@ import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
 import { CircleHelp } from 'lucide-react'
-import React from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 import Logo from '../../assets/logo-vector.png'
@@ -32,7 +32,7 @@ export const CenterScreen: React.FC = () => {
     resolver: yupResolver(schema)
   })
 
-  const { center, editCenterContext } = useCenter()
+  const { center, editCenterContext, uploadCenterImage, centerImage } = useCenter()
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
@@ -73,6 +73,64 @@ export const CenterScreen: React.FC = () => {
       })
     }
   }
+  //o Logo do centro será usado em todos documentos e apresentado nesta tela, se n definir pega o padrao em Logo
+  const [imageFromUser, setImageFromUser] = useState('')
+  const [imageFromDB, setImageFromDB] = useState('')
+
+  useEffect(() => {
+    if (centerImage?.fileData) {
+      setImageFromDB(centerImage.fileData)
+    }
+  }, [centerImage])
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleSelectImageForCenter = (): void => {
+    fileInputRef.current?.click()
+  }
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const imageUrl = URL.createObjectURL(file)
+      setImageFromUser(imageUrl)
+    }
+  }
+
+  const handleUploadImage = async (): Promise<void> => {
+    try {
+      const formData = new FormData()
+      const file = fileInputRef.current?.files?.[0]
+
+      if (!file) {
+        alert('Nenhuma imagem selecionada')
+        return
+      }
+
+      formData.append('logo', file)
+      await uploadCenterImage(center?._id as string, formData)
+
+      Swal.fire({
+        position: 'bottom-end',
+        icon: 'success',
+        title: 'Imagem carregada com sucesso',
+        showConfirmButton: false,
+        timer: 2000,
+        customClass: {
+          popup: 'h-44 p-2',
+          title: 'text-sm',
+          icon: 'text-xs'
+        },
+        timerProgressBar: true
+      })
+
+      setImageFromDB(URL.createObjectURL(file))
+      setImageFromUser('')
+    } catch (error) {
+      alert('Erro ao salvar imagem')
+      console.error(error)
+    }
+  }
 
   return (
     <div className="flex flex-col h-screen">
@@ -99,11 +157,40 @@ export const CenterScreen: React.FC = () => {
                   />
                   <span className="text-red-500">{errors.name?.message}</span>
                 </div>
-                <div className="flex flex-col border shadow-shape border-zinc-700 h-24 bg-transparent rounded-md">
-                  <img src={Logo} alt="Logo do Centro" className="w-full h-full" />
-                  <button type="button" className="flex-1 rounded-md bg-orange-700 p-[2px] m-2">
-                    Carregar
-                  </button>
+                <div className="flex flex-col border shadow-shape border-zinc-700 h-28  bg-transparent rounded-md">
+                  <img
+                    src={
+                      imageFromUser ||
+                      (imageFromDB ? `data:${centerImage?.fileType};base64,${imageFromDB}` : Logo)
+                    }
+                    alt="Logo do Centro"
+                    className="w-full h-full"
+                  />
+                  <input
+                    ref={fileInputRef}
+                    accept="image/*"
+                    type="file"
+                    name="logo"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                  {imageFromUser ? (
+                    <button
+                      type="submit"
+                      className="flex-1 rounded-md bg-orange-700 p-[2px] m-2"
+                      onClick={handleUploadImage}
+                    >
+                      Salvar Imagem
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="flex-1 rounded-md bg-orange-700 p-[2px] m-2"
+                      onClick={handleSelectImageForCenter}
+                    >
+                      Carregar Imagem
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-12 justify-between my-4">
@@ -148,7 +235,6 @@ export const CenterScreen: React.FC = () => {
                   </label>
                   <input
                     defaultValue={center?.documentCode}
-                    value={center?.documentCode}
                     disabled
                     id="center-code"
                     {...register('documentCode')}
@@ -169,7 +255,6 @@ export const CenterScreen: React.FC = () => {
                     id="center-nif"
                     {...register('nif')}
                     defaultValue={center?.nif}
-                    value={center?.nif}
                     disabled
                     placeholder="número de contribuinte"
                     type="text"
