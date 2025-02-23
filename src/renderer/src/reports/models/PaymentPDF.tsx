@@ -7,6 +7,7 @@ import { formatDateWithTimeNoWeekDay, formateCurrency } from '@renderer/utils/fo
 import { IPayment, IPaymentReceipt } from '@renderer/services/payment-service'
 import { TablePaymentDetails } from '../components/TablePaymentDetails'
 import { TablePaymentMode } from '../components/TablePaymentMode'
+import { createFormalName } from '@renderer/utils'
 
 interface PaymentPDFProps {
   selectedPayment: {
@@ -62,7 +63,7 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
             <View>
               <Text style={styles.lineSpace}>
                 <Text style={styles.label}>Nome: </Text>
-                {selectedPayment.payment.enrollmentId?.studentId?.name?.fullName}
+                {createFormalName(selectedPayment.payment.enrollmentId?.studentId?.name?.fullName)}
               </Text>
               <Text style={styles.lineSpace}>
                 <Text style={styles.label}>
@@ -80,7 +81,7 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
             </View>
             <View>
               <Text style={styles.lineSpace}>
-                <Text style={styles.label}>Turma: </Text> AL03
+                <Text style={styles.label}>Turma: </Text> [Geral]
               </Text>
               <Text style={styles.lineSpace}>
                 <Text style={styles.label}>Nível: </Text>{' '}
@@ -135,12 +136,14 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
           />
 
           <View style={[styles.horiSection, { marginTop: 15 }]}>
-            <View>
+            <View style={styles.signView}>
               <Text>O (a) Encarregado (a)</Text>
               <Text style={styles.signBar}></Text>
-              <Text>{selectedPayment.payment.enrollmentId?.studentId?.parents?.mother}</Text>
+              <Text>
+                {createFormalName(selectedPayment.payment.enrollmentId?.studentId?.parents?.mother)}
+              </Text>
             </View>
-            <View>
+            <View style={styles.signView}>
               <Text>O (a) Responsável (a)</Text>
               <Text style={styles.signBar}></Text>
               <Text>{selectedPayment.payment.userId?.username}</Text>
@@ -223,5 +226,11 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     marginTop: 10
+  },
+  signView: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textTransform: 'capitalize'
   }
 })

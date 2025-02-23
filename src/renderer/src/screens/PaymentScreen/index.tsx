@@ -129,13 +129,14 @@ export const PaymentScreen: React.FC = () => {
     return (): void => clearTimeout(delayDebounceFn)
   }, [studentSearch])
 
+   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <HeaderMain />
-
+      <HeaderMain isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} />
         <div className="flex flex-col flex-1 pt-4 overflow-auto">
           <div className="flex flex-col flex-1 w-11/12 mx-auto">
             <div className="flex justify-between items-center">

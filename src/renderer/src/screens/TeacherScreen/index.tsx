@@ -230,13 +230,14 @@ export const TeacherScreen: React.FC = () => {
   const TEACHER_STATUS = ['activo', 'inactivo']
   const [isLoaderTeacherList, setIsLoaderTeacherList] = useState<boolean>(true)
 
+   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <HeaderMain />
-
+      <HeaderMain isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} />
         {isLoaderTeacherList ? (
           <LoaderComponent />
         ) : (

@@ -135,11 +135,16 @@ const DropdownUser: React.FC = () => {
   )
 }
 
-export const HeaderMain: React.FC = () => {
+interface HeaderProps {
+  isSidebarOpen: boolean
+  setIsSidebarOpen: (isOpen: boolean) => void
+}
+
+export const HeaderMain: React.FC<HeaderProps> = ({ isSidebarOpen, setIsSidebarOpen }) => {
   return (
     <div className="flex items-center justify-between fixed top-0 left-0 right-0 h-[62px] lg:h-[70px] bg-gray-850 border border-transparent border-b-zinc-700 lg:pr-8 bg-gray-850 border-b z-50 px-4 bg-zinc-900">
       <section className="flex items-center justify-between gap-4">
-        <button>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
           <Menu />
         </button>
         <LogoLectrus sizeFont="text-xl" sizeImage={30} />

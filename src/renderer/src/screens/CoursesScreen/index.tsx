@@ -407,13 +407,14 @@ export const CoursesScreen: React.FC = () => {
 
   const COURSE_STATUS = ['activo', 'inactivo']
   //Tela Principal
+   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <HeaderMain />
-
-      <div className="flex justify-center flex-1 pt-[62px] lg:pt-[70px] overflow-hidden">
-        <Sidebar />
+      <HeaderMain isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+      <div className="flex flex-1 justify-center  pt-[62px] lg:pt-[70px] overflow-hidden">
+        <Sidebar isOpen={isSidebarOpen} />
         {isLoaderCourseList ? (
           <LoaderComponent />
         ) : (
