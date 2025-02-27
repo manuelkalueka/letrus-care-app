@@ -145,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({ isSidebarOpen, setIsSidebarOpen 
         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
           <Menu />
         </button>
-        <LogoLectrus sizeFont="text-xl" sizeImage={30} />
+        <LogoLectrus sizeFont="text-xl" sizeImage={28} />
       </section>
       <section className="flex items-center justify-center w-96 bg-zinc-950 px-2 rounded">
         <Search className="text-zinc-500" />

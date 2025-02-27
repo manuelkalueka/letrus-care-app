@@ -36,10 +36,11 @@ export async function getTeachersService(centerId: string, page: number): Promis
   }
 }
 
-export async function getTeachersServiceAll(centerId: string): Promise<AxiosResponse> {
+export async function getTeachersServiceAll(centerId: string): Promise<ITeacher[]> {
   try {
     const { data } = await apiMananger.get(`/teachers/all/${centerId}`)
-    return data
+    const typedData: ITeacher[] = data
+    return typedData
   } catch (error) {
     console.log('Erro ao buscar professores', error)
     throw error

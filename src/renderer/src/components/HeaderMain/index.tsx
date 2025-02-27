@@ -147,7 +147,7 @@ export const HeaderMain: React.FC<HeaderProps> = ({ isSidebarOpen, setIsSidebarO
         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
           <Menu />
         </button>
-        <LogoLectrus sizeFont="text-xl" sizeImage={30} />
+        <LogoLectrus sizeFont="text-xl" sizeImage={28} />
       </section>
       <section className="flex items-center justify-between gap-4">
         <Dropdown />

@@ -36,6 +36,10 @@ export const ClassesScreen: React.FC = () => {
   }
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
+  const handleUpdateClassrooms = async (): Promise<void> => {
+    await getClass()
+  }
+
   return (
     <div>
       <div className="flex flex-col h-screen">
@@ -56,26 +60,33 @@ export const ClassesScreen: React.FC = () => {
                 <p>Nova Turma</p>
               </div>
               <div className="mt-3">
-                {classes?.length !== 0 && classes && (
+                {classes?.filter((c) => c.period === 'morning')?.length !== 0 && classes && (
                   <>
                     <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Manhã</h3>
-                    <ClassroomCarousel classrooms={classes.filter((c) => c.period === 'morning')} />
+                    <ClassroomCarousel
+                      onUpdateClassrooms={handleUpdateClassrooms}
+                      classrooms={classes.filter((c) => c.period === 'morning')}
+                    />
                   </>
                 )}
               </div>
               <div className="mt-3">
-                {classes?.length !== 0 && classes && (
+                {classes?.filter((c) => c?.period === 'moon')?.length !== 0 && classes && (
                   <>
                     <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Tarde</h3>
-                    <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'moon')} />
+                    <ClassroomCarousel
+                      onUpdateClassrooms={handleUpdateClassrooms}
+                      classrooms={classes.filter((c) => c?.period === 'moon')}
+                    />
                   </>
                 )}
               </div>
               <div className="mt-3">
-                {classes?.length !== 0 && classes && (
+                {classes?.filter((c) => c?.period === 'evening')?.length !== 0 && classes && (
                   <>
                     <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Noite</h3>
                     <ClassroomCarousel
+                      onUpdateClassrooms={handleUpdateClassrooms}
                       classrooms={classes.filter((c) => c?.period === 'evening')}
                     />
                   </>
@@ -86,7 +97,6 @@ export const ClassesScreen: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Modal para criar nova turma */}
       {isModalOpen && (
         <Modal onClose={() => closeModal()} isOpen={isModalOpen}>
           <h2 className="text-3xl">Criar Nova Turma</h2>

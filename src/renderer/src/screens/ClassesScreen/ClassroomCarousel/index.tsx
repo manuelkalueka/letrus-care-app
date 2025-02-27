@@ -1,14 +1,18 @@
 import { Modal } from '@renderer/components/Modal'
-import { IResponseClass } from '@renderer/services/class-service'
+import { IResponseClass, updateClassStatusService } from '@renderer/services/class-service'
 import { MoreVertical, PenSquareIcon, Plus, XOctagon } from 'lucide-react'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 import Slider from 'react-slick'
 import { ModalAddStudent } from './ModalAddStudent'
+import Swal from 'sweetalert2'
+import { FormEditClass } from './FormEditClass'
+import { abreaviateName } from '@renderer/utils'
 
 export const ClassroomCarousel: React.FC<{
   classrooms: IResponseClass[]
-}> = ({ classrooms }) => {
+  onUpdateClassrooms: () => void
+}> = ({ classrooms, onUpdateClassrooms }) => {
   const settings = {
     dots: false,
     infinite: false,
@@ -25,17 +29,54 @@ export const ClassroomCarousel: React.FC<{
     ]
   }
   const [showMenu, setShowMenu] = useState<{ [key: string]: boolean }>({})
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedClass, setSelectedClass] = useState<IResponseClass>({} as IResponseClass)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+
   const openModal = (myclass: IResponseClass): void => {
     setSelectedClass(myclass)
     setIsModalOpen(true)
   }
-  const closeModal = (): void => setIsModalOpen(false)
+  const closeModal = (): void => {
+    if (typeof onUpdateClassrooms === 'function') {
+      onUpdateClassrooms()
+    }
+    setIsModalOpen(false)
+  }
+
+  const openModalEdit = (myclass: IResponseClass): void => {
+    setSelectedClass(myclass)
+    setIsModalEditOpen(true)
+  }
+  const closeModalEdit = (): void => {
+    if (typeof onUpdateClassrooms === 'function') {
+      onUpdateClassrooms()
+    }
+    setIsModalEditOpen(false)
+  }
+  const handleCancelClassRoom = async (id: string): Promise<void> => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Tens a certeza?',
+      text: 'Esta acção não pode ser revertida!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, cancelar!',
+      cancelButtonText: 'anular',
+      customClass: {
+        confirmButton: 'bg-red-600'
+      }
+    })
+    if (isConfirmed) {
+      await updateClassStatusService(id, 'inactive')
+      if (typeof onUpdateClassrooms === 'function') {
+        onUpdateClassrooms()
+      }
+    }
+  }
 
   const DropDownMenu: React.FC<{ myclass: IResponseClass }> = ({ myclass }) => {
     return (
-      <div className="absolute right-0 top-8 bg-zinc-500 shadow-lg rounded-md z-20">
+      <div className="absolute right-0 top-9 bg-zinc-500 shadow-lg rounded-md z-20">
         <ul>
           <li>
             <button
@@ -50,7 +91,11 @@ export const ClassroomCarousel: React.FC<{
             </button>
           </li>
           <li>
-            <button type="button" className="flex items-center p-2 hover:bg-zinc-600 w-full">
+            <button
+              type="button"
+              className="flex items-center p-2 hover:bg-zinc-600 w-full"
+              onClick={() => openModalEdit(myclass)}
+            >
               <span className="mr-2">
                 <PenSquareIcon />
               </span>
@@ -58,7 +103,11 @@ export const ClassroomCarousel: React.FC<{
             </button>
           </li>
           <li>
-            <button type="button" className="flex items-center p-2 hover:bg-zinc-600 w-full">
+            <button
+              type="button"
+              className="flex items-center p-2 hover:bg-zinc-600 w-full"
+              onClick={() => handleCancelClassRoom(myclass?._id as string)}
+            >
               <span className="mr-2">
                 <XOctagon />
               </span>
@@ -78,7 +127,7 @@ export const ClassroomCarousel: React.FC<{
         {classrooms.map((classroom) => (
           <div
             key={classroom?._id}
-            className="relative flex bg-zinc-800 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[229px] mx-1 rounded shadow hover:shadow-lg"
+            className="relative flex bg-zinc-800 hover:bg-zinc-700 hover:cursor-pointer p-2 max-w-[300px] h-[11rem] mx-1 rounded shadow hover:shadow-lg"
             onDoubleClick={() => {
               navigate(`/classes/show/${classroom?._id}`, {
                 state: { class: classroom }
@@ -127,13 +176,23 @@ export const ClassroomCarousel: React.FC<{
           </div>
         ))}
       </Slider>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <div>
-          <h2 className="text-3xl">Adicionar alunos</h2>
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <div>
+            <h2 className="text-3xl">Adicionar alunos</h2>
+            <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
+            <ModalAddStudent selectedClass={selectedClass} />
+          </div>
+        </Modal>
+      )}
+
+      {isModalEditOpen && (
+        <Modal onClose={() => closeModalEdit()} isOpen={isModalEditOpen}>
+          <h2 className="text-3xl">Editar {selectedClass.className}</h2>
           <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
-          <ModalAddStudent selectedClass={selectedClass} />
-        </div>
-      </Modal>
+          <FormEditClass onClose={() => closeModalEdit()} selectedClass={selectedClass} />
+        </Modal>
+      )}
     </>
   )
 }

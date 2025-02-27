@@ -7,7 +7,7 @@ interface LogoProps {
 }
 export const LogoLectrus: React.FC<LogoProps> = ({ sizeFont, sizeImage }) => {
   return (
-    <h1 className="flex items-center">
+    <h1 className="flex items-center justify-center gap-1">
       <img src={Logo} alt="Logo da Letrus Care" width={sizeImage} />
       <span className={sizeFont}>LETRUS CARE</span>
     </h1>

@@ -1,13 +1,13 @@
 import { useCenter } from '@renderer/contexts/center-context'
-import { editClassService, IClass, IResponseClass } from '@renderer/services/class-service'
+import { addStudentClassService, IResponseClass } from '@renderer/services/class-service'
 import { getStudentsForClassService, IEnrollment } from '@renderer/services/enrollment-service'
-import { IStudent } from '@renderer/services/student'
 import { CheckCircle, PlusCircle } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ selectedClass }) => {
   const [studentList, setStudentList] = useState<IEnrollment[]>()
   const { center } = useCenter()
+
   const fetchStudents = async (): Promise<void> => {
     try {
       const results = await getStudentsForClassService(center?._id as string, {
@@ -21,16 +21,9 @@ export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ s
     }
   }
   const [isAdded, setIsAdded] = useState<{ [key: string]: boolean }>({})
-  const handleEditClass = async (studentId: string): Promise<void> => {
+  const handleAddStudentOnClass = async (studentId: string): Promise<void> => {
     try {
-      const currentStudents = selectedClass.students as IStudent[]
-      const updatedStudents = [...currentStudents, studentId]
-      await editClassService(
-        selectedClass?._id as string,
-        {
-          students: updatedStudents
-        } as IClass
-      )
+      await addStudentClassService(selectedClass?._id as string, studentId)
       setIsAdded((prev) => ({
         ...prev,
         [studentId]: true
@@ -43,6 +36,16 @@ export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ s
 
   useEffect(() => {
     fetchStudents()
+  }, [])
+
+  useEffect(() => {
+    studentList?.forEach((ennroll) => {
+      if (selectedClass.students?.includes(ennroll.studentId?._id))
+        setIsAdded((prev) => ({
+          ...prev,
+          [ennroll.studentId?._id]: true
+        }))
+    })
   }, [])
 
   return (
@@ -60,7 +63,7 @@ export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ s
                   <button
                     title="Adicionar"
                     className="px-3 py-1 rounded text-white"
-                    onClick={() => handleEditClass(enrollment.studentId?._id)}
+                    onClick={() => handleAddStudentOnClass(enrollment.studentId?._id)}
                   >
                     <PlusCircle />
                   </button>

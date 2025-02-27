@@ -18,6 +18,14 @@ export interface IClass {
   grade: string
 }
 
+export interface IClassOnEdit {
+  period: 'morning' | 'moon' | 'evening' | string
+  teachers: string[]
+  classLimit?: number
+  schedule: string
+  className: string
+}
+
 export interface IResponseClass {
   teachers: ITeacher[]
   _id?: string
@@ -60,11 +68,29 @@ export const createClassService = async (classData: IClass): Promise<IClass> => 
   }
 }
 
-export const editClassService = async (id: string, data: IClass): Promise<IResponseClass> => {
+export const editClassService = async (id: string, data: IClassOnEdit): Promise<void> => {
   try {
-    const response = await apiMananger.put(`/classes/edit/${id}`, data)
-    const typedData: IResponseClass = response.data
-    return typedData
+    console.log('Dados da Class: ', data)
+    //period, teachers, classLimit, schedule
+    await apiMananger.put(`/classes/edit/${id}`, data)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const addStudentClassService = async (id: string, studentId: string): Promise<void> => {
+  try {
+    await apiMananger.put(`/classes/add-student/${id}`, { studentId })
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const updateClassStatusService = async (id: string, status: string): Promise<void> => {
+  try {
+    await apiMananger.patch(`/classes/${id}/status`, { status })
   } catch (error) {
     console.log(error)
     throw error
