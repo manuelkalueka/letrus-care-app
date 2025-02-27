@@ -24,9 +24,23 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
   onClose,
   selectedClass
 }) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(classSchema),
+    defaultValues: {
+      teachers: getTeachersId(selectedClass.teachers as ITeacher[])
+    }
+  })
+
   const [teachers, setTeachers] = useState<ITeacher[] | null>(null)
 
   const { center } = useCenter()
+
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([])
 
   useEffect(() => {
     const fetchTeachers = async (): Promise<void> => {
@@ -47,17 +61,14 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
     return tId
   }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<FormData>({
-    resolver: yupResolver(classSchema),
-    defaultValues: {
-      teachers: getTeachersId(selectedClass.teachers as ITeacher[])
+  // Atualiza os professores selecionados da turma
+  useEffect(() => {
+    if (selectedClass?.teachers) {
+      const teacherIds = selectedClass.teachers.map((t) => (t as ITeacher)._id)
+      setSelectedTeachers(teacherIds as string[])
+      setValue('teachers', teacherIds as string[]) // Atualiza o campo corretamente
     }
-  })
-
+  }, [selectedClass, setValue])
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
       await editClassService(selectedClass?._id as string, data)
@@ -117,6 +128,12 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
             id="teachers"
             multiple
             {...register('teachers')}
+            value={selectedTeachers}
+            onChange={(e) => {
+              const values = Array.from(e.target.selectedOptions, (option) => option.value)
+              setSelectedTeachers(values)
+              setValue('teachers', values)
+            }}
             className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
           >
             {teachers?.map((teacher) => (
@@ -125,6 +142,7 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
               </option>
             ))}
           </select>
+          {errors.teachers && <p className="text-red-500">{errors.teachers?.message}</p>}
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>

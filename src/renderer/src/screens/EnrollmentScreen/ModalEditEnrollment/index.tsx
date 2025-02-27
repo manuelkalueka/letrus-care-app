@@ -41,9 +41,7 @@ const schema = yup
     grade: yup.string().required('Seleciona um nível'),
     courseId: yup.string().required('Seleciona um curso disponível'),
     doc_file: yup.mixed().nullable(),
-    image_file: yup.mixed().nullable(),
-    userId: yup.string().required(),
-    centerId: yup.string().required()
+    image_file: yup.mixed().nullable()
   })
   .required()
 
@@ -63,8 +61,12 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
-  } = useForm<FormData>({ resolver: yupResolver(schema) })
+  } = useForm<FormData>({
+    defaultValues: { grade: enrollmentInfo?.grade?._id, courseId: enrollmentInfo?.courseId?._id },
+    resolver: yupResolver(schema)
+  })
 
   const onSubmit = async (data: FormData): Promise<void> => {
     const {
@@ -142,6 +144,14 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
     }
 
     getGrades()
+  }, [])
+
+  const [selectedCourse, setSelectedCourse] = useState<string>('')
+  const [selectedGrade, setSelectedGrade] = useState<string>('')
+
+  useEffect(() => {
+    setSelectedCourse(enrollmentInfo?.courseId?._id)
+    setSelectedGrade(enrollmentInfo?.grade?._id)
   }, [])
 
   return (
@@ -248,7 +258,12 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           id="courseId"
           {...register('courseId')}
           className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-          defaultValue={enrollmentInfo?.courseId?._id}
+          value={selectedCourse}
+          onChange={(e) => {
+            const value = e.target.value
+            setSelectedCourse(value)
+            setValue('courseId', value)
+          }}
         >
           {courses?.map((course, index) => (
             <option value={course?._id} key={index}>
@@ -257,14 +272,19 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           ))}
         </select>
         {errors.courseId && <span className="text-red-500">{errors.courseId?.message}</span>}
-        <label htmlFor="grade">
+        <label htmlFor="grade-choice">
           Nível <span className="text-orange-700">*</span>
         </label>
         <select
           id="grade"
           {...register('grade')}
           className="flex-1 w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-          defaultValue={enrollmentInfo?.grade?._id}
+          value={selectedGrade}
+          onChange={(e) => {
+            const value = e.target.value
+            setSelectedGrade(value)
+            setValue('grade', value)
+          }}
         >
           {grades?.map((grade, index) => (
             <option value={grade?._id} key={index}>

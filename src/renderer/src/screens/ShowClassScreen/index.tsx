@@ -26,15 +26,15 @@ export const ShowClassScreen: React.FC = () => {
 
   const [attendance, setAttendance] = useState({})
 
-  async function fetchClass(): Promise<void> {
-    const classResult = await getClassService(classRoom._id as string)
-    setClassRoom(classResult)
-  }
+  // async function fetchClass(): Promise<void> {
+  //   const classResult = await getClassService(classRoom?._id as string)
+  //   setClassRoom(classResult)
+  // }
 
-  //em caso de actualização colocar dependentes correctos
-  useEffect(() => {
-    fetchClass()
-  }, [location.state?.class])
+  // //em caso de actualização colocar dependentes correctos
+  // useEffect(() => {
+  //   fetchClass()
+  // }, [location.state?.class])
 
   const [isLessonOpened, setIsLessonOpened] = useState(false)
   const [topic, setTopic] = useState('')
