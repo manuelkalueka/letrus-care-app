@@ -59,3 +59,14 @@ export const createClassService = async (classData: IClass): Promise<IClass> => 
     throw error
   }
 }
+
+export const editClassService = async (id: string, data: IClass): Promise<IResponseClass> => {
+  try {
+    const response = await apiMananger.put(`/classes/edit/${id}`, data)
+    const typedData: IResponseClass = response.data
+    return typedData
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}

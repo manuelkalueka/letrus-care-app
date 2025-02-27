@@ -133,6 +133,26 @@ export const getEnrollmentByStudentService = async (studentId: string): Promise<
   }
 }
 
+type infoReq = {
+  courseId: string
+  grade: string
+}
+export const getStudentsForClassService = async (
+  centerId: string,
+  info: infoReq
+): Promise<IEnrollment[]> => {
+  try {
+    const { data } = await apiMananger.get(
+      `/enrollments/add-class/${centerId}?courseId=${info.courseId}&grade=${info.grade}`
+    )
+    const typeData: IEnrollment[] = data
+    return typeData
+  } catch (error) {
+    console.log('Erro ao buscar alunos: ', error)
+    throw error
+  }
+}
+
 export const editEnrollment = async (
   enrollmentId: string,
   data: IEnrollmentForEdit,

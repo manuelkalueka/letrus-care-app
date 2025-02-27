@@ -59,7 +59,7 @@ export const LoginForm: React.FC = () => {
       } else if (error?.response?.status === 401) {
         MySwal.fire({
           title: 'Erro',
-          text: `${error?.response?.data?.error}`,
+          text: `${error?.response?.response?.data?.error}`,
           icon: 'error',
           confirmButtonText: 'OK'
         })

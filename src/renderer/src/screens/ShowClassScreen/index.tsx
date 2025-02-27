@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import { Sidebar } from '@renderer/components/Sidebar'
-import { getClassService, IResponseClass } from '@renderer/services/class-service'
+import { IResponseClass } from '@renderer/services/class-service'
 import { useLocation } from 'react-router'
 import { CheckCheck, NotebookPen, X } from 'lucide-react'
+import { ITeacher } from '@renderer/services/teacher-service'
+import { createFormalName } from '@renderer/utils'
 
 export const ShowClassScreen: React.FC = () => {
   const [classRoom, setClassRoom] = useState<IResponseClass>({} as IResponseClass)
@@ -27,13 +29,34 @@ export const ShowClassScreen: React.FC = () => {
   //   fetchClass()
   // }, [])
 
-  const handleAttendance = (studentId, status) => {
+  const handleAttendance = (studentId: string, status: string): void => {
     setAttendance((prev) => ({ ...prev, [studentId]: status }))
+  }
+
+  const [isLessonOpened, setIsLessonOpened] = useState(false)
+
+  function showTeachers(teachers: ITeacher[]): string {
+    if (!teachers || teachers.length === 0) {
+      return ''
+    }
+
+    let names = createFormalName(teachers[0].fullName)
+
+    if (teachers.length > 1 && teachers.length < 3) {
+      names += ' e ' + createFormalName(teachers[teachers.length - 1].fullName)
+    } else if (teachers.length > 2) {
+      for (let i = 1; i < teachers.length - 1; i++) {
+        names += ', ' + createFormalName(teachers[i].fullName)
+      }
+
+      names += ' e ' + createFormalName(teachers[teachers.length - 1].fullName)
+    }
+
+    return names
   }
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Header */}
       <HeaderMain isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       <div className="flex flex-1 justify-center pt-[62px] lg:pt-[70px] overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} />
@@ -45,8 +68,7 @@ export const ShowClassScreen: React.FC = () => {
                   <div>
                     <h2 className="text-3xl text-zinc-400">{classRoom.className}</h2>
                     <article className="text-zinc-300 mt-3">
-                      <p>Turma do professor {classRoom.course?.name}</p>
-                      {/* <p >Professor: {classRoom.teachers[0].fullName}</p> */}
+                      <p>Professores: {showTeachers(classRoom?.teachers)}</p>
                       <p>Nível: {classRoom.grade?.grade}</p>
                       <p>Curso: {classRoom.course?.name}</p>
                     </article>
@@ -58,12 +80,18 @@ export const ShowClassScreen: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-zinc-200 mt-4 text-xl font-semibold">Lista de Alunos</h3>
+                  <h3
+                    className={`${isLessonOpened ? 'text-zinc-200' : 'text-zinc-700'} mt-4 text-xl font-semibold transition-all`}
+                  >
+                    Lista de Alunos
+                  </h3>
                   <div className="max-h-[76%] overflow-auto">
-                    <ul className="mt-2 text-zinc-200">
+                    <ul
+                      className={`mt-2 ${isLessonOpened ? 'text-zinc-200' : 'text-zinc-700'} transition-all`}
+                    >
                       {classRoom.students?.map((student, index) => (
                         <li
-                          key={student?._id}
+                          key={student?._id as string}
                           className="flex justify-between items-center p-2 border-b border-zinc-700"
                         >
                           <span>
@@ -71,28 +99,31 @@ export const ShowClassScreen: React.FC = () => {
                           </span>
                           <div className="space-x-2">
                             <button
+                              disabled={!isLessonOpened}
                               title="Presente"
                               className={`px-3 py-1 rounded ${
-                                attendance[student?._id] === 'present'
+                                attendance[student?._id as string] === 'present'
                                   ? 'bg-green-500 text-white'
                                   : 'bg-zinc-700'
                               }`}
-                              onClick={() => handleAttendance(student._id, 'present')}
+                              onClick={() => handleAttendance(student?._id as string, 'present')}
                             >
                               <CheckCheck />
                             </button>
                             <button
+                              disabled={!isLessonOpened}
                               title="Ausente"
                               className={`px-3 py-1 rounded ${
-                                attendance[student?._id] === 'absent'
+                                attendance[student?._id as string] === 'absent'
                                   ? 'bg-red-500 text-white'
                                   : 'bg-zinc-700'
                               }`}
-                              onClick={() => handleAttendance(student._id, 'absent')}
+                              onClick={() => handleAttendance(student?._id as string, 'absent')}
                             >
                               <X />
                             </button>
                             <button
+                              disabled={!isLessonOpened}
                               title="Adicionar Nota"
                               className="px-3 py-1 rounded bg-zinc-700"
                               onClick={() => alert('Modal de Observação')}

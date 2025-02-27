@@ -34,7 +34,7 @@ export const ClassesScreen: React.FC = () => {
   const handleModalClose = async (): Promise<void> => {
     await getClass()
   }
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div>
@@ -56,21 +56,29 @@ export const ClassesScreen: React.FC = () => {
                 <p>Nova Turma</p>
               </div>
               <div className="mt-3">
-                <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Manhã</h3>
-                {classes && (
-                  <ClassroomCarousel classrooms={classes.filter((c) => c.period === 'morning')} />
+                {classes?.length !== 0 && classes && (
+                  <>
+                    <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Manhã</h3>
+                    <ClassroomCarousel classrooms={classes.filter((c) => c.period === 'morning')} />
+                  </>
                 )}
               </div>
               <div className="mt-3">
-                <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Tarde</h3>
-                {classes && (
-                  <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'moon')} />
+                {classes?.length !== 0 && classes && (
+                  <>
+                    <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Tarde</h3>
+                    <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'moon')} />
+                  </>
                 )}
               </div>
               <div className="mt-3">
-                <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Noite</h3>
-                {classes && (
-                  <ClassroomCarousel classrooms={classes.filter((c) => c?.period === 'evening')} />
+                {classes?.length !== 0 && classes && (
+                  <>
+                    <h3 className="text-2xl text-zinc-400 mb-2  max-w-20">Noite</h3>
+                    <ClassroomCarousel
+                      classrooms={classes.filter((c) => c?.period === 'evening')}
+                    />
+                  </>
                 )}
               </div>
             </div>

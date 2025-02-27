@@ -9,7 +9,6 @@ export interface IStudent {
   address: string
   phoneNumber: string
   email?: string
-  status: 'active' | 'inactive' | string
   centerId: string
   endStudiedDate: Date
   studentCode: string
