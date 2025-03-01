@@ -24,9 +24,15 @@ import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import Pagination from '@renderer/components/Pagination'
 import { ContentLoader } from '@renderer/components/ContentLoader'
+import { PenBox, Trash } from 'lucide-react'
 
 export const GradeScreen: React.FC = () => {
   const { center } = useCenter()
+
+  const [grades, setGrades] = useState<IGrade[] | null>(null)
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
   const [gradeInfo, setGradeInfo] = useState<IGrade | null>(null)
 
@@ -62,12 +68,24 @@ export const GradeScreen: React.FC = () => {
   }
 
   const handleDelete = async (id: string): Promise<void> => {
-    //ToDo, atualizar a lista depois de eliminar
-    const ispermitted = confirm('Tens a Certeza, ToDo Personalizar o Confirm')
-    if (ispermitted) {
-      await deleteGradeService(id)
-    }
+    Swal.fire({
+      title: 'Tens a certeza?',
+      text: 'Esta acção não pode ser revertida!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, apagar!',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'bg-red-600'
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteGradeService(id)
+        await getGrades(currentPage)
+      }
+    })
   }
+
   const schema = yup
     .object({
       grade: yup.string().required('Especifique um nível'),
@@ -153,19 +171,14 @@ export const GradeScreen: React.FC = () => {
     )
   }
 
-  const [grades, setGrades] = useState<IGrade[] | null>(null)
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  async function getGrades(page: number): Promise<void> {
+    const data = await getGradesService(center?._id as string, page)
+    setGrades(data?.grades)
+    setTotalPages(data?.totalGrades)
+    setIsLoaderGradeList(false)
+  }
 
   useEffect(() => {
-    async function getGrades(page: number): Promise<void> {
-      const data = await getGradesService(center?._id as string, page)
-      setGrades(data?.grades)
-      setTotalPages(data?.totalGrades)
-      setIsLoaderGradeList(false)
-    }
-
     getGrades(currentPage)
   }, [isEditModalOpen, isModalOpen, currentPage])
 
@@ -238,7 +251,7 @@ export const GradeScreen: React.FC = () => {
 
   const [isLoaderGradeList, setIsLoaderGradeList] = useState(true)
 
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">
@@ -297,13 +310,13 @@ export const GradeScreen: React.FC = () => {
                               onClick={() => handleEdit(row?._id as string)}
                               className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                             >
-                              Editar
+                              <PenBox />
                             </button>
                             <button
                               onClick={() => handleDelete(row?._id as string)}
                               className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
                             >
-                              Deletar
+                              <Trash />
                             </button>
                           </div>
                         </td>

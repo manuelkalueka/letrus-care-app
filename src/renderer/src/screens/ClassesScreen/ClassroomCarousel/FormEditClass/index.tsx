@@ -69,6 +69,7 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
       setValue('teachers', teacherIds as string[]) // Atualiza o campo corretamente
     }
   }, [selectedClass, setValue])
+  
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
       await editClassService(selectedClass?._id as string, data)

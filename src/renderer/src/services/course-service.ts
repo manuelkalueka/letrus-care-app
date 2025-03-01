@@ -13,6 +13,17 @@ export interface ICourse {
   courseType?: 'on_home' | 'on_center' | string
 }
 
+export interface ICourseOnEdit {
+  name: string
+  description: string
+  startDate: Date
+  endDate: Date
+  fee: number
+  feeFine: number
+
+  courseType?: 'on_home' | 'on_center' | string
+}
+
 export async function createCourse(data: ICourse): Promise<void> {
   try {
     await apiMananger.post('/courses/new', data)
@@ -59,7 +70,7 @@ export async function getCoursesAll(centerId: string): Promise<ICourse[]> {
   }
 }
 
-export const editCourse = async (courseId: string, data: ICourse): Promise<void> => {
+export const editCourse = async (courseId: string, data: ICourseOnEdit): Promise<void> => {
   try {
     await apiMananger.put(`/courses/edit/${courseId}`, data)
   } catch (error) {

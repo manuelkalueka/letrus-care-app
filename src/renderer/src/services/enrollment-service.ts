@@ -52,7 +52,7 @@ export interface IEnrollment {
 }
 
 interface IResponse {
-  enrollments: IEnrollment
+  enrollments: IEnrollment[]
   totalEnrollments: number
 }
 
@@ -104,8 +104,7 @@ export const createEnrollment = async (data: IEnrollmentForApply): Promise<Axios
 export const getEnrollmentsService = async (centerId: string, page: number): Promise<IResponse> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/all/${centerId}?page=${page}`)
-    const typeData: IResponse = data
-    return typeData
+    return data
   } catch (error) {
     console.log('Erro ao buscar inscrições: ', error)
     throw error

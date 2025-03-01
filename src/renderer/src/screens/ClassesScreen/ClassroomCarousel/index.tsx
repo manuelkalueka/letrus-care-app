@@ -7,7 +7,6 @@ import Slider from 'react-slick'
 import { ModalAddStudent } from './ModalAddStudent'
 import Swal from 'sweetalert2'
 import { FormEditClass } from './FormEditClass'
-import { abreaviateName } from '@renderer/utils'
 
 export const ClassroomCarousel: React.FC<{
   classrooms: IResponseClass[]

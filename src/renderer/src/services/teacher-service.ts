@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface ITeacher {
@@ -13,7 +12,7 @@ export interface ITeacher {
   user: string
   courses: string[]
   teacherCode?: string
-  status: 'active' | 'inactive' | string
+  status?: 'active' | 'inactive' | string
 }
 
 export async function createTeacher(data: ITeacher): Promise<number> {
@@ -26,7 +25,15 @@ export async function createTeacher(data: ITeacher): Promise<number> {
   }
 }
 
-export async function getTeachersService(centerId: string, page: number): Promise<AxiosResponse> {
+interface IResponseTeacher {
+  teachers: ITeacher[]
+  totalTeachers: number
+}
+
+export async function getTeachersService(
+  centerId: string,
+  page: number
+): Promise<IResponseTeacher> {
   try {
     const { data } = await apiMananger.get(`/teachers/all/paginated/${centerId}?page=${page}`)
     return data
@@ -43,6 +50,26 @@ export async function getTeachersServiceAll(centerId: string): Promise<ITeacher[
     return typedData
   } catch (error) {
     console.log('Erro ao buscar professores', error)
+    throw error
+  }
+}
+
+export async function editTeacherService(id: string, data: ITeacher): Promise<ITeacher> {
+  try {
+    const response = await apiMananger.put(`/teachers/edit/${id}`, data)
+    return response.data
+  } catch (error) {
+    console.log('Erro ao editar professor', error)
+    throw error
+  }
+}
+
+export async function updateTeacherStatusService(id: string, status: string): Promise<ITeacher> {
+  try {
+    const response = await apiMananger.patch(`/teachers/${id}/${status}`)
+    return response.data
+  } catch (error) {
+    console.log('Erro ao editar professor', error)
     throw error
   }
 }

@@ -65,12 +65,12 @@ export const EnrollmentScreen: React.FC = () => {
       confirmButtonText: 'Sim, apagar!',
       cancelButtonText: 'Cancelar',
       customClass: {
-        confirmButton: 'bg-red-600',
+        confirmButton: 'bg-red-600'
       }
     }).then(async (result) => {
       if (result.isConfirmed) {
         await changeStatusService(id, 'dropped')
-        fetchEnrollments(currentPage)
+        await fetchEnrollments(currentPage)
       }
     })
   }
@@ -80,7 +80,7 @@ export const EnrollmentScreen: React.FC = () => {
 
   const fetchEnrollments = async (page: number): Promise<void> => {
     const data = await getEnrollmentsService(center?._id as string, page)
-    setEnrollments(Object(data.enrollments))
+    setEnrollments(data.enrollments)
     setTotalPages(data.totalEnrollments)
   }
 
@@ -88,7 +88,7 @@ export const EnrollmentScreen: React.FC = () => {
     if (center?._id as string) fetchEnrollments(currentPage)
   }, [center?._id as string, currentPage, isModalOpen])
 
-  const [selectedEnrollment, setSelectedEnrollment] = useState<object | null>(null)
+  const [selectedEnrollment, setSelectedEnrollment] = useState<IEnrollment | null>(null)
   const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false)
 
   const handleDownloadPDF = (enrollment: IEnrollment): void => {

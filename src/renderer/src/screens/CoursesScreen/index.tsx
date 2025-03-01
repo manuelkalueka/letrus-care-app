@@ -10,7 +10,6 @@ import withReactContent from 'sweetalert2-react-content'
 import {
   createCourse,
   deleteCourseService,
-  editCourse,
   getCoursesService,
   getOneCourseService,
   ICourse
@@ -21,6 +20,8 @@ import { Rings } from 'react-loader-spinner'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import Pagination from '@renderer/components/Pagination'
+import { Eye, PenBox, Trash } from 'lucide-react'
+import { ModalEditCourse } from './ModalEditCourse'
 
 export const CoursesScreen: React.FC = () => {
   const { center } = useCenter()
@@ -34,6 +35,9 @@ export const CoursesScreen: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const openEditModal = (): void => setIsEditModalOpen(true)
   const closeEditModal = (): void => setIsEditModalOpen(false)
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
   const handleEdit = async (id: string): Promise<void> => {
     try {
@@ -57,11 +61,22 @@ export const CoursesScreen: React.FC = () => {
     }
   }
   const handleDelete = async (id: string): Promise<void> => {
-    const ispermitted = confirm('Tens a Certeza?')
-    if (ispermitted) {
-      await deleteCourseService(id)
-      //ToDo, atualizar a lista depois de eliminar
-    }
+    Swal.fire({
+      title: 'Tens a certeza?',
+      text: 'Esta acção não pode ser revertida!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, apagar!',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'bg-red-600'
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteCourseService(id)
+        await getCourses(currentPage)
+      }
+    })
   }
   const schema = yup
     .object({
@@ -84,14 +99,12 @@ export const CoursesScreen: React.FC = () => {
     const {
       register,
       handleSubmit,
-      formState: { errors }
+      formState: { errors, isSubmitting }
     } = useForm<FormData>({
       resolver: yupResolver(schema)
     })
-    const [isSubmitting, setIsSubmitting] = useState(false)
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
-        setIsSubmitting(true)
         await createCourse(data)
         closeModal()
         Swal.fire({
@@ -107,10 +120,7 @@ export const CoursesScreen: React.FC = () => {
           },
           timerProgressBar: true // Ativa a barra de progresso
         })
-        setIsSubmitting(false)
       } catch (error) {
-        setIsSubmitting(false)
-
         MySwal.fire({
           title: 'Erro interno',
           text: 'Erro ao cadastrar curso.',
@@ -228,186 +238,21 @@ export const CoursesScreen: React.FC = () => {
   }
   const [courses, setCourses] = useState<ICourse[] | null>(null)
   const [isLoaderCourseList, setIsLoaderCourseList] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  interface ModalEditCourseProps {
-    data: ICourse | null
-    onClose: () => void
+  async function getCourses(page: number): Promise<void> {
+    const data = await getCoursesService(center?._id as string, page)
+    setCourses(data?.courses)
+    setTotalPages(data?.totalCourses)
+    setIsLoaderCourseList(false)
   }
-
-  const ModalEditCourse: React.FC<ModalEditCourseProps> = ({ data: courseInfo, onClose }) => {
-    const MySwal = withReactContent(Swal)
-
-    const {
-      register,
-      handleSubmit,
-      formState: { errors }
-    } = useForm<FormData>({
-      resolver: yupResolver(schema)
-    })
-    const onSubmit = async (data: FormData): Promise<void> => {
-      try {
-        setIsSubmitting(true)
-        await editCourse(courseInfo?._id, data)
-        onClose()
-        Swal.fire({
-          position: 'bottom-end',
-          icon: 'success',
-          title: 'Novas Informações de Curso Salvas',
-          showConfirmButton: false,
-          timer: 2000,
-          customClass: {
-            popup: 'h-44 p-2', // Define a largura e o padding do card
-            title: 'text-sm', // Tamanho do texto do título
-            icon: 'text-xs' // Reduz o tamanho do ícone
-          },
-          timerProgressBar: true // Ativa a barra de progresso
-        })
-        setIsSubmitting(false)
-      } catch (error) {
-        MySwal.fire({
-          title: 'Erro interno',
-          text: 'Erro ao Salvar.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        })
-      }
-    }
-
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">
-        <label className="text-gray-200" htmlFor="name">
-          Nome do Curso
-        </label>
-        <input
-          {...register('name')}
-          placeholder="Nome do curso"
-          defaultValue={courseInfo?.name}
-          id="name"
-          type="text"
-          className="w-full h-12 p-3  bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <span className="text-red-500">{errors.name?.message}</span>
-
-        <label className="text-gray-200" htmlFor="description">
-          Descrição
-        </label>
-        <input
-          {...register('description')}
-          placeholder="Descrição"
-          defaultValue={courseInfo?.description}
-          id="description"
-          type="text"
-          maxLength={120}
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <span className="text-red-500">{errors.description?.message}</span>
-        <label className="text-gray-200" htmlFor="startDate">
-          Data de Ínicio
-        </label>
-        <input
-          {...register('startDate')}
-          id="startDate"
-          defaultValue={
-            courseInfo?.startDate ? new Date(courseInfo?.startDate).toISOString().split('T')[0] : ''
-          }
-          type="date"
-          required
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <label className="text-gray-200" htmlFor="fee">
-          Propina Mensal (Kz)
-        </label>
-        <input
-          {...register('fee')}
-          placeholder="Propina"
-          defaultValue={courseInfo?.fee}
-          id="fee"
-          type="number"
-          min={0}
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <span className="text-red-500">{errors.fee?.message}</span>
-        <label className="text-gray-200" htmlFor="fee">
-          Multa por atraso (Kz)
-        </label>
-        <input
-          {...register('feeFine')}
-          placeholder="Multa"
-          id="feeFine"
-          type="number"
-          min={0}
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <span className="text-red-500">{errors.feeFine?.message}</span>
-        <label className="text-gray-200" htmlFor="endDate">
-          Data de Término
-        </label>
-        <input
-          {...register('endDate')}
-          id="endDate"
-          type="date"
-          defaultValue={
-            courseInfo?.endDate ? new Date(courseInfo?.endDate).toISOString().split('T')[0] : ''
-          }
-          required
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
-        <label className="text-gray-200" htmlFor="courseType">
-          Modalidade do Curso
-        </label>
-        <select
-          {...register('courseType')}
-          id="courseType"
-          required
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        >
-          <option value="on_center" selected>
-            Centro
-          </option>
-
-          <option value="on_home">Domiciliar</option>
-        </select>
-        <input {...register('centerId')} type="hidden" value={center?._id} required />
-        <button
-          type="submit"
-          className="flex items-center justify-center bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
-        >
-          {isSubmitting ? (
-            <Rings
-              height="32"
-              width="32"
-              color="#fff"
-              ariaLabel="bars-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-            />
-          ) : (
-            <span>Criar</span>
-          )}
-        </button>
-      </form>
-    )
-  }
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
-    async function getCourses(page: number): Promise<void> {
-      const data = await getCoursesService(center?._id as string, page)
-      setCourses(data?.courses)
-      setTotalPages(data?.totalCourses)
-      setIsLoaderCourseList(false)
-    }
-
     getCourses(currentPage)
   }, [isEditModalOpen, isModalOpen, currentPage])
 
   const COURSE_STATUS = ['activo', 'inactivo']
   //Tela Principal
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">
@@ -496,27 +341,26 @@ export const CoursesScreen: React.FC = () => {
                           </td>
                           <td className="p-2 md:border md:border-zinc-700 text-left block md:table-cell">
                             {/* Botões para Ações */}
-                            <div className="flex items-center justify-evenly gap-1">
+                            <div className="flex items-center justify-evenly gap-2">
                               <button
                                 type="button"
-                                onClick={() => handleEdit(row?._id as string)}
                                 className="bg-zinc-200 text-zinc-600 px-2 py-1 rounded hover:brightness-125"
                               >
-                                Ver
+                                <Eye />
                               </button>
                               <button
                                 type="submit"
                                 onClick={() => handleEdit(row?._id as string)}
                                 className="bg-yellow-700 text-white px-2 py-1 rounded hover:brightness-125"
                               >
-                                Editar
+                                <PenBox />
                               </button>
                               <button
                                 type="submit"
                                 onClick={() => handleDelete(row?._id as string)}
                                 className="bg-red-800 text-white px-2 py-1 rounded hover:brightness-125"
                               >
-                                Eliminar
+                                <Trash />
                               </button>
                             </div>
                           </td>

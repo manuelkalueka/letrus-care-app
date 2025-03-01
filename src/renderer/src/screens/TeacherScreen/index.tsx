@@ -2,7 +2,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Modal } from '@renderer/components/Modal'
 import { Sidebar } from '@renderer/components/Sidebar'
 import { useCenter } from '@renderer/contexts/center-context'
-import { createTeacher, getTeachersService, ITeacher } from '@renderer/services/teacher-service'
+import {
+  createTeacher,
+  getTeachersService,
+  ITeacher,
+  updateTeacherStatusService
+} from '@renderer/services/teacher-service'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -16,6 +21,8 @@ import { LoaderComponent } from '@renderer/components/Loader'
 import { Footer } from '@renderer/components/Footer'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 import Pagination from '@renderer/components/Pagination'
+import { ModalEditTeacher } from './ModalEditTeacher'
+import { Eye, PenBox, Trash } from 'lucide-react'
 
 export const TeacherScreen: React.FC = () => {
   const { center } = useCenter()
@@ -26,26 +33,50 @@ export const TeacherScreen: React.FC = () => {
   const openModal = (): void => setIsModalOpen(true)
   const closeModal = (): void => setIsModalOpen(false)
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const openEditModal = (): void => setIsEditModalOpen(true)
-  const closeEditModal = (): void => setIsEditModalOpen(false)
-
-  const handleEdit = (id: string) => {}
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+  const [selectTeacher, setSelectTeacher] = useState({} as ITeacher)
 
   const [teachers, setTeachers] = useState<ITeacher[] | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
-  useEffect(() => {
-    async function getTeachers(page: number): Promise<void> {
-      const data = await getTeachersService(center?._id, page)
-      setTeachers(Object(data?.teachers))
-      setTotalPages(data?.totalTeachers)
-      setIsLoaderTeacherList(false)
-    }
+  const openEditModal = (): void => setIsModalEditOpen(true)
+  const closeEditModal = (): void => setIsModalEditOpen(false)
 
+  const handleEdit = (teacher: ITeacher): void => {
+    setSelectTeacher(teacher)
+    openEditModal()
+  }
+
+  const handleDelete = async (id: string): Promise<void> => {
+    Swal.fire({
+      title: 'Tens a certeza?',
+      text: 'Esta acção não pode ser revertida!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, apagar!',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'bg-red-600'
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await updateTeacherStatusService(id, 'inactive')
+        await getTeachers(currentPage)
+      }
+    })
+  }
+
+  async function getTeachers(page: number): Promise<void> {
+    const data = await getTeachersService(center?._id as string, page)
+    setTeachers(data?.teachers)
+    setTotalPages(data?.totalTeachers)
+    setIsLoaderTeacherList(false)
+  }
+
+  useEffect(() => {
     getTeachers(currentPage)
-  }, [isEditModalOpen, isModalOpen, currentPage])
+  }, [isModalEditOpen, isModalOpen, currentPage])
 
   const schema = yup
     .object({
@@ -64,8 +95,6 @@ export const TeacherScreen: React.FC = () => {
   type FormData = yup.InferType<typeof schema>
 
   const ModalCreateTeacher: React.FC = () => {
-    const [IsSubmitting, setIsSubmitting] = useState(false)
-
     const MySwal = withReactContent(Swal)
     const {
       register,
@@ -76,7 +105,6 @@ export const TeacherScreen: React.FC = () => {
     })
     const onSubmit = async (data: FormData): Promise<void> => {
       try {
-        setIsSubmitting(true)
         const { courses } = data
         if (courses.length < 1) {
           throw new Error('Selecione pelo menos um curso')
@@ -97,8 +125,6 @@ export const TeacherScreen: React.FC = () => {
             timerProgressBar: true // Ativa a barra de progresso
           })
         }
-
-        setIsSubmitting(false)
       } catch (error) {
         MySwal.fire({
           title: 'Erro interno',
@@ -230,7 +256,7 @@ export const TeacherScreen: React.FC = () => {
   const TEACHER_STATUS = ['activo', 'inactivo']
   const [isLoaderTeacherList, setIsLoaderTeacherList] = useState<boolean>(true)
 
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">
@@ -314,20 +340,20 @@ export const TeacherScreen: React.FC = () => {
                           <td className="p-2 md:border md:border-zinc-700 text-center block md:table-cell">
                             {/* Botões para Ações */}
                             <div className="flex items-center justify-evenly gap-1">
-                              <button
-                                className="bg-zinc-500 text-zinc-100 px-2 py-1 rounded hover:brightness-125"
-                                onClick={() => handleEdit(row?._id as string)}
-                              >
-                                Ver
+                              <button className="bg-zinc-500 text-zinc-100 px-2 py-1 rounded hover:brightness-125">
+                                <Eye />
                               </button>
                               <button
                                 className="bg-orange-200 text-orange-700 px-2 py-1 rounded hover:brightness-125"
-                                onClick={() => handleEdit(row?._id as string)}
+                                onClick={() => handleEdit(row)}
                               >
-                                Editar
+                                <PenBox />
                               </button>
-                              <button className="bg-red-600 text-white px-2 py-1 rounded hover:brightness-125">
-                                Eliminar
+                              <button
+                                className="bg-red-600 text-white px-2 py-1 rounded hover:brightness-125"
+                                onClick={() => handleDelete(row?._id as string)}
+                              >
+                                <Trash />
                               </button>
                             </div>
                           </td>
@@ -352,6 +378,14 @@ export const TeacherScreen: React.FC = () => {
           <h2 className="text-3xl">Criar Professor</h2>
           <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
           <ModalCreateTeacher />
+        </div>
+      </Modal>
+
+      <Modal isOpen={isModalEditOpen} onClose={closeEditModal}>
+        <div>
+          <h2 className="text-3xl">Criar Professor</h2>
+          <div className="bg-orange-700 text-orange-700 h-2 mt-2 w-16" />
+          <ModalEditTeacher onClose={closeEditModal} teacher={selectTeacher} />
         </div>
       </Modal>
     </div>
