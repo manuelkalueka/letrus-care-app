@@ -133,7 +133,7 @@ export const Panel: React.FC = () => {
       })
       //Limpa o Form
       // reset()
-      await navigate('/payments/new', { state: { enrollment } })
+      await navigate('/payments/new', { state: { studentEnrollment:enrollment } })
     } catch (error) {
       Swal.fire({
         position: 'bottom-end',

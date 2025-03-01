@@ -56,6 +56,11 @@ interface IResponse {
   totalEnrollments: number
 }
 
+export interface IEnrollmentReceipt {
+  receiptNumber: string
+  enrollmentId: string
+}
+
 export const createEnrollment = async (data: IEnrollmentForApply): Promise<AxiosResponse> => {
   const {
     name,
@@ -111,11 +116,12 @@ export const getEnrollmentsService = async (centerId: string, page: number): Pro
   }
 }
 
-export const getOneEnrollmentService = async (enrollmentId: string): Promise<IEnrollment> => {
+export const getOneEnrollmentService = async (
+  enrollmentId: string
+): Promise<{ enrollment: IEnrollment; receipt: IEnrollmentReceipt }> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/${enrollmentId}`)
-    const typeData: IEnrollment = data
-    return typeData
+    return data
   } catch (error) {
     console.log('Erro ao buscar inscrição: ', error)
     throw error

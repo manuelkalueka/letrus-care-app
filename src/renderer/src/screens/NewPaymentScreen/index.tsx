@@ -20,7 +20,7 @@ export type FormSearchData = yup.InferType<typeof schemaStudentSearch>
 
 export const NewPaymentScreen: React.FC = () => {
   const location = useLocation()
-  const enrollmentFromState = location.state?.enrollment || null
+  const enrollmentFromState = location.state?.studentEnrollment.enrollment || null
   const { center } = useCenter()
 
   const [resultList, setResultList] = useState<IStudent[] | null>(null)
@@ -85,7 +85,7 @@ export const NewPaymentScreen: React.FC = () => {
     setIsSelected(true)
   }
 
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">

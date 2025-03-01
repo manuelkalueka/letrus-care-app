@@ -6,7 +6,8 @@ import {
   changeStatusService,
   getEnrollmentsService,
   getOneEnrollmentService,
-  IEnrollment
+  IEnrollment,
+  IEnrollmentReceipt
 } from '@renderer/services/enrollment-service'
 import { useCenter } from '@renderer/contexts/center-context'
 import { DownloadCloud, PenSquare, Trash } from 'lucide-react'
@@ -38,7 +39,7 @@ export const EnrollmentScreen: React.FC = () => {
   const handleEdit = async (id: string): Promise<void> => {
     try {
       const data = await getOneEnrollmentService(id)
-      setEnrollmentInfo(data)
+      setEnrollmentInfo(data.enrollment)
       openModal()
     } catch (error) {
       Swal.fire({
@@ -88,11 +89,13 @@ export const EnrollmentScreen: React.FC = () => {
     if (center?._id as string) fetchEnrollments(currentPage)
   }, [center?._id as string, currentPage, isModalOpen])
 
-  const [selectedEnrollment, setSelectedEnrollment] = useState<IEnrollment | null>(null)
+  type selectedEnrollmentType = { enrollment: IEnrollment; receipt: IEnrollmentReceipt }
+  const [selectedEnrollment, setSelectedEnrollment] = useState<selectedEnrollmentType | null>(null)
   const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false)
 
-  const handleDownloadPDF = (enrollment: IEnrollment): void => {
-    setSelectedEnrollment(enrollment)
+  const handleDownloadPDF = async (enrollment: IEnrollment): Promise<void> => {
+    const tmpEnrollment = await getOneEnrollmentService(enrollment?._id as string)
+    setSelectedEnrollment(tmpEnrollment)
   }
 
   useEffect(() => {
@@ -100,14 +103,17 @@ export const EnrollmentScreen: React.FC = () => {
       const generatePDF = async (): Promise<void> => {
         setIsLoadingPDF(true)
 
-        const blob = await pdf(<EnrollmentPDF enrollment={selectedEnrollment} />).toBlob()
+        const blob = await pdf(<EnrollmentPDF selectedEnrollment={selectedEnrollment} />).toBlob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
         a.download = `comprovativo-inscricao-${
-          selectedEnrollment?.studentId?.name?.surname
-            ? selectedEnrollment?.studentId?.name?.surname?.toLowerCase()
-            : selectedEnrollment?.studentId?.name?.fullName?.toLowerCase()?.split(' ')?.pop()
+          selectedEnrollment?.enrollment.studentId?.name?.surname
+            ? selectedEnrollment?.enrollment.studentId?.name?.surname?.toLowerCase()
+            : selectedEnrollment?.enrollment.studentId?.name?.fullName
+                ?.toLowerCase()
+                ?.split(' ')
+                ?.pop()
         }-${Date.now()}.pdf`
         document.body.appendChild(a)
         a.click()

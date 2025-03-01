@@ -86,6 +86,7 @@ export const CoursesScreen: React.FC = () => {
       endDate: yup.date().required(),
       fee: yup.number().required('Preecha a propina'),
       feeFine: yup.number().required('Preecha a multa'),
+      enrollmentFee: yup.number(),
       centerId: yup.string().required(),
       status: yup.string().oneOf(['active', 'inactive']),
       courseType: yup.string().oneOf(['on_home', 'on_center'])
@@ -166,17 +167,35 @@ export const CoursesScreen: React.FC = () => {
           required
           className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
         />
-        <label className="text-gray-200" htmlFor="fee">
-          Propina Mensal (Kz)
-        </label>
-        <input
-          {...register('fee')}
-          placeholder="Propina"
-          id="fee"
-          type="number"
-          min={0}
-          className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-gray-200" htmlFor="fee">
+              Propina Mensal (Kz)
+            </label>
+            <input
+              {...register('fee')}
+              placeholder="Propina"
+              id="fee"
+              type="number"
+              min={0}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-gray-200" htmlFor="enrollmentFee">
+              Taxa de Inscrição (Kz)
+            </label>
+            <input
+              {...register('enrollmentFee')}
+              placeholder="Taxa de Inscrição"
+              id="enrollmentFee"
+              type="number"
+              min={0}
+              className="w-full h-12 p-3 bg-zinc-950 rounded-md focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-gray-400 transition-colors"
+            />
+          </div>
+        </div>
+
         <label className="text-gray-200" htmlFor="fee">
           Multa por atraso (Kz)
         </label>

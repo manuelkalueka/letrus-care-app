@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import apiMananger from './api'
 
 export interface IPayment {
@@ -72,11 +71,10 @@ export async function getPaymentService(
 export const searchPaymentsService = async (
   centerId: string,
   query: string
-): Promise<IPayment[]> => {
+): Promise<IPayment[] | undefined> => {
   try {
     const { data } = await apiMananger.get(`/payments/search/${centerId}?query=${query}`)
-    const payments: IPayment[] = data
-    return payments
+    return data
   } catch (error) {
     console.log('Erro ao pesquisar pagamentos: ', error)
   }

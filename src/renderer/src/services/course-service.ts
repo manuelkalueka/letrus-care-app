@@ -8,6 +8,7 @@ export interface ICourse {
   endDate: Date
   fee: number
   feeFine: number
+  enrollmentFee?: number
   centerId: string
   status?: 'active' | 'inactive' | string
   courseType?: 'on_home' | 'on_center' | string
@@ -20,7 +21,7 @@ export interface ICourseOnEdit {
   endDate: Date
   fee: number
   feeFine: number
-
+  enrollmentFee?: number
   courseType?: 'on_home' | 'on_center' | string
 }
 
