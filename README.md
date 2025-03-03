@@ -27,22 +27,6 @@
 
 ---
 
-## 📂 **Estrutura do Projeto**
-
-```plaintext
-Lectrus-Care/
-├── src/
-│   ├── components/     # Componentes reutilizáveis
-│   ├── contexts/       # Contextos para gestão de estado global
-│   ├── pages/          # Páginas principais da aplicação
-│   ├── services/       # Serviços de integração com APIs
-│   ├── utils/          # Funções auxiliares (e.g., formatação)
-│   └── styles/         # Configurações de estilos globais
-├── public/             # Recursos estáticos (imagens, ícones, etc.)
-└── main/               # Arquivos principais para Electron
-
----
-
 # 🔧 **Como Configurar o Projeto**
 
 ## **Pré-requisitos**
