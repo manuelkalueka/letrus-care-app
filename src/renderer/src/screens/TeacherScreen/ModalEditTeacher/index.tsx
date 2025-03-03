@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useCenter } from '@renderer/contexts/center-context'
 import { getCoursesAll, ICourse } from '@renderer/services/course-service'
-import { editTeacherService, ITeacher } from '@renderer/services/teacher-service'
+import { editTeacherService, ITeacher, ITeacherForShow } from '@renderer/services/teacher-service'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Rings } from 'react-loader-spinner'
@@ -23,10 +23,13 @@ const schema = yup
 type FormData = yup.InferType<typeof schema>
 
 interface ModalEditTeacherProps {
-  teacher: ITeacher
+  teacher: ITeacherForShow
   onClose: () => void
 }
-export const ModalEditTeacher: React.FC<ModalEditTeacherProps> = ({ teacher, onClose }) => {
+export const ModalEditTeacher: React.FC<ModalEditTeacherProps> = ({
+  teacher,
+  onClose
+}: ModalEditTeacherProps) => {
   const { center } = useCenter()
 
   const [selectedCourses, setSelectedCourses] = useState([] as string[])
@@ -65,7 +68,7 @@ export const ModalEditTeacher: React.FC<ModalEditTeacherProps> = ({ teacher, onC
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      await editTeacherService(teacher?._id as string, data)
+      await editTeacherService(teacher?._id as string, data as ITeacher)
       onClose()
       Swal.fire({
         position: 'bottom-end',
@@ -170,7 +173,7 @@ export const ModalEditTeacher: React.FC<ModalEditTeacherProps> = ({ teacher, onC
           id="hireDate"
           {...register('hireDate')}
           placeholder="Iniciou em"
-          defaultValue={new Date(teacher?.hireDate).toISOString().split('T')[0]}
+          defaultValue={new Date(teacher?.hireDate as Date).toISOString().split('T')[0]}
           type="date"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-400"
           required

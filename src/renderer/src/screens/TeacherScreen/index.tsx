@@ -5,7 +5,7 @@ import { useCenter } from '@renderer/contexts/center-context'
 import {
   createTeacher,
   getTeachersService,
-  ITeacher,
+  ITeacherForShow,
   updateTeacherStatusService
 } from '@renderer/services/teacher-service'
 import React, { useEffect, useState } from 'react'
@@ -34,16 +34,16 @@ export const TeacherScreen: React.FC = () => {
   const closeModal = (): void => setIsModalOpen(false)
 
   const [isModalEditOpen, setIsModalEditOpen] = useState(false)
-  const [selectTeacher, setSelectTeacher] = useState({} as ITeacher)
+  const [selectTeacher, setSelectTeacher] = useState({} as ITeacherForShow)
 
-  const [teachers, setTeachers] = useState<ITeacher[] | null>(null)
+  const [teachers, setTeachers] = useState<ITeacherForShow[] | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
   const openEditModal = (): void => setIsModalEditOpen(true)
   const closeEditModal = (): void => setIsModalEditOpen(false)
 
-  const handleEdit = (teacher: ITeacher): void => {
+  const handleEdit = (teacher: ITeacherForShow): void => {
     setSelectTeacher(teacher)
     openEditModal()
   }
@@ -99,7 +99,7 @@ export const TeacherScreen: React.FC = () => {
     const {
       register,
       handleSubmit,
-      formState: { errors }
+      formState: { errors, isSubmitting }
     } = useForm<FormData>({
       resolver: yupResolver(schema)
     })
@@ -235,7 +235,7 @@ export const TeacherScreen: React.FC = () => {
           type="submit"
           className="flex items-center justify-center bg-orange-700 w-full h-12 p-3 text-white shadow-shape rounded-md"
         >
-          {IsSubmitting ? (
+          {isSubmitting ? (
             <Rings
               height="32"
               width="32"

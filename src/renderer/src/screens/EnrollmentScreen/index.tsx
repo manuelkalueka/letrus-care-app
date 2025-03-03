@@ -6,7 +6,7 @@ import {
   changeStatusService,
   getEnrollmentsService,
   getOneEnrollmentService,
-  IEnrollment,
+  IEnrollmentForShow,
   IEnrollmentReceipt
 } from '@renderer/services/enrollment-service'
 import { useCenter } from '@renderer/contexts/center-context'
@@ -28,11 +28,11 @@ export const EnrollmentScreen: React.FC = () => {
   const { center } = useCenter()
   const ENROLLMENT_STATUS = ['Inscrito', 'Completa', 'Cancelada']
 
-  const [enrollments, setEnrollments] = useState<IEnrollment[] | null>(null)
+  const [enrollments, setEnrollments] = useState<IEnrollmentForShow[] | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [enrollmentInfo, setEnrollmentInfo] = useState<IEnrollment | null>(null)
+  const [enrollmentInfo, setEnrollmentInfo] = useState<IEnrollmentForShow | null>(null)
 
   const openModal = (): void => setIsModalOpen(true)
   const closeModal = (): void => setIsModalOpen(false)
@@ -89,11 +89,14 @@ export const EnrollmentScreen: React.FC = () => {
     if (center?._id as string) fetchEnrollments(currentPage)
   }, [center?._id as string, currentPage, isModalOpen])
 
-  type selectedEnrollmentType = { enrollment: IEnrollment; receipt: IEnrollmentReceipt }
+  type selectedEnrollmentType = {
+    enrollment: IEnrollmentForShow
+    receipt: IEnrollmentReceipt
+  }
   const [selectedEnrollment, setSelectedEnrollment] = useState<selectedEnrollmentType | null>(null)
   const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false)
 
-  const handleDownloadPDF = async (enrollment: IEnrollment): Promise<void> => {
+  const handleDownloadPDF = async (enrollment: IEnrollmentForShow): Promise<void> => {
     const tmpEnrollment = await getOneEnrollmentService(enrollment?._id as string)
     setSelectedEnrollment(tmpEnrollment)
   }

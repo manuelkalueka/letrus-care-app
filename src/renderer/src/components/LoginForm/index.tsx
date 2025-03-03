@@ -37,42 +37,51 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
+      // Realiza o login
       const response = await login(data)
-      if (!loading) {
-        const isExists = await centerExistsContext(response?.user?._id as string)
 
-        if (isExists) {
-          // Verificar se o centro já está no localStorage; se não, buscar e salvar.
-          const storedCenter = getFromLocalStorage('center')
-          if (!storedCenter) {
-            const { data: centerData } = await getCenterService(response?.user._id as string)
-            saveToLocalStorage('center', centerData)
-          }
-          navigate('/home')
-        } else {
-          navigate('/centers/new')
-        }
+      // Se o login falhar, o fluxo será interrompido pelo catch
+      if (!response?._id) return
+
+      // Verifica se o centro existe
+      const isExists = await centerExistsContext(response._id)
+      if (!isExists) {
+        return navigate('/centers/new')
       }
-    } catch (error) {
-      if (error?.response?.status === 404) {
-        navigate('/centers/new')
-      } else if (error?.response?.status === 401) {
+
+      // Verifica se já há um centro no localStorage
+      const storedCenter = getFromLocalStorage('center')
+      if (!storedCenter) {
+        const { data: centerData } = await getCenterService(response._id)
+        saveToLocalStorage('center', centerData)
+      }
+
+      // Navega para a home
+      navigate('/home')
+    } catch (error: unknown) {
+      const err = error as { response?: { status: number; data?: { error: string } } }
+      if (err.response?.status === 401) {
         MySwal.fire({
           title: 'Erro',
-          text: `${error?.response?.response?.data?.error}`,
+          text: `${err.response?.data?.error || 'Erro de autenticação'}`,
           icon: 'error',
           confirmButtonText: 'OK'
         })
-      } else {
-        MySwal.fire({
-          title: 'Erro',
-          text: `Erro Interno`,
-          icon: 'error',
-          confirmButtonText: 'OK'
-        })
+        return
       }
+
+      if (err.response?.status === 404) {
+        return navigate('/centers/new')
+      }
+      MySwal.fire({
+        title: 'Erro',
+        text: `Erro Interno`,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
     }
   }
+
   //Erro quando uso method Post
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col my-[5%]">

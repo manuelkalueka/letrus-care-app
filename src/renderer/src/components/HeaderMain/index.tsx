@@ -4,6 +4,7 @@ import { Menu, UserRound, School } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { useCenter } from '@renderer/contexts/center-context'
+import Swal from 'sweetalert2'
 
 const Dropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -72,11 +73,21 @@ const DropdownUser: React.FC = () => {
   const { logout, user } = useAuth()
 
   function handleLogout(): void {
-    if (confirm('Terminar Sessão?')) {
-      logout()
-      navigate('/login')
-    }
-    return
+    Swal.fire({
+      title: 'Terminar Sessão?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não',
+      customClass: {
+        confirmButton: 'bg-red-600'
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await logout()
+        navigate('/login')
+      }
+    })
   }
 
   return (

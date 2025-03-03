@@ -1,4 +1,5 @@
 import apiMananger from './api'
+import { ICourse } from './course-service'
 
 export interface ITeacher {
   _id?: string
@@ -15,6 +16,21 @@ export interface ITeacher {
   status?: 'active' | 'inactive' | string
 }
 
+export interface ITeacherForShow {
+  _id?: string
+  fullName: string
+  birthDate: Date
+  address: string
+  phoneNumber: string
+  email: string
+  hireDate?: Date
+  centerId: string
+  user: string
+  courses: ICourse[]
+  teacherCode?: string
+  status?: 'active' | 'inactive' | string
+}
+
 export async function createTeacher(data: ITeacher): Promise<number> {
   try {
     await apiMananger.post('/teachers/new', data)
@@ -26,7 +42,7 @@ export async function createTeacher(data: ITeacher): Promise<number> {
 }
 
 interface IResponseTeacher {
-  teachers: ITeacher[]
+  teachers: ITeacherForShow[]
   totalTeachers: number
 }
 
@@ -43,11 +59,10 @@ export async function getTeachersService(
   }
 }
 
-export async function getTeachersServiceAll(centerId: string): Promise<ITeacher[]> {
+export async function getTeachersServiceAll(centerId: string): Promise<ITeacherForShow[]> {
   try {
     const { data } = await apiMananger.get(`/teachers/all/${centerId}`)
-    const typedData: ITeacher[] = data
-    return typedData
+    return data
   } catch (error) {
     console.log('Erro ao buscar professores', error)
     throw error

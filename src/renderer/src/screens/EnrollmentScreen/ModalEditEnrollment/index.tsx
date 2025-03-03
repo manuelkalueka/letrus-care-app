@@ -1,6 +1,6 @@
 import { useCenter } from '@renderer/contexts/center-context'
 import { ICourse, getCoursesAll } from '@renderer/services/course-service'
-import { editEnrollment, IEnrollment } from '@renderer/services/enrollment-service'
+import { editEnrollment, IEnrollmentForShow } from '@renderer/services/enrollment-service'
 import { getGradesServiceAll, IGrade } from '@renderer/services/grade-service'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -48,14 +48,13 @@ const schema = yup
 type FormData = yup.InferType<typeof schema>
 
 interface ModalEditEnrollmentProps {
-  data: IEnrollment | null
+  data: IEnrollmentForShow | null
   onClose: () => void
 }
 
-export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
-  data: enrollmentInfo,
-  onClose: closeModal
-}) => {
+export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = (
+  props: ModalEditEnrollmentProps
+) => {
   const MySwal = withReactContent(Swal)
   const { center } = useCenter()
   const {
@@ -64,11 +63,11 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
     setValue,
     formState: { errors }
   } = useForm<FormData>({
-    defaultValues: { grade: enrollmentInfo?.grade?._id, courseId: enrollmentInfo?.courseId?._id },
+    defaultValues: { grade: props.data?.grade?._id, courseId: props.data?.courseId?._id },
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = async (data: FormData): Promise<void> => {
+  const onSubmit = async (editData: FormData): Promise<void> => {
     const {
       fullName,
       surname,
@@ -81,10 +80,10 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
       mother,
       courseId,
       grade
-    } = data
+    } = editData
     try {
       await editEnrollment(
-        enrollmentInfo?._id as string,
+        props.data?._id as string,
         {
           fullName,
           surname,
@@ -98,7 +97,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           courseId,
           grade
         },
-        enrollmentInfo?.studentId?._id
+        props.data?.studentId?._id as string
       )
       Swal.fire({
         position: 'bottom-end',
@@ -113,11 +112,11 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         },
         timerProgressBar: true // Ativa a barra de progresso
       })
-      closeModal()
+      props.onClose()
     } catch (error) {
       MySwal.fire({
         title: 'Erro interno',
-        text: `Erro ao Editar inscrição de ${enrollmentInfo?.studentId?.name?.fullName}`,
+        text: `Erro ao Editar inscrição de ${props.data?.studentId?.name?.fullName}`,
         icon: 'error',
         confirmButtonText: 'OK'
       })
@@ -150,8 +149,8 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
   const [selectedGrade, setSelectedGrade] = useState<string>('')
 
   useEffect(() => {
-    setSelectedCourse(enrollmentInfo?.courseId?._id)
-    setSelectedGrade(enrollmentInfo?.grade?._id)
+    setSelectedCourse(props.data?.courseId?._id as string)
+    setSelectedGrade(props.data?.grade?._id as string)
   }, [])
 
   return (
@@ -163,7 +162,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <input
           id="fullName"
           {...register('fullName')}
-          defaultValue={enrollmentInfo?.studentId?.name.fullName}
+          defaultValue={props.data?.studentId?.name.fullName}
           placeholder="Nome Completo do Aluno"
           autoComplete="fullName webauthn"
           type="text"
@@ -173,7 +172,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <label htmlFor="surname">Alcunha</label>
         <input
           id="surname"
-          defaultValue={enrollmentInfo?.studentId?.name?.surname}
+          defaultValue={props.data?.studentId?.name?.surname}
           {...register('surname')}
           placeholder="Alcunha"
           type="text"
@@ -189,8 +188,8 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           placeholder="Nasceu em"
           autoComplete="bday-day"
           defaultValue={
-            enrollmentInfo?.studentId?.birthDate
-              ? new Date(enrollmentInfo.studentId.birthDate).toISOString().split('T')[0]
+            props.data?.studentId?.birthDate
+              ? new Date(props.data.studentId.birthDate).toISOString().split('T')[0]
               : ''
           }
           type="date"
@@ -205,7 +204,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <select
           {...register('gender')}
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
-          defaultValue={enrollmentInfo?.studentId?.gender}
+          defaultValue={props.data?.studentId?.gender}
         >
           <option value="masculino">Masculino</option>
           <option value="feminino">Feminino</option>
@@ -219,7 +218,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           id="father"
           {...register('father')}
           placeholder="Nome do Pai"
-          defaultValue={enrollmentInfo?.studentId?.parents.father}
+          defaultValue={props.data?.studentId?.parents.father}
           autoComplete="additional-name"
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
@@ -232,7 +231,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           {...register('mother')}
           id="mother"
           placeholder="Nome da Mãe"
-          defaultValue={enrollmentInfo?.studentId?.parents.mother}
+          defaultValue={props.data?.studentId?.parents.mother}
           autoComplete="additional-name"
           type="text"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
@@ -244,7 +243,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <input
           id="address"
           {...register('address')}
-          defaultValue={enrollmentInfo?.studentId?.address}
+          defaultValue={props.data?.studentId?.address}
           placeholder="Endereço Completo onde moram com o Aluno"
           autoComplete="address-level1"
           type="text"
@@ -299,7 +298,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <input
           id="phoneNumber"
           {...register('phoneNumber')}
-          defaultValue={enrollmentInfo?.studentId?.phoneNumber}
+          defaultValue={props.data?.studentId?.phoneNumber}
           placeholder="Número de Telefone"
           autoComplete="tel"
           type="tel"
@@ -310,7 +309,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
         <input
           {...register('email')}
           placeholder="E-mail"
-          defaultValue={enrollmentInfo?.studentId?.email}
+          defaultValue={props.data?.studentId?.email}
           autoComplete="email"
           type="email"
           className="w-full h-12 p-3  bg-zinc-950 rounded-md  focus:border-0  border-gray-700 outline-none text-gray-100 text-base font-normal placeholder:text-zinc-500"
@@ -320,9 +319,7 @@ export const ModalEditEnrollment: React.FC<ModalEditEnrollmentProps> = ({
           <button
             type="reset"
             className="bg-transparent border-zinc-400 border-2  h-12 p-3 mt-6 text-white shadow-shape rounded-md hover:brightness-110"
-            onClick={() => {
-              closeModal()
-            }}
+            onClick={() => props.onClose()}
           >
             Cancelar
           </button>

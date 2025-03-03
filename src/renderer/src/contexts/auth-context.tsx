@@ -1,18 +1,13 @@
-import apiMananger from '@renderer/services/api'
-import { IAuth, loginService, signupService } from '@renderer/services/user'
+import { IAuth, loginService, logoutService, signupService } from '@renderer/services/user'
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react'
-interface IResponse {
-  token: string
-  user: IAuth
-}
 
 interface AuthContextData {
   signed: boolean
   loading: boolean
   user: IAuth | null
-  login: (data: IAuth) => Promise<IResponse | null>
+  login: (data: IAuth) => Promise<IAuth | null>
   signup: (data: IAuth) => Promise<number | undefined>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 // Criação do contexto
@@ -22,15 +17,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<IAuth | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Persistência do usuário e token no local storage
+  // Persistência do usuário no local storage
   useEffect(() => {
     function loadStorageData(): void {
       const storagedUser = localStorage.getItem('user')
-      const storagedToken = localStorage.getItem('token')
 
-      if (storagedUser && storagedToken) {
+      if (storagedUser) {
         setUser(JSON.parse(storagedUser))
-        apiMananger.defaults.headers.common['Authorization'] = `Bearer ${storagedToken}`
       }
       setLoading(false)
     }
@@ -38,22 +31,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [])
 
   // Função para login
-  const login = async ({ password, username }: IAuth): Promise<IResponse | null> => {
+  const login = async ({ password, username }: IAuth): Promise<IAuth | null> => {
     try {
       const response = await loginService({ password, username })
       if (response) {
-        const typedData: IResponse = response.data
-        setUser(typedData.user)
-        localStorage.setItem('user', JSON.stringify(typedData.user))
-        localStorage.setItem('token', typedData.token)
-        apiMananger.defaults.headers.common['Authorization'] = `Bearer ${typedData.token}`
+        setUser(response.data)
+        localStorage.setItem('user', JSON.stringify(response.data))
 
-        return typedData
+        return response.data
       }
       return null
-    } catch (error) {
-      console.log('Erro no login em contexto ', error)
-      throw error
     } finally {
       setLoading(false)
     }
@@ -71,13 +58,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   // Função para logout
-  const logout = (): void => {
+  const logout = async (): Promise<void> => {
     localStorage.removeItem('center')
-
     localStorage.removeItem('user')
-    localStorage.removeItem('token')
 
-    delete apiMananger.defaults.headers.common['Authorization']
+    await logoutService()
     setUser(null)
   }
 

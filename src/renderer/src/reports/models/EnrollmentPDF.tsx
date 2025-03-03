@@ -5,12 +5,12 @@ import { getFromLocalStorage } from '../../utils/localStorage'
 import { ICenter } from '@renderer/services/center-service'
 import { formatDateWithTimeNoWeekDay, formateCurrency } from '@renderer/utils/format'
 import { createFormalName } from '@renderer/utils'
-import { IEnrollment, IEnrollmentReceipt } from '@renderer/services/enrollment-service'
+import { IEnrollmentForShow, IEnrollmentReceipt } from '@renderer/services/enrollment-service'
 import { TableEnrollmentDetails } from '../components/TableEnrollmentDetails'
 
 interface EnrollmentPDFProps {
   selectedEnrollment: {
-    enrollment: IEnrollment
+    enrollment: IEnrollmentForShow
     receipt: IEnrollmentReceipt
   }
 }
@@ -118,7 +118,7 @@ export const EnrollmentPDF: React.FC<EnrollmentPDFProps> = ({ selectedEnrollment
                 year: center.year_school as string,
                 service: 'Emolumento',
                 description: 'Taxa de Inscrição',
-                amount: selectedEnrollment.enrollment.courseId?.enrollmentFee,
+                amount: selectedEnrollment.enrollment.courseId?.enrollmentFee as number,
                 status: 'Pago'
               }
             ]}

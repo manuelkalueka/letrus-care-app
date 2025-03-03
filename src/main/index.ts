@@ -1,7 +1,8 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import Icon from '../../resources/icon.png?asset'
+import { logoutService } from '../renderer/src/services/user'
 
 function createWindow(): void {
   // Create the browser window.
@@ -11,7 +12,7 @@ function createWindow(): void {
     resizable: true,
     show: false,
     autoHideMenuBar: true,
-    icon,
+    icon: Icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -26,6 +27,21 @@ function createWindow(): void {
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
+  })
+
+  mainWindow.on('close', async (e) => {
+    try {
+      e.preventDefault()
+      await logoutService()
+      mainWindow.webContents.executeJavaScript(`
+        localStorage.removeItem('center')
+        localStorage.removeItem('user')
+      `)
+      console.log('Indo para destruir....')
+      mainWindow.destroy()
+    } catch (error) {
+      console.log('Erro ao terminar o app e fazer logout no root electron: ', error)
+    }
   })
 
   // HMR for renderer base on electron-vite cli.

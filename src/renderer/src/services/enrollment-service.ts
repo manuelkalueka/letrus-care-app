@@ -1,5 +1,9 @@
 import { AxiosResponse } from 'axios'
 import apiMananger from './api'
+import { ICourse } from './course-service'
+import { IGrade } from './grade-service'
+import { IStudent } from './student'
+import { IAuth } from './user'
 
 export interface IEnrollmentForApply {
   studentId?: string
@@ -38,6 +42,19 @@ export interface IEnrollmentForEdit {
   image_file?: File
 }
 
+export interface IEnrollmentForShow {
+  _id?: string
+  courseId: ICourse
+  grade: IGrade
+  doc_file?: File
+  image_file?: File
+  studentId: IStudent
+  enrollmentDate: Date
+  status: 'enrolled' | 'completed' | 'dropped' | string
+  centerId: string
+  userId: IAuth
+}
+
 export interface IEnrollment {
   _id?: string
   studentId: string
@@ -52,7 +69,7 @@ export interface IEnrollment {
 }
 
 interface IResponse {
-  enrollments: IEnrollment[]
+  enrollments: IEnrollmentForShow[]
   totalEnrollments: number
 }
 
@@ -118,7 +135,7 @@ export const getEnrollmentsService = async (centerId: string, page: number): Pro
 
 export const getOneEnrollmentService = async (
   enrollmentId: string
-): Promise<{ enrollment: IEnrollment; receipt: IEnrollmentReceipt }> => {
+): Promise<{ enrollment: IEnrollmentForShow; receipt: IEnrollmentReceipt }> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/${enrollmentId}`)
     return data
