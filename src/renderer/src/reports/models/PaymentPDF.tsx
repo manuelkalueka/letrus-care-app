@@ -4,14 +4,14 @@ import Logo from '../../assets/logo-vector.png'
 import { getFromLocalStorage } from '../../utils/localStorage'
 import { ICenter } from '@renderer/services/center-service'
 import { formatDateWithTimeNoWeekDay, formateCurrency } from '@renderer/utils/format'
-import { IPayment, IPaymentReceipt } from '@renderer/services/payment-service'
+import { IPaymentForShow, IPaymentReceipt } from '@renderer/services/payment-service'
 import { TablePaymentDetails } from '../components/TablePaymentDetails'
 import { TablePaymentMode } from '../components/TablePaymentMode'
 import { createFormalName } from '@renderer/utils'
 
 interface PaymentPDFProps {
   selectedPayment: {
-    payment: IPayment
+    payment: IPaymentForShow
     receipt: IPaymentReceipt
   }
 }
@@ -100,14 +100,14 @@ export const PaymentPDF: React.FC<PaymentPDFProps> = ({ selectedPayment }) => {
           <TablePaymentDetails
             rows={[
               {
-                year: center.year_school,
+                year: center.year_school as string,
                 service: 'Propina',
                 description: selectedPayment.payment.paymentMonthReference,
                 amount: selectedPayment.payment.amount - selectedPayment.payment.lateFee,
                 status: selectedPayment.payment.status as string
               },
               {
-                year: center.year_school,
+                year: center.year_school as string,
                 service: 'Multa',
                 description: selectedPayment.payment.paymentMonthReference,
                 amount: selectedPayment.payment.lateFee,

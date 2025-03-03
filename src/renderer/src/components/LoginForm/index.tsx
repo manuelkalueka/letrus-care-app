@@ -23,7 +23,7 @@ type FormData = yup.InferType<typeof schema>
 export const LoginForm: React.FC = () => {
   const MySwal = withReactContent(Swal)
 
-  const { login, loading } = useAuth()
+  const { login } = useAuth()
   const { centerExistsContext } = useCenter()
   const navigate = useNavigate()
 

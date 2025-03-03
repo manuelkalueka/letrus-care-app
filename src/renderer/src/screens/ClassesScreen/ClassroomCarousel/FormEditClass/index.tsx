@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getTeachersServiceAll, ITeacher } from '@renderer/services/teacher-service'
+import { getTeachersServiceAll, ITeacher, ITeacherForShow } from '@renderer/services/teacher-service'
 
 import { editClassService, IResponseClass } from '@renderer/services/class-service'
 import Swal from 'sweetalert2'
@@ -36,7 +36,7 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
     }
   })
 
-  const [teachers, setTeachers] = useState<ITeacher[] | null>(null)
+  const [teachers, setTeachers] = useState<ITeacherForShow[] | null>(null)
 
   const { center } = useCenter()
 

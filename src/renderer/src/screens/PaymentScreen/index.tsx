@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router'
 import {
   getAllPaymentsService,
   getPaymentService,
-  IPayment,
+  IPaymentForShow,
   IPaymentReceipt,
   searchPaymentsService
 } from '@renderer/services/payment-service'
@@ -35,7 +35,7 @@ export const PaymentScreen: React.FC = () => {
     resolver: yupResolver(schemaStudentSearch)
   })
 
-  const [filteredPayments, setFilteredPayments] = useState<IPayment[]>([])
+  const [filteredPayments, setFilteredPayments] = useState<IPaymentForShow[]>([])
   const { center } = useCenter()
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -57,12 +57,12 @@ export const PaymentScreen: React.FC = () => {
   }, [currentPage])
 
   interface selectedPaymentProps {
-    payment: IPayment
+    payment: IPaymentForShow
     receipt: IPaymentReceipt
   }
   const [selectedPayment, setSelectedPayment] = useState<selectedPaymentProps | null>(null)
 
-  const handleDownloadPDF = async (payment: IPayment): Promise<void> => {
+  const handleDownloadPDF = async (payment: IPaymentForShow): Promise<void> => {
     const tmpPayment: React.SetStateAction<selectedPaymentProps> = await getPaymentService(
       payment?._id as string
     )
@@ -129,7 +129,7 @@ export const PaymentScreen: React.FC = () => {
     return (): void => clearTimeout(delayDebounceFn)
   }, [studentSearch])
 
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">

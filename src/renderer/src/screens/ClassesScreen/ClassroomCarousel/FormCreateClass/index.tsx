@@ -42,7 +42,7 @@ export const FormCreateClass: React.FC<{ onClose: () => void }> = (props) => {
     const fetchTeachers = async (): Promise<void> => {
       const data = await getTeachersServiceAll(center?._id as string)
       setTeachers(Object(data))
-      if (data) setSelectedTeachers([data[0]._id]) // Seleccionar o primeiro professor
+      if (data) setSelectedTeachers([data[0]?._id as string]) // Seleccionar o primeiro professor
     }
     const fetchGrades = async (): Promise<void> => {
       const data = await getGradesServiceAll(center?._id as string)

@@ -19,6 +19,7 @@ import { SignupScreen } from '@renderer/screens/SignupScreen'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { getFromLocalStorage } from '@renderer/utils/localStorage'
 import { ShowClassScreen } from '@renderer/screens/ShowClassScreen'
+import { ErrorBoundary } from '@renderer/screens/ErrorScreen'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signed } = useAuth()
@@ -31,6 +32,7 @@ export const Routes: React.FC = () => {
   return (
     <BrowserRouter>
       <WrapperRoutes>
+        {/* Rotas protegidas */}
         <Route
           path="/"
           element={
@@ -38,25 +40,27 @@ export const Routes: React.FC = () => {
               <HomeScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/home"
-          index
           element={
             <ProtectedRoute>
               <HomeScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route path="/enrollment">
           <Route index element={<EnrollmentScreen />} />
           <Route
-            path="/enrollment/new"
+            path="new"
             element={
               <ProtectedRoute>
                 <CreateEnrollmentScreen />
               </ProtectedRoute>
             }
+            errorElement={<ErrorBoundary />}
           />
         </Route>
 
@@ -67,6 +71,7 @@ export const Routes: React.FC = () => {
               <ClassesScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/classes/show/:iclass"
@@ -75,7 +80,9 @@ export const Routes: React.FC = () => {
               <ShowClassScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
+
         <Route path="/payments">
           <Route
             index
@@ -84,14 +91,16 @@ export const Routes: React.FC = () => {
                 <PaymentScreen />
               </ProtectedRoute>
             }
+            errorElement={<ErrorBoundary />}
           />
           <Route
-            path="/payments/new"
+            path="new"
             element={
               <ProtectedRoute>
                 <NewPaymentScreen />
               </ProtectedRoute>
             }
+            errorElement={<ErrorBoundary />}
           />
         </Route>
 
@@ -102,6 +111,7 @@ export const Routes: React.FC = () => {
               <NotificationScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/help"
@@ -110,6 +120,7 @@ export const Routes: React.FC = () => {
               <HelpScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/courses"
@@ -118,6 +129,7 @@ export const Routes: React.FC = () => {
               <CoursesScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/grades"
@@ -126,6 +138,7 @@ export const Routes: React.FC = () => {
               <GradeScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/teachers"
@@ -134,6 +147,7 @@ export const Routes: React.FC = () => {
               <TeacherScreen />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
         <Route
           path="/profile"
@@ -142,32 +156,36 @@ export const Routes: React.FC = () => {
               <UserProfile />
             </ProtectedRoute>
           }
+          errorElement={<ErrorBoundary />}
         />
 
         <Route path="/centers">
           <Route
-            path="/centers/show"
-            index
+            path="show"
             element={
               <ProtectedRoute>
                 <CenterScreen />
               </ProtectedRoute>
             }
+            errorElement={<ErrorBoundary />}
           />
           <Route
-            path="/centers/new"
+            path="new"
             element={
               <ProtectedRoute>
                 <CreateCenterScreen />
               </ProtectedRoute>
             }
+            errorElement={<ErrorBoundary />}
           />
         </Route>
 
-        <Route>
-          <Route path="/login" index element={<LoginScreen />} />
-          <Route path="/signup" element={<SignupScreen />} />
-        </Route>
+        {/* Rotas públicas */}
+        <Route path="/login" element={<LoginScreen />} errorElement={<ErrorBoundary />} />
+        <Route path="/signup" element={<SignupScreen />} errorElement={<ErrorBoundary />} />
+
+        {/* Página 404 */}
+        <Route path="*" element={<ErrorBoundary />} />
       </WrapperRoutes>
     </BrowserRouter>
   )

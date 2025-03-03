@@ -1,4 +1,6 @@
 import apiMananger from './api'
+import { IEnrollmentForShow } from './enrollment-service'
+import { IAuth } from './user'
 
 export interface IPayment {
   _id?: string
@@ -12,6 +14,21 @@ export interface IPayment {
   paymentMethod?: 'Dinheiro' | 'Multicaixa Express' | 'Transferência Bancária (ATM)'
   centerId: string
   userId: string
+  lateFee: number
+}
+
+export interface IPaymentForShow {
+  _id?: string
+  enrollmentId: IEnrollmentForShow
+  amount: number
+  paymentDate?: Date
+  paymentMonthReference: string
+  paymentYearReference: number
+  dueDate?: Date
+  status?: 'paid' | 'pending' | 'overdue'
+  paymentMethod?: 'Dinheiro' | 'Multicaixa Express' | 'Transferência Bancária (ATM)'
+  centerId: string
+  userId: IAuth
   lateFee: number
 }
 
@@ -29,7 +46,7 @@ export async function createPaymentService(data: IPayment): Promise<void> {
   }
 }
 interface IResponse {
-  payments: IPayment[]
+  payments: IPaymentForShow[]
   totalPayments: number
 }
 
@@ -47,8 +64,7 @@ export async function getAllPaymentsService(centerId: string, page: number): Pro
 export async function getStudentPaymentsService(enrollmentId: string): Promise<IPayment[]> {
   try {
     const { data: results } = await apiMananger.get(`/payments/student/${enrollmentId}`)
-    const typedResults: IPayment[] = results
-    return typedResults
+    return results
   } catch (error) {
     console.log('Erro ao buscar pagamentos do estudante: ', error)
     throw error
@@ -57,11 +73,10 @@ export async function getStudentPaymentsService(enrollmentId: string): Promise<I
 
 export async function getPaymentService(
   id: string
-): Promise<{ payment: IPayment; receipt: IPaymentReceipt }> {
+): Promise<{ payment: IPaymentForShow; receipt: IPaymentReceipt }> {
   try {
     const { data: result } = await apiMananger.get(`/payments/${id}`)
-    const typedResult: { payment: IPayment; receipt: IPaymentReceipt } = result
-    return typedResult
+    return result
   } catch (error) {
     console.log('Erro ao buscar pagamento: ', error)
     throw error
@@ -71,11 +86,12 @@ export async function getPaymentService(
 export const searchPaymentsService = async (
   centerId: string,
   query: string
-): Promise<IPayment[] | undefined> => {
+): Promise<IPaymentForShow[]> => {
   try {
     const { data } = await apiMananger.get(`/payments/search/${centerId}?query=${query}`)
     return data
   } catch (error) {
     console.log('Erro ao pesquisar pagamentos: ', error)
+    throw error
   }
 }

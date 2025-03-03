@@ -1,11 +1,14 @@
 import { useCenter } from '@renderer/contexts/center-context'
 import { addStudentClassService, IResponseClass } from '@renderer/services/class-service'
-import { getStudentsForClassService, IEnrollment } from '@renderer/services/enrollment-service'
+import {
+  getStudentsForClassService,
+  IEnrollmentForShow
+} from '@renderer/services/enrollment-service'
 import { CheckCircle, PlusCircle } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ selectedClass }) => {
-  const [studentList, setStudentList] = useState<IEnrollment[]>()
+  const [studentList, setStudentList] = useState<IEnrollmentForShow[]>()
   const { center } = useCenter()
 
   const fetchStudents = async (): Promise<void> => {
@@ -40,10 +43,10 @@ export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ s
 
   useEffect(() => {
     studentList?.forEach((ennroll) => {
-      if (selectedClass.students?.includes(ennroll.studentId?._id))
+      if (selectedClass.students?.some((student) => student._id === ennroll.studentId?._id))
         setIsAdded((prev) => ({
           ...prev,
-          [ennroll.studentId?._id]: true
+          [ennroll.studentId?._id as string]: true
         }))
     })
   }, [])
@@ -59,11 +62,11 @@ export const ModalAddStudent: React.FC<{ selectedClass: IResponseClass }> = ({ s
             >
               <span>{enrollment.studentId?.name?.fullName}</span>
               <div className="space-x-2">
-                {!isAdded[enrollment.studentId?._id] ? (
+                {!isAdded[enrollment.studentId?._id as string] ? (
                   <button
                     title="Adicionar"
                     className="px-3 py-1 rounded text-white"
-                    onClick={() => handleAddStudentOnClass(enrollment.studentId?._id)}
+                    onClick={() => handleAddStudentOnClass(enrollment.studentId?._id as string)}
                   >
                     <PlusCircle />
                   </button>

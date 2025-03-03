@@ -28,7 +28,7 @@ const TableHeader: React.FC = () => {
   )
 }
 const TableRow: React.FC<{ row: RowsProps }> = ({ row }) => {
-  const STATUS = ['Pago', 'Pendente', 'Atrasado']
+  // const STATUS = ['Pago', 'Pendente', 'Atrasado']
   return (
     <View style={styles.tableRowStyle}>
       <View style={styles.firstTableColStyle}>

@@ -5,7 +5,7 @@ import { useCenter } from '@renderer/contexts/center-context'
 import {
   changeStatusService,
   getEnrollmentByStudentService,
-  IEnrollment
+  IEnrollmentForShow
 } from '@renderer/services/enrollment-service'
 import { createPaymentService, getStudentPaymentsService } from '@renderer/services/payment-service'
 import { formateCurrency } from '@renderer/utils/format'
@@ -15,6 +15,7 @@ import * as yup from 'yup'
 import { getMonths, getYearsInterval } from '@renderer/utils/date'
 import { useNavigate } from 'react-router'
 import { differenceInMonths } from 'date-fns'
+import { IStudent } from '@renderer/services/student'
 
 const schemaPayment = yup
   .object({
@@ -37,7 +38,7 @@ type FormPaymentData = yup.InferType<typeof schemaPayment>
 
 // Componente de formulário de pagamento
 interface PaymentFormProps {
-  resultsInForm: object | null
+  resultsInForm: IStudent | null
 }
 export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   // Hook do formulário de pagamento
@@ -53,7 +54,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const navigate = useNavigate()
 
   const paymentMethods = ['Dinheiro', 'Multicaixa Express', 'Transferência Bancária (ATM)']
-  const [enrollmentByStudent, setEnrollmentByStudent] = useState<IEnrollment | null>(null)
+  const [enrollmentByStudent, setEnrollmentByStudent] = useState<IEnrollmentForShow | null>(null)
   const onSubmitPaymentForm = async (data: FormPaymentData): Promise<void> => {
     try {
       //Se aluno for novo,completa o processo de inscrição
@@ -78,8 +79,10 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
       })
 
       navigate('/payments')
-    } catch (error) {
-      const errorMessage = error?.response?.data?.message || 'Erro inesperado'
+    } catch (error: unknown) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        'Erro inesperado'
       Swal.fire({
         position: 'bottom-end',
         icon: 'error',
@@ -89,7 +92,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         customClass: { popup: 'h-44 p-2', title: 'text-sm', icon: 'text-xs' },
         timerProgressBar: true
       })
-      console.log('Erro ao realizar pagamento no front: ', error)
     }
   }
 
@@ -100,7 +102,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         setEnrollmentByStudent(enrollment)
       }
     }
-    getEnrollmentByStudent(props.resultsInForm?._id)
+    getEnrollmentByStudent(props.resultsInForm?._id as string)
   }, [props.resultsInForm])
 
   const [lateFee, setLateFee] = useState<number>(0)
@@ -128,7 +130,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         setAmount(totalAmount)
 
         setValue('lateFee', calculatedLateFee)
-        setValue('enrollmentId', enrollmentByStudent?._id)
+        setValue('enrollmentId', enrollmentByStudent?._id as string)
         setValue('amount', totalAmount)
       }
     }

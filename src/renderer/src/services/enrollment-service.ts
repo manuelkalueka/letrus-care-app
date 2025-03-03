@@ -145,7 +145,9 @@ export const getOneEnrollmentService = async (
   }
 }
 
-export const getEnrollmentByStudentService = async (studentId: string): Promise<AxiosResponse> => {
+export const getEnrollmentByStudentService = async (
+  studentId: string
+): Promise<IEnrollmentForShow> => {
   try {
     const { data } = await apiMananger.get(`/enrollments/student/${studentId}`)
     return data
@@ -162,13 +164,12 @@ type infoReq = {
 export const getStudentsForClassService = async (
   centerId: string,
   info: infoReq
-): Promise<IEnrollment[]> => {
+): Promise<IEnrollmentForShow[]> => {
   try {
     const { data } = await apiMananger.get(
       `/enrollments/add-class/${centerId}?courseId=${info.courseId}&grade=${info.grade}`
     )
-    const typeData: IEnrollment[] = data
-    return typeData
+    return data
   } catch (error) {
     console.log('Erro ao buscar alunos: ', error)
     throw error

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import apiMananger from './api'
 
 export interface IStudent {
@@ -20,10 +21,9 @@ export const searchStudentService = async (
 ): Promise<IStudent[] | null> => {
   try {
     const { data } = await apiMananger.get(`/students/search/${centerId}?query=${query}`)
-    const typedData: IStudent[] = data
-    return typedData
+    return data
   } catch (error) {
-    if (error?.request?.status === 404) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
       return null
     } else {
       console.log('Erro ao pesquisar aluno: ', error)
@@ -35,13 +35,12 @@ export const searchStudentService = async (
 export const getStudentById = async (id: string): Promise<IStudent | null> => {
   try {
     const { data } = await apiMananger.get(`/students/${id}`)
-    const typedData: IStudent = data
-    return typedData
+    return data
   } catch (error) {
-    if (error?.request?.status === 404) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
       return null
     } else {
-      console.log('Erro ao buscar aluno: ', error)
+      console.log('Erro ao buscar aluno: ')
       throw error
     }
   }
