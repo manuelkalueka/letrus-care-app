@@ -9,8 +9,6 @@ import withReactContent from 'sweetalert2-react-content'
 import { useAuth } from '@renderer/contexts/auth-context'
 import { Link, useNavigate } from 'react-router'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getCenterService } from '@renderer/services/center-service'
-import { getFromLocalStorage, saveToLocalStorage } from '@renderer/utils/localStorage'
 
 const schema = yup
   .object({
@@ -23,7 +21,7 @@ type FormData = yup.InferType<typeof schema>
 export const LoginForm: React.FC = () => {
   const MySwal = withReactContent(Swal)
 
-  const { login } = useAuth()
+  const { login, loading } = useAuth()
   const { centerExistsContext } = useCenter()
   const navigate = useNavigate()
 
@@ -37,27 +35,19 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
-      // Realiza o login
       const response = await login(data)
+      if (!loading) {
+        // Se o login falhar, o fluxo será interrompido pelo catch
+        if (!response?._id) return
 
-      // Se o login falhar, o fluxo será interrompido pelo catch
-      if (!response?._id) return
+        const isExists = await centerExistsContext(response._id)
+        if (!isExists) {
+          return navigate('/centers/new')
+        }
 
-      // Verifica se o centro existe
-      const isExists = await centerExistsContext(response._id)
-      if (!isExists) {
-        return navigate('/centers/new')
+        // Navega para a home
+        navigate('/home')
       }
-
-      // Verifica se já há um centro no localStorage
-      const storedCenter = getFromLocalStorage('center')
-      if (!storedCenter) {
-        const { data: centerData } = await getCenterService(response._id)
-        saveToLocalStorage('center', centerData)
-      }
-
-      // Navega para a home
-      navigate('/home')
     } catch (error: unknown) {
       const err = error as { response?: { status: number; data?: { error: string } } }
       if (err.response?.status === 401) {

@@ -54,14 +54,14 @@ export const CenterProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             setCenterImage({ fileData: response.data.fileData, fileType: response.data.fileType })
           }
         } catch (error) {
-          console.log('Erro ao carregar centro do backend:', error)
+          console.log('Erro ao fazer fetch do centro:', error)
         }
       }
       setLoading(false)
     }
 
     loadStorageData()
-  }, [user])
+  }, [user?._id])
 
   async function createCenter(data: ICenter): Promise<AxiosResponse> {
     try {
