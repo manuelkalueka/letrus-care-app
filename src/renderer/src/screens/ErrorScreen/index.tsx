@@ -1,7 +1,8 @@
+import { Link2 } from 'lucide-react'
 import React from 'react'
 import { Link, useRouteError, isRouteErrorResponse } from 'react-router'
 
-export const ErrorBoundary: React.FC = () => {
+export const ErrorScreen: React.FC = () => {
   const error = useRouteError()
 
   let errorMessage = 'Desculpe, ocorreu um erro inesperado.'
@@ -17,12 +18,18 @@ export const ErrorBoundary: React.FC = () => {
   console.error('Erro capturado:', error)
 
   return (
-    <div id="error-page" className="text-center p-5">
-      <h1 className="text-red-500">Ops!</h1>
-      <p className="text-lg text-gray-800">{errorMessage}</p>
+    <div
+      id="error-page"
+      className="text-center p-5 flex items-center justify-center flex-col h-screen gap-4"
+    >
+      <h1 className="text-white text-4xl">Ops!</h1>
+      <p className="text-3xl text-white">{errorMessage}</p>
       <p>
-        <Link to="/" className="text-orange-500 no-underline">
-          Clique para retornar à página inicial
+        <Link
+          to="/"
+          className="text-orange-500 no-underline flex gap-2 items-center hover:opacity-90 hover:underline"
+        >
+          Clique para retornar à página inicial <Link2 />
         </Link>
       </p>
     </div>

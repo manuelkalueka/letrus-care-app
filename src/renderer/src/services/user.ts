@@ -19,17 +19,22 @@ export const signupService = async (data: IAuth): Promise<number> => {
     return status
   } catch (error) {
     console.log(error)
-    return 500 // or any other default status code
+    throw error
   }
 }
 
 export const loginService = async ({ username, password }: IAuth): Promise<AxiosResponse> => {
-  const response = await apiMananger.post('/users/login', {
-    username,
-    password
-  })
+  try {
+    const response = await apiMananger.post('/users/login', {
+      username,
+      password
+    })
 
-  return response
+    return response
+  } catch (error) {
+    console.log('erro no login: ', error)
+    throw error
+  }
 }
 
 export const logoutService = async (): Promise<void> => {

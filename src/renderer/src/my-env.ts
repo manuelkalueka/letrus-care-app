@@ -1,3 +1,3 @@
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'https://letrus-care-api.up.railway.app/'
 
 export { BASE_URL }

@@ -37,7 +37,6 @@ function createWindow(): void {
         localStorage.removeItem('center')
         localStorage.removeItem('user')
       `)
-      console.log('Indo para destruir....')
       mainWindow.destroy()
     } catch (error) {
       console.log('Erro ao terminar o app e fazer logout no root electron: ', error)
