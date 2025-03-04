@@ -4,7 +4,7 @@ import { Panel } from '@renderer/components/Panel'
 import { HeaderMain } from '@renderer/components/HeaderMain'
 
 export const CreateEnrollmentScreen: React.FC = () => {
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">

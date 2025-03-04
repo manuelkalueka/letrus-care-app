@@ -40,21 +40,24 @@
 ## **Passo a Passo**
 
 ### 1. Clone o repositório:
+
 git clone https://github.com/seu-usuario/lectrus-care.git
-cd lectrus-care
-2. Instale as dependências:
+cd lectrus-care 2. Instale as dependências:
 npm install
+
 # ou
-yarn install
-3. Configuração do ambiente:
+
+yarn install 3. Configuração do ambiente:
 Crie um ficheiro .env na raiz do projecto.
-Adicione as variáveis necessárias para integração com as APIs (exemplo: URL da API, chave de autenticação).
-4. Inicie o ambiente de desenvolvimento:
+Adicione as variáveis necessárias para integração com as APIs (exemplo: URL da API, chave de autenticação). 4. Inicie o ambiente de desenvolvimento:
 npm run dev
+
 # ou
+
 yarn dev
 
 ---
+
 🤝 Contribuições
 Contribuições são sempre bem-vindas! Siga os passos:
 
@@ -65,5 +68,13 @@ Faça as alterações e crie um commit:
 Envie suas alterações:
 Abra um **pull request** para revisão.
 
+```
 
 ```
+out/
+resources/
+src/
+  -main
+  -preload
+  -renderer/
+    -src/(componente e paginas tsx aqui)

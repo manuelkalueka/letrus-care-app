@@ -3,7 +3,11 @@ import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useCenter } from '@renderer/contexts/center-context'
-import { getTeachersServiceAll, ITeacher, ITeacherForShow } from '@renderer/services/teacher-service'
+import {
+  getTeachersServiceAll,
+  ITeacher,
+  ITeacherForShow
+} from '@renderer/services/teacher-service'
 
 import { editClassService, IResponseClass } from '@renderer/services/class-service'
 import Swal from 'sweetalert2'
@@ -69,7 +73,7 @@ export const FormEditClass: React.FC<{ onClose: () => void; selectedClass: IResp
       setValue('teachers', teacherIds as string[]) // Atualiza o campo corretamente
     }
   }, [selectedClass, setValue])
-  
+
   const onSubmit = async (data: FormData): Promise<void> => {
     try {
       await editClassService(selectedClass?._id as string, data)

@@ -3,7 +3,7 @@ interface InputProps {
   idInput: string
   rest: object
 }
-export const Input: React.FC<InputProps> = ({ labelInput, idInput, ...rest }) => (
+export const Input: React.FC<InputProps> = ({ labelInput, idInput, ...rest }: InputProps) => (
   <div>
     <label htmlFor={idInput} className="text-zinc-300">
       {labelInput}

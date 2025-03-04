@@ -32,7 +32,7 @@ export const CenterScreen: React.FC = () => {
     resolver: yupResolver(schema)
   })
 
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const { center, editCenterContext, uploadCenterImage, centerImage } = useCenter()
 
   const onSubmit = async (data: FormData): Promise<void> => {

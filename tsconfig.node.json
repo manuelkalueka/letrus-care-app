@@ -6,12 +6,13 @@
     "src/preload/**/*",
     "src/renderer/src/services/user.ts",
     "src/renderer/src/services/api.ts",
-    "src/renderer/src/my-env.ts"
+    "src/renderer/src/my-env.ts",
+    "src/types.d.ts"
   ],
   "compilerOptions": {
     "composite": true,
     "types": [
       "electron-vite/node"
     ]
-  }
+  },
 }

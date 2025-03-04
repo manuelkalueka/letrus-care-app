@@ -23,7 +23,10 @@ interface ModalEditCourseProps {
   data: ICourse | null
   onClose: () => void
 }
-export const ModalEditCourse: React.FC<ModalEditCourseProps> = ({ data: courseInfo, onClose }) => {
+export const ModalEditCourse: React.FC<ModalEditCourseProps> = ({
+  data: courseInfo,
+  onClose
+}: ModalEditCourseProps) => {
   const MySwal = withReactContent(Swal)
 
   const {

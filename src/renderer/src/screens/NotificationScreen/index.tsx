@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 
 export const NotificationScreen: React.FC = () => {
   const { center } = useCenter()
-   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
     <div>
