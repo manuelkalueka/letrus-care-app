@@ -1,3 +1,3 @@
-const BASE_URL = 'https://letrus-care-api.up.railway.app'
+const BASE_URL = 'https://letruscare.up.railway.app'
 
 export { BASE_URL }
