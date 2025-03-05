@@ -62,6 +62,7 @@ const data = [
 
 export const HomeScreen: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
@@ -91,9 +92,9 @@ export const HomeScreen: React.FC = () => {
                 </div>
               ))}
             </div>
-            <div className="bg-zinc-800 p-4 rounded-lg shadow-md flex items-center justify-between gap-4">
-              <article className="w-1/2">
-                <h2 className="text-lg font-semibold mb-4 ">Crescimento de Alunos</h2>
+            <div className="flex items-center justify-between gap-4">
+              <article className="w-1/2 bg-zinc-800 p-4 rounded-lg shadow-md">
+                <h2 className="text-lg font-semibold mb-4">Crescimento de Alunos</h2>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart
                     data={mockData.studentGrowth}
@@ -107,13 +108,14 @@ export const HomeScreen: React.FC = () => {
                   </LineChart>
                 </ResponsiveContainer>
               </article>
-              <article className="w-1/2">
+              <article className="w-1/2 bg-zinc-800 p-4 rounded-lg shadow-md">
                 <h2 className="text-lg font-semibold mb-4 ">Pagamentos Top 5</h2>
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart width={150} height={40} data={data}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
+                    <Tooltip />
                     <Bar dataKey="uv" fill="#c2410c" />
                   </BarChart>
                 </ResponsiveContainer>
