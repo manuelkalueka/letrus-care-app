@@ -14,6 +14,7 @@ import {
   Bar
 } from 'recharts'
 import { useDashboard } from '@renderer/hooks/useDashboard'
+import { TailSpin } from 'react-loader-spinner'
 
 // const mockData = {
 //   totalCenters: 5,
@@ -99,9 +100,7 @@ export const HomeScreen: React.FC = () => {
             <h2 className="text-3xl text-zinc-400 mb-4">Dashboard</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               {!isLoading && error && <p className="text-red-500">{error}</p>}
-              {isLoading ? (
-                <p>Carregando...</p>
-              ) : (
+              {!isLoading && !error ? (
                 statisticData.map((item, index) => (
                   <div
                     key={index}
@@ -111,13 +110,15 @@ export const HomeScreen: React.FC = () => {
                     <p className="text-2xl font-bold">{item.value}</p>
                   </div>
                 ))
+              ) : (
+                <div className="flex flex-1 items-center justify-center">
+                  <TailSpin color="#c2410c" />
+                </div>
               )}
             </div>
             <div className="flex items-center justify-between gap-4">
               {!isLoading && error && <p className="text-red-500">{error}</p>}
-              {isLoading ? (
-                <p>Carregando...</p>
-              ) : (
+              {!isLoading && !error ? (
                 <>
                   <article className="w-1/2 bg-zinc-800 p-4 rounded-lg shadow-md">
                     <h2 className="text-lg font-semibold mb-4">Crescimento de Alunos</h2>
@@ -126,16 +127,17 @@ export const HomeScreen: React.FC = () => {
                         data={studentGrowth}
                         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line
-                          type="monotone"
-                          dataKey="students"
-                          stroke="#c2410c "
-                          strokeWidth={2}
+                        <CartesianGrid strokeDasharray="3 3" style={{ stroke: '#b3b3b35c' }} />
+                        <XAxis dataKey="month" style={{ color: '#fff' }} />
+                        <YAxis dataKey="students" allowDecimals={false} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#121314',
+                            border: 'none',
+                            color: '#fff'
+                          }}
                         />
+                        <Line type="monotone" dataKey="students" stroke="#c2410c" strokeWidth={2} />
                       </LineChart>
                     </ResponsiveContainer>
                   </article>
@@ -145,13 +147,23 @@ export const HomeScreen: React.FC = () => {
                       <BarChart width={150} height={40} data={paymentGrowthTopFive}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="amount" fill="#c2410c" />
+                        <YAxis dataKey="totalAmount" />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#121314',
+                            border: 'none',
+                            color: '#fff'
+                          }}
+                        />
+                        <Bar dataKey="totalAmount" fill="#c2410c" />
                       </BarChart>
                     </ResponsiveContainer>
                   </article>
                 </>
+              ) : (
+                <div className="flex flex-1 items-center justify-center">
+                  <TailSpin color="#c2410c" />
+                </div>
               )}
             </div>
           </div>

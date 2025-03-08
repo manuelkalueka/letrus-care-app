@@ -4,7 +4,7 @@ import React from 'react'
 import { createContext, useContext, useState, useEffect } from 'react'
 
 type StudentGrowth = { month: string; students: number }[]
-type PaymentGrowthTopFive = { month: string; amount: number }[]
+type PaymentGrowthTopFive = { month: string; totalAmount: number }[]
 
 export interface DashboardContextData {
   totalActiveClassRoom: number
