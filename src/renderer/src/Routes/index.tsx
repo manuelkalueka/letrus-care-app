@@ -20,6 +20,7 @@ import { useAuth } from '@renderer/contexts/auth-context'
 import { getFromStorage } from '@renderer/utils/storage'
 import { ShowClassScreen } from '@renderer/screens/ShowClassScreen'
 import { ErrorScreen } from '@renderer/screens/ErrorScreen'
+import { DashboardProvider } from '@renderer/hooks/useDashboard'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signed } = useAuth()
@@ -43,7 +44,9 @@ const router = createBrowserRouter([
     errorElement: <ErrorScreen />,
     element: (
       <ProtectedRoute>
-        <HomeScreen />
+        <DashboardProvider>
+          <HomeScreen />
+        </DashboardProvider>
       </ProtectedRoute>
     )
   },
