@@ -21,6 +21,7 @@ import { getFromStorage } from '@renderer/utils/storage'
 import { ShowClassScreen } from '@renderer/screens/ShowClassScreen'
 import { ErrorScreen } from '@renderer/screens/ErrorScreen'
 import { DashboardProvider } from '@renderer/hooks/useDashboard'
+import { SettingsScreen } from '@renderer/screens/SettingsScreen'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signed } = useAuth()
@@ -153,6 +154,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <TeacherScreen />
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: '/settings',
+    errorElement: <ErrorScreen />,
+    element: (
+      <ProtectedRoute>
+        <SettingsScreen />
       </ProtectedRoute>
     )
   },
